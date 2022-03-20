@@ -8,38 +8,38 @@
 </template>
 
 <script>
-  import CameraService from '../services/CameraService'
+import CameraService from '../services/CameraService'
 
-  export default {
-    name: 'camera',
-    data: () => ({
-      flashEffect: false,
-      multipleCameras: false
-    }),
-    mounted () {
-      CameraService.init().then(() => {
-        CameraService.attach('camera').then(() => {
-          this.multipleCameras = CameraService.cameraIdentifiers.length > 1
-        })
+export default {
+  name: 'camera',
+  data: () => ({
+    flashEffect: false,
+    multipleCameras: false
+  }),
+  mounted () {
+    CameraService.init().then(() => {
+      CameraService.attach('camera').then(() => {
+        this.multipleCameras = CameraService.cameraIdentifiers.length > 1
+      })
+    })
+  },
+  methods: {
+    capture () {
+      this.flashEffect = true
+      setTimeout(() => {
+        this.flashEffect = false
+      }, 200)
+      CameraService.snap().then((base64Data) => {
+        this.$emit('data-captured', base64Data)
+        this.$emit('image-captured', CameraService.convertBase64ToFile(base64Data))
+        CameraService.detach()
       })
     },
-    methods: {
-      capture () {
-        this.flashEffect = true
-        setTimeout(() => {
-          this.flashEffect = false
-        }, 200)
-        CameraService.snap().then((base64Data) => {
-          this.$emit('data-captured', base64Data)
-          this.$emit('image-captured', CameraService.convertBase64ToFile(base64Data))
-          CameraService.detach()
-        })
-      },
-      switchCamera () {
-        CameraService.switchCamera()
-      }
+    switchCamera () {
+      CameraService.switchCamera()
     }
   }
+}
 </script>
 
 <style scoped>

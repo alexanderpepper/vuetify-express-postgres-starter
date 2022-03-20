@@ -1,4 +1,4 @@
-# vuetify-loopback-postgresql-starter
+# vuetify-express-postgresql-starter
 
 ## Project setup
 ```

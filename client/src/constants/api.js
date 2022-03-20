@@ -20,7 +20,7 @@ export default {
   roleMappings: `${host}/app-role-mapping`,
   roleMapping: id => `${host}/app-role-mapping/${id}`,
   userCount: `${host}/app-user/count`,
-  uploadFile: `${host}/container/vuetify-loopback-postgresql-starter/upload`,
-  uploadedFile: path => `${host}/container/vuetify-loopback-postgresql-starter/download/${path}`,
+  uploadFile: `${host}/container/vuetify-express-postgresql-starter/upload`,
+  uploadedFile: path => `${host}/container/vuetify-express-postgresql-starter/download/${path}`,
   sendSupportMessage: `${host}/support/send-message`
 }

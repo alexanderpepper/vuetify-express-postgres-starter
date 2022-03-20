@@ -5,7 +5,7 @@
         .headline.cursor-pointer(@click='$router.push({ name: $store.state.user.id ? "home": "landing" })')
           span.mr-3 🐊
           span.font-weight-regular Vuetify
-          span.font-weight-light Loopback
+          span.font-weight-light Express
           span.font-weight-thin PostgreSQL
       v-spacer
       v-toolbar-title.text-right.px-0.hidden-xs-only(v-if='$store.state.user.id')

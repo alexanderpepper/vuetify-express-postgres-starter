@@ -1,6 +1,6 @@
 {
-  "name": "vuetify-loopback-postgresql-starter",
-  "short_name": "vuetify-loopback-postgresql-starter",
+  "name": "vuetify-express-postgresql-starter",
+  "short_name": "vuetify-express-postgresql-starter",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
