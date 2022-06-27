@@ -123,7 +123,7 @@ export default {
   methods: {
     async save () {
       try {
-        this.user = await UserService.save(this.user)
+        this.user = await UserService.register(this.user)
         this.step = this.steps.activate
       } catch (error) {
         this.$emit('show-snackbar', error, 'error')

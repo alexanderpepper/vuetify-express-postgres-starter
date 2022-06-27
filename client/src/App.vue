@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import LoginService from './services/LoginService'
+import SignInService from './services/SignInService'
 import UserService from './services/UserService'
 import MainMenu from './components/MainMenu'
 import QuickLogin from './components/QuickLogin'
@@ -65,18 +65,18 @@ export default {
       window.localStorage['dark'] = this.$vuetify.theme.dark
     },
     loginSuccess (user) {
+      console.log('setting user')
+      console.log(user)
       this.$store.commit('setUser', user)
       this.$router.push({ name: 'home' })
     },
     async logout () {
-      try {
-        await LoginService.logout()
-      } catch (error) {}
+      SignInService.logout()
       this.$store.commit('clearUser')
       this.$router.push({ name: 'landing' })
     },
     async getUserInfo () {
-      if (LoginService.hasAccessToken()) {
+      if (SignInService.hasAccessToken()) {
         try {
           const user = await UserService.me()
           this.$store.commit('setUser', user)

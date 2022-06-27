@@ -1,6 +1,8 @@
 const host = process.env.VUE_APP_API_URL
 
 export default {
+  signUp: `${host}/sign-up`,
+  signIn: `${host}/sign-in`,
   activate: `${host}/app-user/activate`,
   sendActivationLink: `${host}/app-user/send-activation-link`,
   sendPasswordResetLink: `${host}/app-user/send-password-reset-link`,
@@ -14,8 +16,8 @@ export default {
   users: `${host}/app-user`,
   user: id => `${host}/app-user/${id}`,
   password: `${host}/app-user/change-password`,
-  roles: `${host}/app-role`,
-  me: `${host}/app-user/me`,
+  roles: `${host}/roles`,
+  me: `${host}/me`,
   profile: `${host}/app-user/profile`,
   roleMappings: `${host}/app-role-mapping`,
   roleMapping: id => `${host}/app-role-mapping/${id}`,

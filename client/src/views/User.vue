@@ -105,7 +105,12 @@ export default {
     }
   },
   async created () {
-    this.roles = await RoleService.all()
+    try {
+      this.roles = await RoleService.all()
+    } catch (error) {
+      this.roles = []
+    }
+
     this.initialize()
   },
   watch: {
@@ -135,7 +140,7 @@ export default {
   methods: {
     async initialize () {
       if (this.isAccount) {
-        UserService.profile().then(user => {
+        UserService.me().then(user => {
           this.user = user
         })
       } else if (this.id) {

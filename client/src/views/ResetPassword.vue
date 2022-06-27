@@ -13,7 +13,7 @@
 <script>
 
 import UserService from '../services/UserService'
-import LoginService from '../services/LoginService'
+import SignInService from '../services/SignInService'
 import UserPassword from '../components/UserPassword'
 
 export default {
@@ -28,7 +28,7 @@ export default {
     async resetPassword () {
       this.user.passwordResetCode = this.passwordResetCode
       const accessToken = await UserService.resetPassword(this.user)
-      LoginService.saveAccessToken(accessToken)
+      SignInService.saveAccessToken(accessToken)
       const user = await UserService.me()
       this.$emit('login-success', user)
       this.$emit('show-snackbar', 'Password Reset')

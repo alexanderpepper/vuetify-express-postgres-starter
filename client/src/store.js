@@ -14,7 +14,7 @@ export default new Vuex.Store({
   mutations: {
     setUser (state, user) {
       if (user) {
-        user.isAdmin = user.roleMappings.find(r => r.role.name === 'admin') !== undefined
+        user.isAdmin = user.roles.find(r => r.name === 'Admin') !== undefined
         state.user = user
       }
     },

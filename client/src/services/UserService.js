@@ -72,6 +72,11 @@ class UserService extends BaseService {
     })
   }
 
+  static register (user) {
+    delete user.confirmPassword
+    return this.POST(api.signUp, user)
+  }
+
   static save (user) {
     delete user.confirmPassword
     if (user.id) {
@@ -86,11 +91,7 @@ class UserService extends BaseService {
   }
 
   static me () {
-    return this.GET(api.me).then(data => data.results)
-  }
-
-  static profile () {
-    return this.GET(api.profile).then(data => data.results)
+    return this.GET(api.me)
   }
 
   static changePassword (password) {

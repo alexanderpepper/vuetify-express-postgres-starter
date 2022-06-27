@@ -1,4 +1,4 @@
-import LoginService from '../services/LoginService'
+import SignInService from '../services/SignInService'
 import UserService from '../services/UserService'
 import UserStructure from '../constants/user-structure'
 import EventBus from '../services/EventBus'
@@ -9,7 +9,7 @@ export default {
   }),
   computed: {
     credentials () {
-      const credentialType = this.user.identifier.indexOf('@') > -1 ? 'email' : 'username'
+      const credentialType = this.user.identifier.includes('@') ? 'email' : 'username'
       return {
         [credentialType]: this.user.identifier,
         password: this.user.password
@@ -23,7 +23,7 @@ export default {
     async login () {
       if (this.user.identifier && this.user.password) {
         try {
-          await LoginService.login(this.credentials)
+          await SignInService.signIn(this.credentials)
           const user = await UserService.me()
           this.loginSuccess()
           this.$emit('login-success', user)

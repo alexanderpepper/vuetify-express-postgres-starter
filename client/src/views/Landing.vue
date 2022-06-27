@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import LoginService from '../services/LoginService'
+import SignInService from '../services/SignInService'
 import Login from '../views/Login'
 import Register from '../views/Register'
 import EventBus from '../services/EventBus'
@@ -34,7 +34,7 @@ export default {
   data: () => ({
     isShowingLogin: false,
     isShowingRegister: false,
-    loginService: LoginService
+    loginService: SignInService
   }),
   computed: {
     isShowingInitialView () {
