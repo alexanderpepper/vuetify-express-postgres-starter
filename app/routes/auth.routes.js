@@ -1,4 +1,4 @@
-const { verifySignUp, jwt } = require('../middleware')
+const { verifySignUp, verifyPasswordChange, jwt } = require('../middleware')
 const controller = require('../controllers/auth.controller')
 
 module.exports = app => {
@@ -6,7 +6,7 @@ module.exports = app => {
     res.header('Access-Control-Allow-Headers', 'Authorization, Origin, Content-Type, Accept')
     next()
   })
-  app.get('/api/me', [jwt.verifyToken], controller.me)
   app.post('/api/sign-up', [verifySignUp.checkDuplicateUsernameOrEmail], controller.signUp)
+  app.post('/api/change-password', [jwt.verifyToken, verifyPasswordChange.checkPasswordChange], controller.changePassword)
   app.post('/api/sign-in', controller.signIn)
 }

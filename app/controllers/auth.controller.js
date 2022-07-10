@@ -1,37 +1,56 @@
 const db = require('../models')
 const config = require('../config/auth.config')
 const User = db.user
-const Role = db.role
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const TOKEN_VALIDITY_PERIOD = 86400
+const EXCLUDED_PROPERTIES_SIGN_UP = ['activationCode', 'passwordResetCode', 'isActivated']
+const { withoutNullsOrKeys } = require('../utilities/object.utilities')
 
-exports.me = (req, res) => {
-  User.findOne({
-    attributes: ['id', 'username', 'name'],
-    where: { id: req.userId },
-    include: [{ model: Role, as: 'roles', attributes: ['id', 'name'], through: { attributes: [] } }]
-  }).then(user => res.json(user.get({ plain: true })))
+exports.signUp = async (req, res) => {
+  try {
+    const data = withoutNullsOrKeys(req.body, EXCLUDED_PROPERTIES_SIGN_UP)
+    data.password = bcrypt.hashSync(req.body.password, 8)
+    const user = await User.create(data)
+    await user.setRoles([1])
+    res.send({ message: 'User was registered successfully!' })
+  } catch (err) {
+    res.status(500).send({ message: err.message })
+  }
 }
 
-exports.signUp = (req, res) => {
-  User.create({ ...req.body, password: bcrypt.hashSync(req.body.password, 8) }).then(user => {
-    user.setRoles([1]).then(() => {
-      res.send({ message: 'User was registered successfully!' })
+exports.signIn = async (req, res) => {
+  try {
+    const { username, email } = req.body
+    const user = await User.findOne({
+      attributes: ['id', 'password'],
+      where: username ? { username } : { email },
+      raw: true
     })
-  }).catch(err => res.status(500).send({ message: err.message }))
+    if (user && bcrypt.compareSync(req.body.password, user.password)) {
+      const accessToken = jwt.sign({ id: user.id }, config.secret, { expiresIn: TOKEN_VALIDITY_PERIOD })
+      res.status(200).send({
+        accessToken,
+        id: user.id,
+        expirationDate: new Date().getTime() + TOKEN_VALIDITY_PERIOD
+      })
+    } else {
+      res.status(401).send({ message: 'Invalid username or password' })
+    }
+  } catch (err) {
+    res.status(500).send({ message: err.message })
+  }
 }
 
-exports.signIn = (req, res) => {
-  const { username, email } = req.body
-  User.findOne({
-    where: username ? { username } : { email },
-    include: [{ model: Role, as: 'roles', through: { attributes: [] } }]
-  }).then(user => {
-    if (user && bcrypt.compareSync(req.body.password, user.password)) {
-      const accessToken = jwt.sign({ id: user.id }, config.secret, { expiresIn: 86400 })
-      res.status(200).send({ ...user.get({ plain: true }), accessToken })
-    } else {
-      return res.status(401)
+exports.changePassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { id: req.userId } })
+    if (user && bcrypt.compareSync(req.body.oldPassword, user.password)) {
+      user.password = bcrypt.hashSync(req.body.newPassword, 8)
+      user.save()
+      res.status(200).send({ message: 'Password updated successfully' })
     }
-  }).catch(err => res.status(500).send({ message: err.message }))
+  } catch (err) {
+    res.status(500).send({ message: err.message })
+  }
 }

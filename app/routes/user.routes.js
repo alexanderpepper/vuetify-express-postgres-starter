@@ -6,4 +6,7 @@ module.exports = app => {
     res.header('Access-Control-Allow-Headers', 'Authorization, Origin, Content-Type, Accept')
     next()
   })
+  app.get('/api/users/me', [jwt.verifyToken], controller.me)
+  app.get('/api/users/profile', [jwt.verifyToken], controller.profile)
+  app.put('/api/users', [jwt.verifyToken], controller.update)
 }

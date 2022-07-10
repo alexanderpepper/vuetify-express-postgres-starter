@@ -13,10 +13,16 @@ module.exports = () => {
     name: 'Admin'
   })
   User.create({
-    id: 1,
     username: 'test',
     name: 'test',
-    password: bcrypt.hashSync('admin1234', 8)
+    email: 'test@test.com',
+    phone: '21088888888',
+    birthday: '2010-08-18',
+    password: bcrypt.hashSync('admin1234', 8),
+    securityQuestion1: 'Q1',
+    securityQuestion2: 'Q2',
+    securityAnswer1: 'A1',
+    securityAnswer2: 'A2'
   }).then(user => {
     user.setRoles([1])
   })

@@ -17,6 +17,5 @@ export default {
   securityAnswer1: null,
   securityQuestion2: null,
   securityAnswer2: null,
-  isInternationalPhone: false,
-  roleMappings: []
+  isInternationalPhone: false
 }

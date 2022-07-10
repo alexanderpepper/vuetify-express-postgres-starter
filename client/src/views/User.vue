@@ -140,7 +140,7 @@ export default {
   methods: {
     async initialize () {
       if (this.isAccount) {
-        UserService.me().then(user => {
+        UserService.profile().then(user => {
           this.user = user
         })
       } else if (this.id) {

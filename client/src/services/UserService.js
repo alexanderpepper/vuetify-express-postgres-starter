@@ -80,7 +80,7 @@ class UserService extends BaseService {
   static save (user) {
     delete user.confirmPassword
     if (user.id) {
-      return this.PATCH(api.user(user.id), user)
+      return this.PUT(api.users, user)
     } else {
       return this.POST(api.users, user)
     }
@@ -92,6 +92,10 @@ class UserService extends BaseService {
 
   static me () {
     return this.GET(api.me)
+  }
+
+  static profile () {
+    return this.GET(api.profile)
   }
 
   static changePassword (password) {

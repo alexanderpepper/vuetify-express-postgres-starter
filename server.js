@@ -7,7 +7,9 @@ const db = require('./app/models')
 const seed = require('./app/middleware/seed')
 const PORT = process.env.PORT || 3000
 
-app.use(cors({ origin }))
+if (process.env.NODE_ENV !== 'production') {
+  app.use(cors({ origin }))
+}
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
