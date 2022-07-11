@@ -111,7 +111,7 @@ export default {
       this.roles = []
     }
 
-    this.initialize()
+    await this.initialize()
   },
   watch: {
     $route: {

@@ -1,5 +1,5 @@
 const db = require('../models')
-const { withoutKeys, withoutNullsOrKeys} = require('../utilities/object.utilities')
+const { withoutKeys, withoutNullsOrKeys } = require('../utilities/object.utilities')
 const bcrypt = require('bcryptjs')
 const User = db.user
 const Role = db.role
@@ -82,6 +82,7 @@ exports.create = async (req, res) => {
     const data = withoutNullsOrKeys(req.body, ['activationCode', 'passwordResetCode'])
     data.password = bcrypt.hashSync(req.body.password, 8)
     const user = await User.create(data)
+    await user.setRoles(data.roles.map(role => role.id))
     res.json({ id: user.id })
   } catch (err) {
     res.status(500).send({ message: 'Internal server error' })
@@ -91,8 +92,21 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const data = withoutKeys(req.body, ['activationCode', 'passwordResetCode', 'id', 'password'])
-    const [, user] = await User.update(data, { where: { id: req.body.id }, returning: true })
+    await User.update(data, { where: { id: req.body.id }, returning: true })
+    const user = await User.findOne({
+      where: { id: req.body.id }
+    })
+    await user.setRoles(data.roles.map(role => role.id))
     res.json({ id: user.id })
+  } catch (err) {
+    res.status(500).send({ message: 'Internal server error' })
+  }
+}
+
+exports.delete = async (req, res) => {
+  try {
+    await User.destroy({ where: { id: req.params.id } })
+    res.json({ message: 'Deleted successfully' })
   } catch (err) {
     res.status(500).send({ message: 'Internal server error' })
   }

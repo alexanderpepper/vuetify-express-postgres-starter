@@ -1,6 +1,7 @@
 export default {
   id: null,
   name: null,
+  username: null,
   photo: null,
   email: null,
   phone: null,
