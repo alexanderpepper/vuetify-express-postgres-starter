@@ -55,7 +55,7 @@ exports.updateAccount = async (req, res) => {
 exports.all = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: ['id', 'name', 'email'],
+      attributes: ['id', 'username', 'name', 'email'],
       include: [roleRelationship]
     })
     res.json(users)
