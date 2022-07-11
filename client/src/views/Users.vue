@@ -10,6 +10,7 @@
         v-data-table.hidden-xs-only(:headers='headers', :items='users', :search='search', sort-by='id')
           template(slot='item', slot-scope='props')
             tr.cursor-pointer(@click='edit(props.item)')
+              td {{ props.item.name }}
               td {{ props.item.username }}
               td {{ props.item.email }}
               td {{ props.item.roles }}
@@ -35,6 +36,7 @@ export default {
     return {
       search: '',
       headers: [
+        { text: 'Name', value: 'name', align: 'left' },
         { text: 'Username', value: 'username', align: 'left' },
         { text: 'Email', value: 'email', align: 'left' },
         { text: 'Roles', value: 'roles', align: 'left' }],
@@ -62,11 +64,8 @@ export default {
     async getUsers () {
       this.users = await UserService.all()
       this.users = this.users.map(user => {
-        if (user.roleMappings && user.roleMappings.length) {
-          user.roles = user.roleMappings
-            .filter(roleMapping => roleMapping.role.name !== 'registered')
-            .map(roleMapping => this.$options.filters.capitalize(roleMapping.role.name))
-            .join(', ')
+        if (user.roles && user.roles.length) {
+          user.roles = user.roles.map(role => role.name).join(', ')
         } else {
           user.roles = 'None'
         }

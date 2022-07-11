@@ -6,7 +6,12 @@ module.exports = app => {
     res.header('Access-Control-Allow-Headers', 'Authorization, Origin, Content-Type, Accept')
     next()
   })
-  app.get('/api/users/me', [jwt.verifyToken], controller.me)
-  app.get('/api/users/profile', [jwt.verifyToken], controller.profile)
-  app.put('/api/users', [jwt.verifyToken], controller.update)
+  app.get('/api/me', [jwt.verifyToken], controller.me)
+  app.get('/api/account', [jwt.verifyToken], controller.account)
+  app.put('/api/account', [jwt.verifyToken], controller.updateAccount)
+
+  app.get('/api/users', [jwt.verifyToken, jwt.isAdmin], controller.all)
+  app.post('/api/users', [jwt.verifyToken, jwt.isAdmin], controller.create)
+  app.get('/api/users/:id', [jwt.verifyToken, jwt.isAdmin], controller.get)
+  app.put('/api/users/:id', [jwt.verifyToken, jwt.isAdmin], controller.update)
 }

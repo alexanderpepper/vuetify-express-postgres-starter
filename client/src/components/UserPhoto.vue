@@ -43,7 +43,7 @@ export default {
       this.uploadingPhoto = false
     },
     getGravatar () {
-      this.user.photo = GravatarService.getProfilePhotoUrl(this.user.email)
+      this.user.photo = GravatarService.getAccountPhotoUrl(this.user.email)
     }
   }
 }

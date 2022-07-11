@@ -43,33 +43,11 @@ class UserService extends BaseService {
   }
 
   static all () {
-    return this.GET(api.users, {
-      filter: JSON.stringify({
-        include: {
-          relation: 'roleMappings',
-          scope: {
-            include: {
-              relation: 'role'
-            }
-          }
-        }
-      })
-    })
+    return this.GET(api.users)
   }
 
   static get (id) {
-    return this.GET(api.user(id), {
-      filter: JSON.stringify({
-        include: {
-          relation: 'roleMappings',
-          scope: {
-            include: {
-              relation: 'role'
-            }
-          }
-        }
-      })
-    })
+    return this.GET(api.user(id))
   }
 
   static register (user) {
@@ -80,7 +58,7 @@ class UserService extends BaseService {
   static save (user) {
     delete user.confirmPassword
     if (user.id) {
-      return this.PUT(api.users, user)
+      return this.PUT(api.user(user.id), user)
     } else {
       return this.POST(api.users, user)
     }
@@ -94,8 +72,12 @@ class UserService extends BaseService {
     return this.GET(api.me)
   }
 
-  static profile () {
-    return this.GET(api.profile)
+  static saveAccount (user) {
+    return this.PUT(api.account, user)
+  }
+
+  static account () {
+    return this.GET(api.account)
   }
 
   static changePassword (password) {

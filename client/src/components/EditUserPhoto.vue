@@ -110,7 +110,7 @@ export default {
     },
     getGravatar () {
       this.showGravatarDialog = false
-      const gravatarUrl = GravatarService.getProfilePhotoUrl(this.gravatarEmail)
+      const gravatarUrl = GravatarService.getAccountPhotoUrl(this.gravatarEmail)
       this.cameraImage = gravatarUrl
       this.croppa.refresh()
     }

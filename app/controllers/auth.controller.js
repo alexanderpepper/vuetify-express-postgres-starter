@@ -4,12 +4,11 @@ const User = db.user
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const TOKEN_VALIDITY_PERIOD = 86400
-const EXCLUDED_PROPERTIES_SIGN_UP = ['activationCode', 'passwordResetCode', 'isActivated']
 const { withoutNullsOrKeys } = require('../utilities/object.utilities')
 
 exports.signUp = async (req, res) => {
   try {
-    const data = withoutNullsOrKeys(req.body, EXCLUDED_PROPERTIES_SIGN_UP)
+    const data = withoutNullsOrKeys(req.body, ['activationCode', 'passwordResetCode', 'isActivated'])
     data.password = bcrypt.hashSync(req.body.password, 8)
     const user = await User.create(data)
     await user.setRoles([1])

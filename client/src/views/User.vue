@@ -22,12 +22,12 @@
                 div(v-if='!isAccount && $store.state.user.isAdmin')
                   .caption.grey--text.text--darken-1 Roles
                   v-chip.mr-2(
-                    :active.sync='roleMapping.enabled',
-                    v-for='(roleMapping, index) in user.roleMappings',
+                    :active.sync='role.enabled',
+                    v-for='(role, index) in user.roles',
                     :key='index',
                     :class='{"ml-0": index === 0 }',
                     close,
-                    @update:active='removeRole') {{ roleMapping.role.name | capitalize }}
+                    @update:active='removeRole') {{ role.name | capitalize }}
                   v-menu(offset-y, right, v-show='availableRoles.length')
                     template(v-slot:activator='{ on }')
                       v-btn.ml-0(v-on='on', outlined, small, slot='activator', v-show='availableRoles.length') Add
@@ -122,10 +122,14 @@ export default {
   },
   computed: {
     availableRoles () {
-      const assignedRoleIds = this.user.roleMappings.map(roleMapping => roleMapping.role.id)
-      return this.roles.filter(role => {
-        return !assignedRoleIds.includes(role.id)
-      })
+      if (this.user.roles) {
+        const assignedRoleIds = this.user.roles.map(role => role.id)
+        return this.roles.filter(role => {
+          return !assignedRoleIds.includes(role.id)
+        })
+      } else {
+        return []
+      }
     },
     isAccount () {
       return this.$route.name === 'account'
@@ -140,13 +144,13 @@ export default {
   methods: {
     async initialize () {
       if (this.isAccount) {
-        UserService.profile().then(user => {
+        UserService.account().then(user => {
           this.user = user
         })
       } else if (this.id) {
         UserService.get(this.id).then(user => {
           this.user = user
-          this.oldRoles = JSON.parse(JSON.stringify(user.roleMappings))
+          this.oldRoles = JSON.parse(JSON.stringify(user.roles))
         })
       }
       this.title = this.isAccount ? 'Account' : (this.id ? 'Edit User' : 'New User')
@@ -154,11 +158,12 @@ export default {
     async save () {
       if (this.isValid) {
         try {
-          const savedUser = await UserService.save(this.user)
-          if (savedUser.id !== this.user.id) {
-            this.$router.push({ name: 'user', params: { id: savedUser.id } })
+          const response = this.isAccount
+            ? await UserService.saveAccount(this.user)
+            : await UserService.save(this.user)
+          if (response.id !== this.user.id) {
+            this.$router.push({ name: 'user', params: { id: response.id } })
           }
-          await this.updateRoles()
           this.$emit('show-snackbar', 'Saved')
         } catch (error) {
           this.$emit('show-snackbar', error, 'error')
@@ -167,27 +172,25 @@ export default {
     },
     updateRoles () {
       const promises = []
-      const currentRoleIds = this.user.roleMappings.map(r => r.roleId)
-      const oldRoleIds = this.oldRoles.map(r => r.roleId)
-      this.oldRoles.forEach(r => {
-        if (!currentRoleIds.includes(r.roleId)) {
-          promises.push(RoleService.removeRoleMapping(r))
+      const currentRoleIds = this.user.roles.map(role => role.id)
+      const oldRoleIds = this.oldRoles.map(role => role.id)
+      this.oldRoles.forEach(role => {
+        if (!currentRoleIds.includes(role.id)) {
+          promises.push(RoleService.removeRole(role))
         }
       })
-      this.user.roleMappings.forEach(r => {
-        if (!oldRoleIds.includes(r.roleId)) {
-          promises.push(RoleService.addRoleMapping(this.user, r.role))
+      this.user.roles.forEach(role => {
+        if (!oldRoleIds.includes(role.id)) {
+          promises.push(RoleService.addRole(this.user, role.role))
         }
       })
       return Promise.all(promises)
     },
     addRole (role) {
-      const roleMapping = { userId: this.user.id, roleId: role.id }
-      roleMapping.role = this.roles.filter(r => r.id === roleMapping.roleId)[0]
-      this.user.roleMappings.push(roleMapping)
+      this.user.roles.push(role)
     },
     removeRole () {
-      this.user.roleMappings = this.user.roleMappings.filter(roleMapping => roleMapping.enabled !== false)
+      this.user.roles = this.user.roles.filter(role => role.enabled !== false)
     },
     async deleteUser () {
       await UserService.remove(this.user)

@@ -19,7 +19,7 @@ class RoleService extends BaseService {
     }).then(roleMappings => roleMappings[0])
   }
 
-  static addRoleMapping (user, role) {
+  static addRole (user, role) {
     return this.PUT(api.roleMappings, {
       principalType: 'USER',
       principalId: user.id,
@@ -27,7 +27,7 @@ class RoleService extends BaseService {
     })
   }
 
-  static removeRoleMapping (roleMapping) {
+  static removeRole (roleMapping) {
     return this.DELETE(api.roleMapping(roleMapping.id))
   }
 }
