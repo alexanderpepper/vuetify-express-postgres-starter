@@ -11,57 +11,65 @@ import Home from './views/Home'
 
 Vue.use(Router)
 
-export default new Router({
+const routes = [
+  {
+    path: '/',
+    name: Landing.name,
+    component: Landing
+  },
+  {
+    path: '/home',
+    name: Home.name,
+    component: Home
+  },
+  {
+    path: '/user/:id?',
+    name: User.name,
+    component: User,
+    props: true
+  },
+  {
+    path: '/users',
+    name: Users.name,
+    component: Users
+  },
+  {
+    path: '/account',
+    name: 'account',
+    component: User
+  },
+  {
+    path: '/password',
+    name: Password.name,
+    component: Password
+  },
+  {
+    path: '/activate/:activationCode',
+    name: Activate.name,
+    component: Activate,
+    props: true
+  },
+  {
+    path: '/reset-password/:passwordResetCode',
+    name: ResetPassword.name,
+    component: ResetPassword,
+    props: true
+  },
+  {
+    path: '/support',
+    name: Support.name,
+    component: Support
+  }
+]
+
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'landing',
-      component: Landing
-    },
-    {
-      path: '/home',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/user/:id?',
-      name: 'user',
-      component: User,
-      props: true
-    },
-    {
-      path: '/users',
-      name: 'users',
-      component: Users
-    },
-    {
-      path: '/account',
-      name: 'account',
-      component: User
-    },
-    {
-      path: '/password',
-      name: 'password',
-      component: Password
-    },
-    {
-      path: '/activate/:activationCode',
-      name: 'activate',
-      component: Activate,
-      props: true
-    },
-    {
-      path: '/reset-password/:passwordResetCode',
-      name: 'resetPassword',
-      component: ResetPassword,
-      props: true
-    },
-    {
-      path: '/support',
-      name: 'support',
-      component: Support
-    }
-  ]
+  routes
 })
+
+const guardRoute = (to, next) => {
+  next()
+}
+
+router.beforeEach((to, from, next) => guardRoute(to, next))

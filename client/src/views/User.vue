@@ -74,6 +74,7 @@ import UserSecurityQuestions from '../components/UserSecurityQuestions'
 import UserValidationService from '../services/UserValidationService'
 import UserBirthday from '../components/UserBirthday'
 import EditUserPhoto from '../components/EditUserPhoto'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'user',

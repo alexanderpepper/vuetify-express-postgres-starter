@@ -2,22 +2,22 @@
   v-app
     v-app-bar.app-toolbar(app, fixed, clipped-left, dense, hide-on-scroll)
       v-toolbar-title.mr-4
-        .headline.cursor-pointer(@click='$router.push({ name: $store.state.user.id ? "home": "landing" })')
+        .headline.cursor-pointer(@click='$router.push({ name: user.id ? "home": "landing" })')
           span.mr-3 🐊
           span.font-weight-regular Vuetify
           span.font-weight-light Express
           span.font-weight-thin PostgreSQL
       v-spacer
-      v-toolbar-title.text-right.px-0.hidden-xs-only(v-if='$store.state.user.id')
-        .subtitle-1 {{ $store.state.user.name }}
+      v-toolbar-title.text-right.px-0.hidden-xs-only(v-if='user.id')
+        .subtitle-1 {{ user.name }}
       main-menu(
-        v-if='$store.state.user.id',
-        @logout='logout',
+        v-if='user.id',
+        @logout='logoutClicked',
         @toggle-theme='toggleTheme')
       quick-login.hidden-xs-only(
-        v-if='userInfoReceived && !$store.state.user.id',
+        v-if='userInfoReceived && !user.id',
         @login-success='loginSuccess')
-      v-btn.ml-2(small, text, icon, v-if='userInfoReceived && !$store.state.user.id', @click='toggleTheme')
+      v-btn.ml-2(small, text, icon, v-if='userInfoReceived && !user.id', @click='toggleTheme')
         v-icon invert_colors
     v-content
       transition(name='fade-transition', mode='out-in')
@@ -33,10 +33,9 @@
 </template>
 
 <script>
-import SignInService from './services/SignInService'
-import UserService from './services/UserService'
 import MainMenu from './components/MainMenu'
 import QuickLogin from './components/QuickLogin'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'App',
@@ -55,42 +54,34 @@ export default {
     }
   },
   async created () {
-    this.$vuetify.theme.dark = window.localStorage['dark'] === 'true'
-    await this.getUserInfo()
-    this.userInfoReceived = true
-  },
-  methods: {
-    toggleTheme () {
-      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
-      window.localStorage['dark'] = this.$vuetify.theme.dark
-    },
-    loginSuccess (user) {
-      console.log('setting user')
-      console.log(user)
-      this.$store.commit('setUser', user)
-      this.$router.push({ name: 'home' })
-    },
-    async logout () {
-      SignInService.logout()
-      this.$store.commit('clearUser')
-      this.$router.push({ name: 'landing' })
-    },
-    async getUserInfo () {
-      if (SignInService.hasAccessToken()) {
-        try {
-          const user = await UserService.me()
-          this.$store.commit('setUser', user)
-          if (this.$route.path === '/') {
-            this.$router.push({ name: 'home' })
-          }
-        } catch (error) {
-          if (this.unauthenticatedRoutes.indexOf(this.$route.name) === -1) {
-            this.logout()
-          }
-        }
-      } else if (this.unauthenticatedRoutes.indexOf(this.$route.name) === -1) {
+    this.$vuetify.theme.dark = window.localStorage.dark === 'true'
+    try {
+      await this.getCurrentUser()
+      if (this.$route.path === '/') {
+        this.$router.push({ name: 'home' })
+      }
+    } catch (error) {
+      if (this.unauthenticatedRoutes.indexOf(this.$route.name) === -1) {
         this.logout()
       }
+    }
+    this.$store.subscribeAction(async action => {
+      if (action.type === 'loginSuccess') {
+        await this.getCurrentUser()
+        await this.$router.push({ name: 'home' })
+      }
+    })
+  },
+  computed: mapGetters(['user', 'userInfoReceived']),
+  methods: {
+    ...mapActions(['getCurrentUser', 'resetUserState', 'logout']),
+    toggleTheme () {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+      window.localStorage.dark = this.$vuetify.theme.dark
+    },
+    async logoutClicked () {
+      this.logout()
+      await this.$router.push({ name: 'landing' })
     },
     showSnackbar (message, style) {
       this.snackbarMessage = message

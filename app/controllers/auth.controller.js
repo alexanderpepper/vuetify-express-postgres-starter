@@ -53,3 +53,26 @@ exports.changePassword = async (req, res) => {
     res.status(500).send({ message: err.message })
   }
 }
+
+exports.getSecurityQuestions = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      attributes: ['securityQuestion1', 'securityQuestion2'],
+      where: {
+        and: [
+          {
+            or: [
+              { username: req.body.identifier },
+              { email: req.body.identifier }
+            ]
+          },
+          { phone: req.body.phone },
+          { birthday: req.body.birthday }
+        ]
+      }
+    })
+    res.json(user.get({ plain: true }))
+  } catch (err) {
+    res.status(500).send({ message: err.message })
+  }
+}

@@ -3,18 +3,18 @@
     v-menu(offset-y, transition='slide-y-transition')
       template(v-slot:activator='{ on }')
         v-btn.ml-2(small, icon, slot='activator', v-on='on')
-          user-avatar(size='small', :user='$store.state.user')
+          user-avatar(size='small', :user='user')
       v-list.py-0.main-menu-content(shaped, dense)
-        v-list-item(:to='{ name: "home", params: { id: $store.state.user.id } }')
+        v-list-item(:to='{ name: "home", params: { id: user.id } }')
           v-list-item-icon
-            user-avatar(size='small', :user='$store.state.user')
+            user-avatar(size='small', :user='user')
           v-list-item-content
-            v-list-item-title {{ $store.state.user.name }}
+            v-list-item-title {{ user.name }}
         v-divider
         v-list-item(
           :to='{ name: item.name }',
           v-for='(item, i) in menuItems', :key='i',
-          v-show="!item.isAdminOnly || $store.state.user.isAdmin",
+          v-show="!item.isAdminOnly || user.isAdmin",
           ripple)
           v-list-item-icon
             v-icon(v-html='item.icon')
@@ -35,6 +35,7 @@
 
 <script>
 import UserAvatar from './UserAvatar'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'mainMenu',
@@ -47,7 +48,8 @@ export default {
         { icon: 'help', title: 'Contact Support', name: 'support' }
       ]
     }
-  }
+  },
+  computed: mapGetters(['user'])
 }
 </script>
 

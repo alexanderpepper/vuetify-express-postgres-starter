@@ -10,7 +10,7 @@
               input(type='email', name='email', style="opacity: 0; position: absolute; pointer-events: none;")
               v-text-field.pt-0(label='Username or Email', v-model='user.identifier', required, autocomplete='off')
               v-text-field(label='Password', v-model='user.password', :type="hidePassword ? 'password' : 'text'", :append-icon="hidePassword ? 'visibility_off' : 'visibility'", @click:append="() => (hidePassword = !hidePassword)", @keyup.enter='login', required, autocomplete='off')
-              v-btn.my-6(large, block, outlined, @click='login', :disabled='!isValidLoginCredentials') Sign In
+              v-btn.my-6(large, block, outlined, @click='loginClicked', :disabled='!isValidLoginCredentials') Sign In
             v-alert.my-6(type='error' v-model='error', outlined) {{ errorMessage }}
             a.d-block.text-center.mb-4.subtitle-1(href='#', v-if='showResendCode', @click='step = steps.sendActivationLink') Resend my activation link
             a.d-block.text-center.mb-2.subtitle-1(href='#', @click='forgotUsernameOrPassword') Forgot your username or password?
@@ -76,6 +76,7 @@ import loginMixin from '../mixins/loginMixin'
 import UserBirthday from '../components/UserBirthday'
 import UserPhone from '../components/UserPhone'
 import EventBus from '../services/EventBus'
+import {mapActions} from 'vuex'
 
 export default {
   name: 'login',
@@ -157,6 +158,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['login']),
     previous () {
       if ([this.steps.forgotUsernameOrPassword, this.steps.sendActivationLink].indexOf(this.step) > -1) {
         this.step = this.steps.signIn
@@ -244,13 +246,19 @@ export default {
         this.$emit('show-snackbar', error, 'error')
       }
     },
-    loginSuccess () {
-      this.error = false
+    async loginClicked () {
+      try {
+        await this.login(this.credentials)
+        this.error = false
+      } catch (error) {
+        this.loginError(error)
+      }
     },
     loginError (error) {
       this.error = true
+      console.log(error)
       if (error.status === 401) {
-        this.errorMessage = 'Account not found or password incorrect'
+        this.errorMessage = 'User not found or password incorrect'
         this.showResendCode = false
       } else {
         const errorData = error.response && error.response.body && error.response.body.error
