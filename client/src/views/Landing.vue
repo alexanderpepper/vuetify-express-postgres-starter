@@ -5,8 +5,8 @@
     .text-center
       .mt-12(v-if='isShowingInitialView')
         .display-1 Landing Page
-        .title(v-if='!$store.state.user.id') User is unauthenticated
-      .mt-6(v-if='!$store.state.user.id')
+        .title(v-if='!currentUser.id') User is unauthenticated
+      .mt-6(v-if='!currentUser.id')
         .mb-4.mx-auto(v-if='isShowingInitialView')
           v-btn.mr-3(large, outlined, @click='showLogin') Sign In
           v-btn.ml-3(
@@ -27,6 +27,7 @@ import SignInService from '../services/SignInService'
 import Login from '../views/Login'
 import Register from '../views/Register'
 import EventBus from '../services/EventBus'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'landing',
@@ -37,6 +38,7 @@ export default {
     loginService: SignInService
   }),
   computed: {
+    ...mapGetters(['currentUser']),
     isShowingInitialView () {
       return !this.isShowingRegister && !this.isShowingLogin
     }

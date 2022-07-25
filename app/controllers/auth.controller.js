@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const TOKEN_VALIDITY_PERIOD = 86400
 const { withoutNullsOrKeys } = require('../utilities/object.utilities')
-
+const { Op } = require('sequelize')
 exports.signUp = async (req, res) => {
   try {
     const data = withoutNullsOrKeys(req.body, ['activationCode', 'passwordResetCode', 'isActivated'])
@@ -20,10 +20,16 @@ exports.signUp = async (req, res) => {
 
 exports.signIn = async (req, res) => {
   try {
-    const { username, email } = req.body
+    console.log(req.body)
+    const { identifier } = req.body
     const user = await User.findOne({
       attributes: ['id', 'password'],
-      where: username ? { username } : { email },
+      where: {
+        [Op.or]: [
+          { email: identifier },
+          { username: identifier }
+        ]
+      },
       raw: true
     })
     if (user && bcrypt.compareSync(req.body.password, user.password)) {

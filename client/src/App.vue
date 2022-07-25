@@ -2,28 +2,24 @@
   v-app
     v-app-bar.app-toolbar(app, fixed, clipped-left, dense, hide-on-scroll)
       v-toolbar-title.mr-4
-        .headline.cursor-pointer(@click='$router.push({ name: user.id ? "home": "landing" })')
+        .headline.cursor-pointer(@click='$router.push({ name: currentUser.id ? "home": "landing" })')
           span.mr-3 🐊
           span.font-weight-regular Vuetify
           span.font-weight-light Express
           span.font-weight-thin PostgreSQL
       v-spacer
-      v-toolbar-title.text-right.px-0.hidden-xs-only(v-if='user.id')
-        .subtitle-1 {{ user.name }}
+      v-toolbar-title.text-right.px-0.hidden-xs-only(v-if='currentUser.id')
+        .subtitle-1 {{ currentUser.name }}
       main-menu(
-        v-if='user.id',
+        v-if='currentUser.id',
         @logout='logoutClicked',
         @toggle-theme='toggleTheme')
-      quick-login.hidden-xs-only(
-        v-if='userInfoReceived && !user.id',
-        @login-success='loginSuccess')
-      v-btn.ml-2(small, text, icon, v-if='userInfoReceived && !user.id', @click='toggleTheme')
+      quick-login.hidden-xs-only(v-if='userInfoReceived && !currentUser.id')
+      v-btn.ml-2(small, text, icon, v-if='userInfoReceived && !currentUser.id', @click='toggleTheme')
         v-icon invert_colors
-    v-content
+    v-main
       transition(name='fade-transition', mode='out-in')
-        router-view.router-view.mx-auto(
-          @show-snackbar='showSnackbar',
-          @login-success='loginSuccess')
+        router-view.router-view.mx-auto(@show-snackbar='showSnackbar')
     v-snackbar(
       v-model='snackbar',
       :timeout='3000',
@@ -49,10 +45,10 @@ export default {
       items: [
         { icon: 'people', title: 'Manage Users', name: 'users' },
         { icon: 'help', title: 'Contact Support', name: 'support' }
-      ],
-      userInfoReceived: false
+      ]
     }
   },
+  computed: mapGetters(['currentUser', 'userInfoReceived']),
   async created () {
     this.$vuetify.theme.dark = window.localStorage.dark === 'true'
     try {
@@ -61,8 +57,9 @@ export default {
         this.$router.push({ name: 'home' })
       }
     } catch (error) {
-      if (this.unauthenticatedRoutes.indexOf(this.$route.name) === -1) {
-        this.logout()
+      console.log('caught error')
+      if (!this.unauthenticatedRoutes.includes(this.$route.name)) {
+        this.logoutClicked()
       }
     }
     this.$store.subscribeAction(async action => {
@@ -72,7 +69,6 @@ export default {
       }
     })
   },
-  computed: mapGetters(['user', 'userInfoReceived']),
   methods: {
     ...mapActions(['getCurrentUser', 'resetUserState', 'logout']),
     toggleTheme () {

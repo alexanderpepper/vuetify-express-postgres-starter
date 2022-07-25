@@ -34,16 +34,17 @@ export default {
   }),
   methods: {
     imageLoadError () {
-      this.user.photo = null
+      this.$emit('set-photo', null)
     },
     async photoSelected (file) {
       this.showCamera = false
       this.uploadingPhoto = true
-      this.user.photo = await UploadService.uploadFile(file)
+      const photoUrl = await UploadService.uploadFile(file)
+      this.$emit('set-photo', photoUrl)
       this.uploadingPhoto = false
     },
     getGravatar () {
-      this.user.photo = GravatarService.getAccountPhotoUrl(this.user.email)
+      this.$emit('set-photo', GravatarService.getAccountPhotoUrl(this.user.email))
     }
   }
 }

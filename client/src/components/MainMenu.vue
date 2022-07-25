@@ -35,7 +35,7 @@
 
 <script>
 import UserAvatar from './UserAvatar'
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'mainMenu',
@@ -49,7 +49,7 @@ export default {
       ]
     }
   },
-  computed: mapGetters(['user'])
+  computed: mapGetters(['currentUser'])
 }
 </script>
 

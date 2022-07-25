@@ -17,6 +17,7 @@
 <script>
 import UserValidationService from '../services/UserValidationService'
 import SupportService from '../services/SupportService'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'support',
@@ -28,13 +29,14 @@ export default {
     }
   }),
   computed: {
+    ...mapGetters(['currentUser']),
     isSubmitEnabled () {
       return this.message.email && this.message.body &&
         UserValidationService.isValidEmail(this.message.email)
     }
   },
   watch: {
-    '$store.state.user' () {
+    currentUser () {
       this.setEmail()
     }
   },
@@ -43,8 +45,8 @@ export default {
   },
   methods: {
     setEmail () {
-      if (this.$store.state.user) {
-        this.message.email = this.$store.state.user.email
+      if (this.currentUser) {
+        this.message.email = this.currentUser.email
       }
     },
     async submit () {

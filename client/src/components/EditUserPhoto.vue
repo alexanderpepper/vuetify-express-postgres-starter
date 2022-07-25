@@ -35,11 +35,11 @@
                 v-spacer
                 v-btn(text, @click='showGravatarDialog = false') Cancel
                 v-btn(outlined, @click='getGravatar') Get Photo
-        .mt-2(v-if='$store.state.user.photo')
+        .mt-2(v-if='currentUser.photo')
           v-btn(block, small, text, @click='reset') Cancel
     div(v-else)
       .mb-4.edit-user-photo-container.mx-auto(:style='{ "border-color": $vuetify.theme.dark ? "white" : "black" }')
-        img.edit-user-photo-img(:src='$store.state.user.photo' v-if='!showCroppa', @error="imageLoadError")
+        img.edit-user-photo-img(:src='currentUser.photo' v-if='!showCroppa', @error="imageLoadError")
       v-btn(block, small, outlined, @click='isEditing = true', v-if='!isRegistration') Edit Photo
     .absolute-fill(v-if='showCamera')
       camera(@data-captured='setCameraImage')
@@ -51,6 +51,7 @@ import UploadService from '../services/UploadService'
 import Camera from '../components/Camera'
 import GravatarService from '../services/GravatarService'
 import UserService from '../services/UserService'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'editUserPhoto',
@@ -69,12 +70,13 @@ export default {
     croppa: {}
   }),
   computed: {
+    ...mapGetters(['currentUser']),
     showCroppa () {
-      return !this.$store.state.user.photo || this.isEditing
+      return !this.currentUser.photo || this.isEditing
     }
   },
   watch: {
-    '$store.state.user': {
+    currentUser: {
       handler (val) {
         this.gravatarEmail = val.email
       },
@@ -83,15 +85,16 @@ export default {
   },
   methods: {
     imageLoadError () {
-      this.$store.state.user.photo = null
+      this.$emit('set-photo', null)
     },
     async save () {
       this.showCamera = false
       this.uploadingPhoto = true
       const blob = await this.croppa.promisedBlob('image/jpeg', 0.9)
-      this.$store.state.user.photo = await UploadService.uploadFile(blob)
+      const photoUrl = await UploadService.uploadFile(blob)
+      this.$emit('set-photo', photoUrl)
       if (!this.isRegistration) {
-        await UserService.save(this.$store.state.user)
+        await UserService.save(this.currentUser)
         this.$emit('show-snackbar', 'Saved')
         this.reset()
       }
@@ -110,8 +113,7 @@ export default {
     },
     getGravatar () {
       this.showGravatarDialog = false
-      const gravatarUrl = GravatarService.getAccountPhotoUrl(this.gravatarEmail)
-      this.cameraImage = gravatarUrl
+      this.cameraImage = GravatarService.getAccountPhotoUrl(this.gravatarEmail)
       this.croppa.refresh()
     }
   }

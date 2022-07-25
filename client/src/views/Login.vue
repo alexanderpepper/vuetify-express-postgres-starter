@@ -22,7 +22,7 @@
         v-window-item(:value='steps.forgotUsername')
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide your birthday and phone number
-            user-phone(:show-placeholder='true', :user='user')
+            user-phone(:show-placeholder='true' :user='user' @set-phone="phone => (user.phone = phone)")
             user-birthday(:show-placeholder='true', :user='user')
             .text-center
               router-link.subtitle-1(:to='{ name: "support" }') Click here to contact support
@@ -36,7 +36,7 @@
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide all of the following information
             v-text-field(v-model='user.identifier', label='Username or email address')
-            user-phone(:show-placeholder='true', :user='user')
+            user-phone(:show-placeholder='true' :user='user' @set-phone="phone => (user.phone = phone)")
             user-birthday(:show-placeholder='true', :user='user')
         v-window-item(:value='steps.securityQuestions')
           v-card-text
@@ -63,7 +63,6 @@
 
 <script>
 import UserService from '../services/UserService'
-import UserStructure from '../constants/user-structure'
 import SendActivationLink from '../components/SendActivationLink'
 import SendPasswordResetLink from '../components/SendPasswordResetLink'
 import SendUsername from '../components/SendUsername'
@@ -76,7 +75,7 @@ import loginMixin from '../mixins/loginMixin'
 import UserBirthday from '../components/UserBirthday'
 import UserPhone from '../components/UserPhone'
 import EventBus from '../services/EventBus'
-import {mapActions} from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'login',
@@ -115,7 +114,7 @@ export default {
     sendViaSms: false
   }),
   created () {
-    this.user = JSON.parse(JSON.stringify(UserStructure))
+    this.user = { identifier: null, password: null }
     EventBus.$on('login-error', this.loginError)
   },
   computed: {
@@ -192,7 +191,7 @@ export default {
       }
     },
     forgotUsernameOrPassword () {
-      this.user = JSON.parse(JSON.stringify(UserStructure))
+      this.user = { identifier: null, password: null }
       this.step = this.steps.forgotUsernameOrPassword
     },
     async sendActivationLink () {
@@ -248,15 +247,16 @@ export default {
     },
     async loginClicked () {
       try {
-        await this.login(this.credentials)
+        console.log(this.user)
+        await this.login(this.user)
         this.error = false
       } catch (error) {
         this.loginError(error)
       }
     },
     loginError (error) {
+      console.log(JSON.stringify(error, null, 4))
       this.error = true
-      console.log(error)
       if (error.status === 401) {
         this.errorMessage = 'User not found or password incorrect'
         this.showResendCode = false

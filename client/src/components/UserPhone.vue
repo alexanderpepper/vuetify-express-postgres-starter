@@ -29,7 +29,7 @@ export default {
   }),
   watch: {
     maskedPhone () {
-      this.user.phone = this.unmaskText(this.maskedPhone)
+      this.$emit('set-phone', this.unmaskText(this.maskedPhone))
     },
     'user.id' () {
       const phone = this.user.phone

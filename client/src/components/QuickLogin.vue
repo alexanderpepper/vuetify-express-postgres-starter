@@ -7,13 +7,13 @@
       required
       hide-details
       autocomplete='off'
-      @keyup.enter='login')
+      @keyup.enter='loginClicked')
     v-text-field.login-field.d-inline-block.pt-0.mr-4(
       height='32'
       placeholder='Password'
       v-model='user.password'
       type='password'
-      @keyup.enter='login'
+      @keyup.enter='loginClicked'
       hide-details
       required
       autocomplete='off')
@@ -22,9 +22,20 @@
 
 <script>
 import loginMixin from '../mixins/loginMixin'
+import { mapActions } from 'vuex'
 export default {
   name: 'quickLogin',
-  mixins: [loginMixin]
+  mixins: [loginMixin],
+  methods: {
+    ...mapActions(['login']),
+    async loginClicked () {
+      try {
+        await this.login(this.user)
+      } catch (error) {
+        await this.$router.push({ name: 'login' })
+      }
+    }
+  }
 }
 </script>
 

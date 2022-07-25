@@ -73,3 +73,5 @@ const guardRoute = (to, next) => {
 }
 
 router.beforeEach((to, from, next) => guardRoute(to, next))
+
+export default router

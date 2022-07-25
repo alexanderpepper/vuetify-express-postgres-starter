@@ -1,61 +1,64 @@
 import userStructure from '../../constants/user-structure'
 import SignInService from '@/services/SignInService'
 import UserService from '@/services/UserService'
-import EventBus from '@/services/EventBus'
 
 const newUser = () => JSON.parse(JSON.stringify(userStructure))
 
 export default {
   state: {
-    user: newUser(),
+    currentUser: newUser(),
     userInfoReceived: false
   },
   getters: {
-    user: state => state.user,
+    currentUser: state => state.currentUser,
     userInfoReceived: state => state.userInfoReceived
   },
   mutations: {
-    setUser: (state, user) => (state.user = user),
+    setCurrentUser: (state, user) => (state.currentUser = user),
     setUserInfoReceived: (state, userInfoReceived) => (state.userInfoReceived = userInfoReceived)
   },
   actions: {
     async login ({ commit, dispatch }, credentials) {
       if (credentials.identifier && credentials.password) {
         try {
-          const signInResponse = await SignInService.signIn(this.credentials)
+          const signInResponse = await SignInService.signIn(credentials)
           window.localStorage.token = signInResponse.accessToken
-          window.localStorage.user = signInResponse.id
+          window.localStorage.id = signInResponse.id
           window.localStorage.tokenExpirationDate = signInResponse.expirationDate
-          dispatch('loginSuccess')
         } catch (error) {
           dispatch('resetUserState')
+          throw error
         } finally {
-          commit('setuserInfoReceived', true)
+          commit('setUserInfoReceived', true)
         }
       } else {
-        await this.$router.push({ name: 'login' })
+        dispatch('resetUserState')
       }
     },
-    loginSuccess () {},
     logout () {
       delete window.localStorage.token
-      delete window.localStorage.user
+      delete window.localStorage.id
+      delete window.localStorage.tokenExpirationDate
     },
     async getCurrentUser ({ commit, dispatch }) {
       try {
         const user = await UserService.me()
         if (user) {
-          commit('setUser', user)
+          commit('setCurrentUser', user)
+          if (this.$route.path === '/') {
+            this.$router.push({ name: 'home' })
+          }
         } else {
           dispatch('resetUserState')
         }
       } catch (error) {
-
+        dispatch('resetUserState')
+        throw error
       }
     },
     resetUserState ({ commit, dispatch }) {
-      dispatch('logoout')
-      commit('setUser', newUser())
+      dispatch('logout')
+      commit('setCurrentUser', newUser())
     }
   }
 }

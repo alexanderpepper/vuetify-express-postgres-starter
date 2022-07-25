@@ -7,10 +7,11 @@ class UploadService {
         .split('/').splice(3).join('/')
         .replace(/\+/g, '%20')))
   }
+
   static fileUploadRequest (file) {
     return request.post(api.uploadFile)
       .attach('file', file)
-      .set('Authorization', window.localStorage['token'])
+      .set('Authorization', window.localStorage.token)
       .catch(err => console.log(err))
   }
 }

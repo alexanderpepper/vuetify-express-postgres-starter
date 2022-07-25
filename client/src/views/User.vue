@@ -1,4 +1,4 @@
-<template lang="pug">
+..<template lang="pug">
   .user.pa-md-12.pa-sm-8.pa-xs-0.max-width-800
     v-card.elevation-12(:class='{ "elevation-0": $vuetify.breakpoint.xsOnly }')
       v-card-text
@@ -17,9 +17,9 @@
               v-card-text.pt-sm-0
                 user-identifier(:user='user')
                 user-birthday(:user='user')
-                user-phone(:user='user')
+                user-phone(:user='user' @set-phone="phone => (user.phone = phone)")
                 user-password(v-if='!user.id', :user='user')
-                div(v-if='!isAccount && $store.state.user.isAdmin')
+                div(v-if='!isAccount && currentUser.isAdmin')
                   .caption.grey--text.text--darken-1 Roles
                   v-chip.mr-2(
                     :active.sync='role.enabled',
@@ -35,7 +35,7 @@
                       v-list-item(@click='addRole(role)', v-for='(role, index) in availableRoles', :key='index')
                         v-list-item-title {{ role.name | capitalize }}
                   v-checkbox(label='Activated', v-model='user.isActivated')
-                  v-dialog(v-show='user.id && !isAccount && $store.state.user.isAdmin', v-model='showDeleteDialog', width='300')
+                  v-dialog(v-show='user.id && !isAccount && currentUser.isAdmin', v-model='showDeleteDialog', width='300')
                     template(v-slot:activator='{ on }')
                       v-btn.mx-0(v-on='on', small, outlined, slot='activator') Delete User
                     v-card
@@ -54,7 +54,7 @@
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
-                edit-user-photo.mb-6.mx-auto.mw-edit-user-photo(:user='user')
+                edit-user-photo.mb-6.mx-auto.mw-edit-user-photo(:user='user' @set-photo="photo => (user.photo = photo)")
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
@@ -74,7 +74,7 @@ import UserSecurityQuestions from '../components/UserSecurityQuestions'
 import UserValidationService from '../services/UserValidationService'
 import UserBirthday from '../components/UserBirthday'
 import EditUserPhoto from '../components/EditUserPhoto'
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'user',
@@ -122,6 +122,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['currentUser']),
     availableRoles () {
       if (this.user.roles) {
         const assignedRoleIds = this.user.roles.map(role => role.id)
