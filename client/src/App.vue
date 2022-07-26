@@ -57,7 +57,6 @@ export default {
         this.$router.push({ name: 'home' })
       }
     } catch (error) {
-      console.log('caught error')
       if (!this.unauthenticatedRoutes.includes(this.$route.name)) {
         this.logoutClicked()
       }

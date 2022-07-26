@@ -13,7 +13,13 @@ const fakeUserData = {
   securityQuestion1: 'Q1',
   securityQuestion2: 'Q2',
   securityAnswer1: 'A1',
-  securityAnswer2: 'A2'
+  securityAnswer2: 'A2',
+  country: 'United States',
+  state: 'Texas',
+  city: 'San Antonio',
+  zipCode: '78249',
+  addressLine1: '123 Sesame St',
+  addressLine2: '#987'
 }
 
 module.exports = async () => {

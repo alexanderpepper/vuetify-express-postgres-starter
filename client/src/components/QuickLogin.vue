@@ -31,6 +31,7 @@ export default {
     async loginClicked () {
       try {
         await this.login(this.user)
+        this.$router.push({ name: 'landing' })
       } catch (error) {
         await this.$router.push({ name: 'login' })
       }

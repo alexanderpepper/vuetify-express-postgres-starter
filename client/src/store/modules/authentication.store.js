@@ -1,8 +1,7 @@
-import userStructure from '../../constants/user-structure'
 import SignInService from '@/services/SignInService'
 import UserService from '@/services/UserService'
 
-const newUser = () => JSON.parse(JSON.stringify(userStructure))
+const newUser = () => ({ id: null, name: null, roles: [] })
 
 export default {
   state: {
@@ -21,10 +20,11 @@ export default {
     async login ({ commit, dispatch }, credentials) {
       if (credentials.identifier && credentials.password) {
         try {
-          const signInResponse = await SignInService.signIn(credentials)
-          window.localStorage.token = signInResponse.accessToken
-          window.localStorage.id = signInResponse.id
-          window.localStorage.tokenExpirationDate = signInResponse.expirationDate
+          const response = await SignInService.signIn(credentials)
+          console.log(response)
+          window.localStorage.token = response.token
+          window.localStorage.id = response.id
+          window.localStorage.tokenExpirationDate = response.expirationDate
         } catch (error) {
           dispatch('resetUserState')
           throw error
@@ -43,11 +43,9 @@ export default {
     async getCurrentUser ({ commit, dispatch }) {
       try {
         const user = await UserService.me()
+        user.roles.forEach(role => (user[`is${role.name}`] = true))
         if (user) {
           commit('setCurrentUser', user)
-          if (this.$route.path === '/') {
-            this.$router.push({ name: 'home' })
-          }
         } else {
           dispatch('resetUserState')
         }
@@ -57,6 +55,7 @@ export default {
       }
     },
     resetUserState ({ commit, dispatch }) {
+      console.log('resetUserState')
       dispatch('logout')
       commit('setCurrentUser', newUser())
     }

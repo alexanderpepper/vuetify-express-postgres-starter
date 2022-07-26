@@ -74,7 +74,6 @@ import UserValidationService from '../services/UserValidationService'
 import loginMixin from '../mixins/loginMixin'
 import UserBirthday from '../components/UserBirthday'
 import UserPhone from '../components/UserPhone'
-import EventBus from '../services/EventBus'
 import { mapActions } from 'vuex'
 
 export default {
@@ -115,7 +114,6 @@ export default {
   }),
   created () {
     this.user = { identifier: null, password: null }
-    EventBus.$on('login-error', this.loginError)
   },
   computed: {
     showNext () {
@@ -247,28 +245,21 @@ export default {
     },
     async loginClicked () {
       try {
-        console.log(this.user)
         await this.login(this.user)
         this.error = false
+        this.$router.push({ name: 'landing' })
       } catch (error) {
-        this.loginError(error)
+        this.loginError(error.response.text)
       }
     },
     loginError (error) {
       console.log(JSON.stringify(error, null, 4))
       this.error = true
+      this.errorMessage = error
       if (error.status === 401) {
-        this.errorMessage = 'User not found or password incorrect'
         this.showResendCode = false
       } else {
-        const errorData = error.response && error.response.body && error.response.body.error
-        if (errorData) {
-          this.showResendCode = true
-          this.errorMessage = errorData.message
-          Object.assign(this.user, errorData.user)
-        } else {
-          this.errorMessage = 'Unknown error occurred.'
-        }
+        this.showResendCode = true
       }
     }
   }
