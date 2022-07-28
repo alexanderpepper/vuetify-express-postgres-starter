@@ -27,6 +27,7 @@ export default {
           window.localStorage.tokenExpirationDate = response.expirationDate
         } catch (error) {
           dispatch('resetUserState')
+          console.log(error)
           throw error
         } finally {
           commit('setUserInfoReceived', true)

@@ -29,14 +29,21 @@ exports.signIn = async (req, res) => {
     raw: true
   })
   if (user && bcrypt.compareSync(req.body.password, user.password)) {
-    const token = jwt.sign({ id: user.id }, config.secret, { expiresIn: TOKEN_VALIDITY_PERIOD })
-    res.json({
-      token,
-      id: user.id,
-      expirationDate: new Date().getTime() + TOKEN_VALIDITY_PERIOD
-    })
+    if (user.isActivated) {
+      const token = jwt.sign({ id: user.id }, config.secret, { expiresIn: TOKEN_VALIDITY_PERIOD })
+      const expirationDate = new Date().getTime() + TOKEN_VALIDITY_PERIOD
+      res.json({ id: user.id, token, expirationDate })
+    } else {
+      res.status(400).send({
+        status: 400,
+        messages: ['Account not activated']
+      })
+    }
   } else {
-    res.status(401).send({ message: 'Invalid username or password' })
+    res.status(401).send({
+      status: 401,
+      messages: ['Invalid username or password']
+    })
   }
 }
 
@@ -45,7 +52,7 @@ exports.changePassword = async (req, res) => {
   if (user && bcrypt.compareSync(req.body.oldPassword, user.password)) {
     user.password = bcrypt.hashSync(req.body.newPassword, 8)
     user.save()
-    res.json({ message: 'Password updated successfully' })
+    res.json({ messages: ['Password updated successfully'] })
   }
 }
 

@@ -13,6 +13,9 @@ class BaseService {
       .send(data)
       .set('Authorization', window.localStorage.token)
       .then(response => response.body)
+      .catch(err => {
+        throw JSON.parse(err.response.text)
+      })
   }
 
   static DELETE (url) {

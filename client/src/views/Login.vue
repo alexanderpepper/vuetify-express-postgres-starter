@@ -249,18 +249,14 @@ export default {
         this.error = false
         this.$router.push({ name: 'landing' })
       } catch (error) {
-        this.loginError(error.response.text)
+        this.loginError(error)
       }
     },
     loginError (error) {
-      console.log(JSON.stringify(error, null, 4))
+      console.log(error)
       this.error = true
-      this.errorMessage = error
-      if (error.status === 401) {
-        this.showResendCode = false
-      } else {
-        this.showResendCode = true
-      }
+      this.errorMessage = error.messages[0]
+      this.showResendCode = error.status === 403
     }
   }
 }

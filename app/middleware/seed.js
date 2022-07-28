@@ -19,7 +19,8 @@ const fakeUserData = {
   city: 'San Antonio',
   zipCode: '78249',
   addressLine1: '123 Sesame St',
-  addressLine2: '#987'
+  addressLine2: '#987',
+  isActivated: true
 }
 
 module.exports = async () => {

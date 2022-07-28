@@ -33,7 +33,10 @@ exports.account = async (req, res) => {
 
 exports.updateAccount = async (req, res) => {
   if (req.userId !== req.body.id) {
-    res.status(403).send({ message: 'Unauthorized' })
+    res.status(403).send({
+      status: 403,
+      messages: ['Unauthorized']
+    })
   }
   const data = withoutKeys(req.body, ['activationCode', 'passwordResetCode', 'id', 'password'])
   const id = await User.update(data, { where: { id: req.body.id } })
