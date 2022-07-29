@@ -21,25 +21,23 @@ export default {
       if (credentials.identifier && credentials.password) {
         try {
           const response = await SignInService.signIn(credentials)
-          console.log(response)
           window.localStorage.token = response.token
           window.localStorage.id = response.id
           window.localStorage.tokenExpirationDate = response.expirationDate
         } catch (error) {
-          dispatch('resetUserState')
-          console.log(error)
+          dispatch('logout')
           throw error
-        } finally {
-          commit('setUserInfoReceived', true)
         }
       } else {
-        dispatch('resetUserState')
+        dispatch('logout')
       }
     },
-    logout () {
+    logout ({ commit }) {
       delete window.localStorage.token
       delete window.localStorage.id
       delete window.localStorage.tokenExpirationDate
+      commit('setUserInfoReceived', false)
+      commit('setCurrentUser', newUser())
     },
     async getCurrentUser ({ commit, dispatch }) {
       try {
@@ -48,17 +46,14 @@ export default {
         if (user) {
           commit('setCurrentUser', user)
         } else {
-          dispatch('resetUserState')
+          dispatch('logout')
         }
       } catch (error) {
-        dispatch('resetUserState')
+        dispatch('logout')
         throw error
+      } finally {
+        commit('setUserInfoReceived', true)
       }
-    },
-    resetUserState ({ commit, dispatch }) {
-      console.log('resetUserState')
-      dispatch('logout')
-      commit('setCurrentUser', newUser())
     }
   }
 }

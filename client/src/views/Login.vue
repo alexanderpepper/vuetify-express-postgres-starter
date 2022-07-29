@@ -247,7 +247,7 @@ export default {
       try {
         await this.login(this.user)
         this.error = false
-        this.$router.push({ name: 'landing' })
+        this.$router.push({ name: 'home' })
       } catch (error) {
         this.loginError(error)
       }

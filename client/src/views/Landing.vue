@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import SignInService from '../services/SignInService'
 import Login from '../views/Login'
 import Register from '../views/Register'
 import EventBus from '../services/EventBus'
@@ -34,8 +33,7 @@ export default {
   components: { Login, Register },
   data: () => ({
     isShowingLogin: false,
-    isShowingRegister: false,
-    loginService: SignInService
+    isShowingRegister: false
   }),
   computed: {
     ...mapGetters(['currentUser']),
