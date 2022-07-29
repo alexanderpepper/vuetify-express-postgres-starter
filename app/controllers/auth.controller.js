@@ -19,7 +19,7 @@ exports.signIn = async (req, res) => {
   console.log(req.body)
   const { identifier } = req.body
   const user = await User.findOne({
-    attributes: ['id', 'password'],
+    attributes: ['id', 'password', 'isActivated'],
     where: {
       [Op.or]: [
         { email: identifier },
