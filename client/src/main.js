@@ -7,6 +7,7 @@ import './registerServiceWorker'
 import 'vue-croppa/dist/vue-croppa.css'
 import './global.css'
 import Croppa from 'vue-croppa'
+import 'typeface-roboto/index.css'
 
 Vue.use(Croppa)
 

@@ -33,8 +33,11 @@ export default {
     },
     'user.id' () {
       const phone = this.user.phone
-      this.maskedPhone = this.isInternationalPhone ? `+${phone}`
-        : phone ? `(${phone.substring(0, 3)}) ${phone.substring(3, 6)} - ${phone.substring(6, 10)}` : phone
+      this.maskedPhone = this.isInternationalPhone
+        ? `+${phone}`
+        : phone
+          ? `(${phone.substring(0, 3)}) ${phone.substring(3, 6)} - ${phone.substring(6, 10)}`
+          : phone
     }
   },
   methods: {

@@ -1,6 +1,6 @@
 <template lang="pug">
   .activate.pa-md-12.pa-sm-8.pa-xs-0.text-center
-      .headline {{ activationSuccess === true ? 'Activated' : 'Activation Failed' }}
+      .headline(v-text='activationSuccess === true ? "Activated" : "Activation Failed"')
       div(v-if='activationSuccess === true')
         .subtitle-1 All set to go, please login
         login(@login-success='user => $emit("login-success", user)', @show-snackbar='(message, type) => $emit("show-snackbar", message, type)')

@@ -1,11 +1,11 @@
 <template lang="pug">
   span
-    v-btn.upload-button(v-if='fab', fab, small, :loading='loading')
+    v-btn.upload-button(v-if='fab' fab small :loading='loading')
       v-icon file_upload
       input(type='file', @change='fileSelected')
-    v-btn.upload-button(small, :outlined='outlined', :block='block', v-if='!fab', :loading='loading')
-      span {{ title }}
-      input(type='file', @change='fileSelected')
+    v-btn.upload-button(small :outlined='outlined', :block='block', v-if='!fab', :loading='loading')
+      span(v-text='title')
+      input(type='file' @change='fileSelected')
 </template>
 
 <script>

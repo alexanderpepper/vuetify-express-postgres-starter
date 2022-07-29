@@ -4,7 +4,7 @@
       v-card-text
         v-layout.mb-4(wrap, align-center)
           .d-flex.headline
-            span.font-weight-light {{ title }}
+            span.font-weight-light(v-text='title')
             v-icon.align-self-center chevron_right
             span.font-weight-thin(v-text='tabTitles[activeTab]')
           v-spacer

@@ -9,7 +9,7 @@
           span.font-weight-thin PostgreSQL
       v-spacer
       v-toolbar-title.text-right.px-0.hidden-xs-only(v-if='currentUser.id')
-        .subtitle-1 {{ currentUser.name }}
+        .subtitle-1(v-text="currentUser.name")
       main-menu(
         v-if='currentUser.id',
         @logout='logoutClicked',
@@ -21,10 +21,11 @@
       transition(name='fade-transition', mode='out-in')
         router-view.router-view.mx-auto(@show-snackbar='showSnackbar')
     v-snackbar(
-      v-model='snackbar',
-      :timeout='3000',
-      :bottom='true',
-      :color='snackbarStyle') {{ snackbarMessage }}
+      v-model='snackbar'
+      :timeout='3000'
+      :bottom='true'
+      :color='snackbarStyle')
+      span(v-text="snackbarMessage")
       v-btn(text, dark, @click='snackbar = false') Close
 </template>
 

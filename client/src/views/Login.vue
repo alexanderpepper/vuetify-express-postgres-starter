@@ -1,64 +1,64 @@
 <template lang="pug">
   .login.pa-md-12.pa-sm-8.pa-xs-0
-    v-card.mx-auto.elevation-12(max-width='400', :class='{ "elevation-0": $vuetify.breakpoint.xsOnly }')
-      v-card-title.headline {{ currentTitle }}
+    v-card.mx-auto.elevation-12(max-width='400' :class='{ "elevation-0": $vuetify.breakpoint.xsOnly }')
+      v-card-title.headline(v-text="currentTitle")
       v-window(v-model='step')
         v-window-item(:value='steps.signIn')
           v-card-text
             form(@submit.prevent='login')
-              input(type='text', name='username', style="opacity: 0; position: absolute; pointer-events: none;")
-              input(type='email', name='email', style="opacity: 0; position: absolute; pointer-events: none;")
-              v-text-field.pt-0(label='Username or Email', v-model='user.identifier', required, autocomplete='off')
-              v-text-field(label='Password', v-model='user.password', :type="hidePassword ? 'password' : 'text'", :append-icon="hidePassword ? 'visibility_off' : 'visibility'", @click:append="() => (hidePassword = !hidePassword)", @keyup.enter='login', required, autocomplete='off')
-              v-btn.my-6(large, block, outlined, @click='loginClicked', :disabled='!isValidLoginCredentials') Sign In
-            v-alert.my-6(type='error' v-model='error', outlined) {{ errorMessage }}
-            a.d-block.text-center.mb-4.subtitle-1(href='#', v-if='showResendCode', @click='step = steps.sendActivationLink') Resend my activation link
-            a.d-block.text-center.mb-2.subtitle-1(href='#', @click='forgotUsernameOrPassword') Forgot your username or password?
+              input(type='text' name='username' style="opacity: 0; position: absolute; pointer-events: none;")
+              input(type='email' name='email' style="opacity: 0; position: absolute; pointer-events: none;")
+              v-text-field.pt-0(label='Username or Email' v-model='user.identifier' required autocomplete='off')
+              v-text-field(label='Password' v-model='user.password' :type="hidePassword ? 'password' : 'text'" :append-icon="hidePassword ? 'visibility_off' : 'visibility'" @click:append="() => (hidePassword = !hidePassword)" @keyup.enter='login' required autocomplete='off')
+              v-btn.my-6(large block outlined @click='loginClicked' :disabled='!isValidLoginCredentials') Sign In
+            v-alert.my-6(type='error' v-model='error' outlined)
+              div(v-for='(error, index) in errors' :key='index' v-text='error')
+            a.d-block.text-center.mb-4.subtitle-1(href='#' v-if='showResendCode' @click='step = steps.sendActivationLink') Resend my activation link
+            a.d-block.text-center.mb-2.subtitle-1(href='#' @click='forgotUsernameOrPassword') Forgot your username or password?
         v-window-item(:value='steps.forgotUsernameOrPassword')
           v-card-text
-            v-radio-group.pt-0.mt-0(v-model='forgotUsername', hide-details)
-              v-radio(label='Forgot username', :value='true')
-              v-radio(label='Forgot password', :value='false')
+            v-radio-group.pt-0.mt-0(v-model='forgotUsername' hide-details)
+              v-radio(label='Forgot username' :value='true')
+              v-radio(label='Forgot password' :value='false')
         v-window-item(:value='steps.forgotUsername')
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide your birthday and phone number
             user-phone(:show-placeholder='true' :user='user' @set-phone="phone => (user.phone = phone)")
-            user-birthday(:show-placeholder='true', :user='user')
+            user-birthday(:show-placeholder='true' :user='user')
             .text-center
               router-link.subtitle-1(:to='{ name: "support" }') Click here to contact support
         v-window-item(:value='steps.sendUsername')
           v-card-text
-            send-username(:user='user', @set-send-via-sms='should => sendViaSms = should')
+            send-username(:user='user' @set-send-via-sms='should => sendViaSms = should')
         v-window-item(:value='steps.usernameSent')
           v-card-text
-            username-sent(:user='user', :send-via-sms='sendViaSms')
+            username-sent(:user='user' :send-via-sms='sendViaSms')
         v-window-item(:value='steps.forgotPassword')
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide all of the following information
-            v-text-field(v-model='user.identifier', label='Username or email address')
+            v-text-field(v-model='user.identifier' label='Username or email address')
             user-phone(:show-placeholder='true' :user='user' @set-phone="phone => (user.phone = phone)")
-            user-birthday(:show-placeholder='true', :user='user')
+            user-birthday(:show-placeholder='true' :user='user')
         v-window-item(:value='steps.securityQuestions')
           v-card-text
             user-security-answers(:user='user')
         v-window-item(:value='steps.sendPasswordResetLink')
           v-card-text
-            send-password-reset-link(:user='user', @set-send-via-sms='should => sendViaSms = should')
+            send-password-reset-link(:user='user' @set-send-via-sms='should => (sendViaSms = should)')
         v-window-item(:value='steps.passwordResetLinkSent')
           v-card-text
-            password-reset-link-sent(:user='user', :send-via-sms='sendViaSms')
+            password-reset-link-sent(:user='user' :send-via-sms='sendViaSms')
         v-window-item(:value='steps.sendActivationLink')
           v-card-text
-            send-activation-link(:user='user', @set-send-via-sms="should => sendViaSms = should")
+            send-activation-link(:user='user' @set-send-via-sms="should => (sendViaSms = should)")
         v-window-item(:value='steps.activationLinkSent')
           v-card-text
-            activation-link-sent(:user='user', :send-via-sms='sendViaSms')
+            activation-link-sent(:user='user' :send-via-sms='sendViaSms')
       v-card-actions(v-if='step > steps.signIn')
-        v-btn(text, @click='previous') Back
+        v-btn(text @click='previous') Back
         v-spacer
-        v-btn(v-if='showNext', :disabled='!isNextEnabled', outlined, @click='next') Next
-        v-btn(v-if='!showNext', outlined, @click='step = steps.signIn') Sign In
-
+        v-btn(v-if='showNext' :disabled='!isNextEnabled' outlined @click='next') Next
+        v-btn(v-if='!showNext' outlined @click='step = steps.signIn') Sign In
 </template>
 
 <script>
@@ -107,7 +107,7 @@ export default {
       activationLinkSent: 11
     },
     error: false,
-    errorMessage: '',
+    errors: [],
     hidePassword: true,
     showResendCode: false,
     sendViaSms: false
@@ -255,7 +255,7 @@ export default {
     loginError (error) {
       console.log(error)
       this.error = true
-      this.errorMessage = error.messages[0]
+      this.errors = error.messages
       this.showResendCode = error.status === 403
     }
   }

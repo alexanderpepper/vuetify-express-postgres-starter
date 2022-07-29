@@ -6,6 +6,9 @@ class BaseService {
       .query(query)
       .set('Authorization', window.localStorage.token)
       .then(response => response.body)
+      .catch(err => {
+        throw JSON.parse(err.response.text)
+      })
   }
 
   static POST (url, data) {
@@ -22,6 +25,9 @@ class BaseService {
     return request.delete(url)
       .set('Authorization', window.localStorage.token)
       .then(response => response.body)
+      .catch(err => {
+        throw JSON.parse(err.response.text)
+      })
   }
 
   static PUT (url, data) {
@@ -29,6 +35,9 @@ class BaseService {
       .send(data)
       .set('Authorization', window.localStorage.token)
       .then(response => response.body)
+      .catch(err => {
+        throw JSON.parse(err.response.text)
+      })
   }
 
   static PATCH (url, data) {
@@ -36,6 +45,9 @@ class BaseService {
       .send(data)
       .set('Authorization', window.localStorage.token)
       .then(response => response.body)
+      .catch(err => {
+        throw JSON.parse(err.response.text)
+      })
   }
 }
 

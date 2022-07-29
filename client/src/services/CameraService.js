@@ -1,4 +1,4 @@
-var Camera = {
+const Camera = {
   live: false,
   container: undefined,
   video: undefined,
@@ -44,20 +44,17 @@ var Camera = {
       this.container.style.height = this.params.height + 'px'
 
       const constraints = this.cameraIdentifiers.length === 0
-        ? {
-          video: true,
-          audio: false
-        }
+        ? { video: true, audio: false }
         : {
-          video: {
-            width: { min: 640, ideal: 1280, max: 1920 },
-            height: { min: 480, ideal: 720, max: 1080 },
-            deviceId: {
-              exact: this.cameraIdentifiers[this.cameraIndex]
-            }
-          },
-          audio: false
-        }
+            video: {
+              width: { min: 640, ideal: 1280, max: 1920 },
+              height: { min: 480, ideal: 720, max: 1080 },
+              deviceId: {
+                exact: this.cameraIdentifiers[this.cameraIndex]
+              }
+            },
+            audio: false
+          }
 
       const success = stream => {
         this.video.srcObject = stream
