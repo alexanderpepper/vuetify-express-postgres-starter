@@ -16,7 +16,6 @@ exports.signUp = async (req, res) => {
 }
 
 exports.signIn = async (req, res) => {
-  console.log(req.body)
   const { identifier } = req.body
   const user = await User.findOne({
     attributes: ['id', 'password', 'isActivated'],
@@ -60,13 +59,21 @@ exports.getSecurityQuestions = async (req, res) => {
   const user = await User.findOne({
     attributes: ['securityQuestion1', 'securityQuestion2'],
     where: {
-      [Op.or]: [
-        { username: req.body.identifier },
-        { email: req.body.identifier }
-      ],
-      phone: req.body.phone,
-      birthday: req.body.birthday
+      [Op.and]: [
+        {
+          [Op.or]: [
+            { username: req.body.identifier },
+            { email: req.body.identifier }
+          ]
+        },
+        { phone: req.body.phone },
+        { birthday: req.body.birthday }
+      ]
     }
   })
-  res.json(user.get({ plain: true }))
+  if (user) {
+    res.json(user.get({ plain: true }))
+  } else {
+    res.status(400).send({ messages: ['Account not found'] })
+  }
 }

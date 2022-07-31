@@ -9,4 +9,5 @@ module.exports = app => {
   app.post('/api/sign-up', [verifySignUp.checkDuplicateUsernameOrEmail], controller.signUp)
   app.post('/api/change-password', [jwt.verifyToken, verifyPasswordChange.checkPasswordChange], controller.changePassword)
   app.post('/api/sign-in', controller.signIn)
+  app.post('/api/get-security-questions', controller.getSecurityQuestions)
 }

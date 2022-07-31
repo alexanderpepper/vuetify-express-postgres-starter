@@ -3,7 +3,7 @@
       .headline(v-text='activationSuccess === true ? "Activated" : "Activation Failed"')
       div(v-if='activationSuccess === true')
         .subtitle-1 All set to go, please login
-        login(@login-success='user => $emit("login-success", user)', @show-snackbar='(message, type) => $emit("show-snackbar", message, type)')
+        login(@login-success='user => $emit("login-success", user)')
       div(v-else)
         .subtitle-1 We didn't recognize the activation code
 </template>

@@ -11,7 +11,6 @@ const verifyToken = (req, res, next) => {
       messages: ['No token provided!']
     })
   }
-  console.log(token)
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
       return res.status(401).send({

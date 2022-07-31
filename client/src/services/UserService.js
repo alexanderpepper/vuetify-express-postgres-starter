@@ -23,7 +23,7 @@ class UserService extends BaseService {
   }
 
   static getSecurityQuestions (user) {
-    return this.POST(api.getSecurityQuestions, { user })
+    return this.POST(api.getSecurityQuestions, user)
       .then(response => response.results)
   }
 

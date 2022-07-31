@@ -7,7 +7,7 @@ const fakeUserData = {
   username: null,
   name: null,
   email: null,
-  phone: '21088888888',
+  phone: '2108888888',
   birthday: '1998-08-18',
   password: bcrypt.hashSync('admin1234', 8),
   securityQuestion1: 'Q1',

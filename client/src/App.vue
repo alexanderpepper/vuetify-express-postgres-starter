@@ -19,7 +19,7 @@
         v-icon invert_colors
     v-main
       transition(name='fade-transition', mode='out-in')
-        router-view.router-view.mx-auto(@show-snackbar='showSnackbar')
+        router-view.router-view.mx-auto
     v-snackbar(
       v-model='snackbar'
       :timeout='3000'
@@ -33,6 +33,7 @@
 import MainMenu from './components/MainMenu'
 import QuickLogin from './components/QuickLogin'
 import { mapActions, mapGetters } from 'vuex'
+import EventBus from '@/services/EventBus'
 
 export default {
   name: 'App',
@@ -68,6 +69,8 @@ export default {
         await this.$router.push({ name: 'home' })
       }
     })
+
+    EventBus.$on('show-snackbar', this.showSnackbar)
   },
   methods: {
     ...mapActions(['getCurrentUser', 'resetUserState', 'logout']),

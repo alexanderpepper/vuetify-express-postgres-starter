@@ -25,6 +25,7 @@ export default {
           window.localStorage.token = response.token
           window.localStorage.id = response.id
           window.localStorage.tokenExpirationDate = response.expirationDate
+          dispatch('getCurrentUser')
         } catch (error) {
           dispatch('logout')
           EventBus.$emit('login-error', error)

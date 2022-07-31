@@ -58,7 +58,6 @@ export default {
       this.$refs.login.loginError(error)
     },
     showLogin () {
-      console.log('hi')
       this.isShowingLogin = true
       this.isShowingRegister = false
     },

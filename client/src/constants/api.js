@@ -6,7 +6,7 @@ export default {
   activate: `${host}/app-user/activate`,
   sendActivationLink: `${host}/app-user/send-activation-link`,
   sendPasswordResetLink: `${host}/app-user/send-password-reset-link`,
-  getSecurityQuestions: `${host}/app-user/get-security-questions`,
+  getSecurityQuestions: `${host}/get-security-questions`,
   verifySecurityQuestions: `${host}/app-user/verify-security-questions`,
   getSendOptions: `${host}/app-user/get-send-options`,
   sendUsername: `${host}/app-user/send-username`,

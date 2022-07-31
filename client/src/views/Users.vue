@@ -7,13 +7,7 @@
           v-btn(small, outlined, :router='true', :to='{name: "user"}') New
           v-spacer
           v-text-field.pt-0.ml-2(append-icon='search', label='Search', single-line, hide-details, v-model='search')
-        v-data-table.hidden-xs-only(:headers='headers', :items='users', :search='search', sort-by='id')
-          template(slot='item', slot-scope='props')
-            tr.cursor-pointer(@click='edit(props.item)')
-              td {{ props.item.name }}
-              td {{ props.item.username }}
-              td {{ props.item.email }}
-              td {{ props.item.roles }}
+        v-data-table.hidden-xs-only(:headers='headers', :items='users', :search='search', sort-by='id' @click:row='edit')
         v-divider.hidden-sm-and-up
         v-data-iterator.hidden-sm-and-up(:items='users', :search='search', sort-by='id')
           template(v-slot:item='props')
