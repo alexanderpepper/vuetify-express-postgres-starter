@@ -8,7 +8,7 @@
           v-btn(router-link, :to='{ name: "landing" }') Go Back
         .mx-auto(v-else)
           v-text-field(type='email', label='Email Address', v-model='message.email', required, autocomplete='newEmail')
-          v-textarea(v-model='message.body', outlined, counter='500', label="Enter your message here")
+          v-textarea(v-model='message.body', outlined, counter='500', label='Enter your message here')
           .text-right
             v-btn.mr-2(text, onclick='window.history.back()') Cancel
             v-btn(outlined, @click='submit', :disabled='!isSubmitEnabled') Submit

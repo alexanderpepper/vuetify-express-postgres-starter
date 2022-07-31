@@ -4,7 +4,7 @@
       v-flex(sm6, xs12)
         .text-sm-right.text-center
           v-icon(v-if='!user.photo', :size='180') account_circle
-          img.user-photo-img(:src='user.photo' v-if='user.photo', @error="imageLoadError")
+          img.user-photo-img(:src='user.photo' v-if='user.photo', @error='imageLoadError')
       v-flex(sm6, xs12)
         .text-sm-left.text-center.mb-3
           upload-button(outlined, @file-selected='photoSelected', title='Upload a Photo', :loading='uploadingPhoto')

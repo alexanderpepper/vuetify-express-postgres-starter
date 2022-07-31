@@ -5,7 +5,7 @@
         :initial-image='cameraImage'
         :width='200'
         :height='200'
-        :prevent-white-space="true"
+        :prevent-white-space='true'
         v-model='croppa'
         remove-button-color='gray'
         :remove-button-size='20'
@@ -39,7 +39,7 @@
           v-btn(block, small, text, @click='reset') Cancel
     div(v-else)
       .mb-4.edit-user-photo-container.mx-auto(:style='{ "border-color": $vuetify.theme.dark ? "white" : "black" }')
-        img.edit-user-photo-img(:src='currentUser.photo' v-if='!showCroppa', @error="imageLoadError")
+        img.edit-user-photo-img(:src='currentUser.photo' v-if='!showCroppa', @error='imageLoadError')
       v-btn(block, small, outlined, @click='isEditing = true', v-if='!isRegistration') Edit Photo
     .absolute-fill(v-if='showCamera')
       camera(@data-captured='setCameraImage')

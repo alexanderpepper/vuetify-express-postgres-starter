@@ -8,16 +8,16 @@
             v-icon.align-self-center chevron_right
             span.font-weight-thin(v-text='tabTitles[activeTab]')
           v-spacer
-          v-btn.hidden-xs-only.mr-2(text, onclick="window.history.back()") Back
+          v-btn.hidden-xs-only.mr-2(text, onclick='window.history.back()') Back
           v-btn(outlined, @click='save', :disabled='!isValid') Save
-        v-tabs(:vertical="$vuetify.breakpoint.smAndUp", v-model='activeTab')
+        v-tabs(:vertical='$vuetify.breakpoint.smAndUp', v-model='activeTab')
           v-tab(ripple, v-for='tabTitle in tabTitles', :key='tabTitle') {{ tabTitle }}
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
                 user-identifier(:user='user')
                 user-birthday(:user='user')
-                user-phone(:user='user' @set-phone="phone => (user.phone = phone)")
+                user-phone(:user='user' @set-phone='phone => (user.phone = phone)')
                 user-password(v-if='!user.id', :user='user')
                 div(v-if='!isAccount && currentUser.isAdmin')
                   .caption.grey--text.text--darken-1 Roles
@@ -54,7 +54,7 @@
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
-                edit-user-photo.mb-6.mx-auto.mw-edit-user-photo(:user='user' @set-photo="photo => (user.photo = photo)")
+                edit-user-photo.mb-6.mx-auto.mw-edit-user-photo(:user='user' @set-photo='photo => (user.photo = photo)')
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0

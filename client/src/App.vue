@@ -9,7 +9,7 @@
           span.font-weight-thin PostgreSQL
       v-spacer
       v-toolbar-title.text-right.px-0.hidden-xs-only(v-if='currentUser.id')
-        .subtitle-1(v-text="currentUser.name")
+        .subtitle-1(v-text='currentUser.name')
       main-menu(
         v-if='currentUser.id',
         @logout='logoutClicked',
@@ -25,7 +25,7 @@
       :timeout='3000'
       :bottom='true'
       :color='snackbarStyle')
-      span(v-text="snackbarMessage")
+      span(v-text='snackbarMessage')
       v-btn(text, dark, @click='snackbar = false') Close
 </template>
 

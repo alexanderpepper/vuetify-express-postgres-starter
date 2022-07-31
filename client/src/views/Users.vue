@@ -20,8 +20,8 @@
             .d-flex.pa-2.cursor-pointer.data-iterator-list-item(@click='edit(props.item)', v-ripple='{ class: "black--text" }')
               .flex-grow-1
                 .subtitle-1.grey--text.text--darken-3(v-text='props.item.username')
-                .body-1(v-text="props.item.email")
-              .align-self-center(v-if="props.item.roles !== 'None'")
+                .body-1(v-text='props.item.email')
+              .align-self-center(v-if='props.item.roles !== "None"')
                 v-chip(v-for='(role, index) in props.item.roles.split(", ")', :key='index') {{ role }}
             v-divider
 </template>

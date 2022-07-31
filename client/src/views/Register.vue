@@ -7,7 +7,7 @@
           v-card-text
             user-identifier(:user='user')
             user-birthday(:user='user')
-            user-phone(:user='user' @set-phone="phone => (user.phone = phone)")
+            user-phone(:user='user' @set-phone='phone => (user.phone = phone)')
         v-window-item(:value='steps.password')
           v-card-text
             user-password(:user='user')
@@ -16,13 +16,13 @@
             user-security-questions(:user='user')
         v-window-item(:value='steps.photo')
           v-card-text.text-center
-            edit-user-photo(:user='user', :is-registration='true' @set-photo="photo => (user.photo = photo)")
+            edit-user-photo(:user='user', :is-registration='true' @set-photo='photo => (user.photo = photo)')
         v-window-item(:value='steps.address')
           v-card-text
             user-address(:user='user')
         v-window-item(:value='steps.activate')
           v-card-text
-            send-activation-link(:user='user', @set-send-via-sms="should => (sendViaSms = should)")
+            send-activation-link(:user='user', @set-send-via-sms='should => (sendViaSms = should)')
         v-window-item(:value='steps.done')
           v-card-text
             activation-link-sent(:user='user', :send-via-sms='sendViaSms')

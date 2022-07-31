@@ -1,12 +1,12 @@
 <template lang="pug" xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   .user-birthday
-    v-menu(v-model='datePickerMenu', transition="scale-transition", offset-y, :close-on-content-click='false', ref='datePickerMenu', :max-width="290")
+    v-menu(v-model='datePickerMenu', transition='scale-transition', offset-y, :close-on-content-click='false', ref='datePickerMenu', :max-width="290")
       template(v-slot:activator='{ on }')
         v-text-field(
           type='tel'
           label='Birthday',
           v-on='on',
-          v-model="dateFormatted",
+          v-model='dateFormatted',
           @blur='user.birthday = parseDate(dateFormatted)',
           :placeholder='showPlaceholder ? "MM/DD/YYYY" : ""')
       v-date-picker(ref='datePicker', full-width, :landscape='false', scrollable, no-title, v-model='user.birthday', :max='new Date().toISOString().substr(0, 10)', min='1900-01-01')

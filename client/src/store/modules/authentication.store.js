@@ -1,5 +1,6 @@
 import SignInService from '@/services/SignInService'
 import UserService from '@/services/UserService'
+import EventBus from '@/services/EventBus'
 
 const newUser = () => ({ id: null, name: null, roles: [] })
 
@@ -26,6 +27,7 @@ export default {
           window.localStorage.tokenExpirationDate = response.expirationDate
         } catch (error) {
           dispatch('logout')
+          EventBus.$emit('login-error', error)
           throw error
         }
       } else {
@@ -36,7 +38,7 @@ export default {
       delete window.localStorage.token
       delete window.localStorage.id
       delete window.localStorage.tokenExpirationDate
-      commit('setUserInfoReceived', false)
+      commit('setUserInfoReceived', true)
       commit('setCurrentUser', newUser())
     },
     async getCurrentUser ({ commit, dispatch }) {

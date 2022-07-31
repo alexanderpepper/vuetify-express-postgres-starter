@@ -3,8 +3,8 @@
     v-card.elevation-12
       v-card-title.headline Reset Password
       v-card-text
-        input(type='text', name='email', style="opacity: 0; position: absolute; pointer-events: none;")
-        input(type='text', name='username', style="opacity: 0; position: absolute; pointer-events: none;")
+        input(type='text', name='email', style='opacity: 0; position: absolute; pointer-events: none;')
+        input(type='text', name='username', style='opacity: 0; position: absolute; pointer-events: none;')
         v-text-field(v-model='user.identifier', label='Username or email', autocomplete='off')
         user-password(:user='user')
         v-btn.mt-6(block, outlined, @click='resetPassword') Reset Password

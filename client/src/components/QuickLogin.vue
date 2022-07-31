@@ -17,7 +17,7 @@
       hide-details
       required
       autocomplete='off')
-    v-btn.d-inline-block(outlined, small, @click='login') Sign In
+    v-btn.d-inline-block(outlined, small, @click='loginClicked') Sign In
 </template>
 
 <script>
@@ -31,9 +31,11 @@ export default {
     async loginClicked () {
       try {
         await this.login(this.user)
-        this.$router.push({ name: 'landing' })
+        this.$router.push({ name: 'home' })
       } catch (error) {
-        await this.$router.push({ name: 'login' })
+        if (this.$route.name !== 'landing') {
+          await this.$router.push({ name: 'landing' })
+        }
       }
     }
   }

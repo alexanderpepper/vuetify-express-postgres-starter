@@ -14,7 +14,7 @@
         v-list-item(
           :to='{ name: item.name }',
           v-for='(item, i) in menuItems', :key='i',
-          v-show="!item.isAdminOnly || currentUser.isAdmin",
+          v-show='!item.isAdminOnly || currentUser.isAdmin',
           ripple)
           v-list-item-icon
             v-icon(v-html='item.icon')
