@@ -1,4 +1,4 @@
-export default {
+export default () => ({
   id: null,
   name: null,
   username: null,
@@ -20,4 +20,4 @@ export default {
   securityAnswer2: null,
   isInternationalPhone: false,
   roles: []
-}
+})

@@ -76,6 +76,7 @@ import UserBirthday from '../components/UserBirthday'
 import UserPhone from '../components/UserPhone'
 import { mapActions } from 'vuex'
 import EventBus from '@/services/EventBus'
+import loginUserStructure from '../constants/login-user-structure'
 
 export default {
   name: 'login',
@@ -114,7 +115,7 @@ export default {
     sendViaSms: false
   }),
   created () {
-    this.user = { identifier: null, password: null }
+    this.user = loginUserStructure()
     EventBus.$on('login-error', this.loginError)
   },
   computed: {
@@ -191,7 +192,7 @@ export default {
       }
     },
     forgotUsernameOrPassword () {
-      this.user = { identifier: null, password: null }
+      this.user = loginUserStructure()
       this.step = this.steps.forgotUsernameOrPassword
     },
     async sendActivationLink () {
@@ -230,6 +231,7 @@ export default {
     async getSecurityQuestions () {
       try {
         const results = await UserService.getSecurityQuestions(this.user)
+        console.log(results)
         Object.assign(this.user, results)
         this.step = this.steps.securityQuestions
       } catch (error) {

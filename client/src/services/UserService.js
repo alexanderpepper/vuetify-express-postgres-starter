@@ -4,42 +4,34 @@ import api from '../constants/api.js'
 class UserService extends BaseService {
   static activate (activationCode) {
     return this.POST(api.activate, { activationCode })
-      .then(response => response.results)
   }
 
   static sendActivationLink (identifier, sendViaSms) {
     return this.POST(api.sendActivationLink, { options: { identifier, sendViaSms } })
-      .then(response => response.results)
   }
 
   static sendUsername (user, sendViaSms) {
     return this.POST(api.sendUsername, { options: { user, sendViaSms } })
-      .then(response => response.results)
   }
 
   static sendPasswordResetLink (user, sendViaSms) {
     return this.POST(api.sendPasswordResetLink, { options: { user, sendViaSms } })
-      .then(response => response.results)
   }
 
   static getSecurityQuestions (user) {
     return this.POST(api.getSecurityQuestions, user)
-      .then(response => response.results)
   }
 
   static verifySecurityQuestions (user) {
     return this.POST(api.verifySecurityQuestions, { user })
-      .then(response => response.results)
   }
 
   static getSendOptions (user) {
     return this.POST(api.getSendOptions, { user })
-      .then(response => response.results)
   }
 
   static resetPassword (user) {
-    return this.POST(api.resetPassword, { user })
-      .then(response => response.results)
+    return this.POST(api.setPassword, { user })
   }
 
   static all () {

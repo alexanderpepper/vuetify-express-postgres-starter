@@ -77,3 +77,31 @@ exports.getSecurityQuestions = async (req, res) => {
     res.status(400).send({ messages: ['Account not found'] })
   }
 }
+
+exports.activate = async (req, res) => {
+  res.json({})
+}
+
+exports.sendActivationLink = async (req, res) => {
+  res.json({})
+}
+
+exports.sendPasswordResetLink = async (req, res) => {
+  res.json({})
+}
+
+exports.verifySecurityQuestions = async (req, res) => {
+  res.json({})
+}
+
+exports.getSendOptions = async (req, res) => {
+  res.json({})
+}
+
+exports.sendUsername = async (req, res) => {
+  res.json({})
+}
+
+exports.resetPassword = async (req, res) => {
+  res.json({})
+}

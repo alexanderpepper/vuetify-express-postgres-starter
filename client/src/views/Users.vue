@@ -4,19 +4,19 @@
       v-card-text
         v-layout.mb-4(align-center)
           .headline.mr-2 Users
-          v-btn(small, outlined, :router='true', :to='{name: "user"}') New
+          v-btn(small outlined :router='true' :to='{name: "user"}') New
           v-spacer
-          v-text-field.pt-0.ml-2(append-icon='search', label='Search', single-line, hide-details, v-model='search')
-        v-data-table.hidden-xs-only(:headers='headers', :items='users', :search='search', sort-by='id' @click:row='edit')
+          v-text-field.pt-0.ml-2(append-icon='search' label='Search' single-line hide-details v-model='search')
+        v-data-table.hidden-xs-only(:headers='headers' :items='users' :search='search' sort-by='id' @click:row='edit')
         v-divider.hidden-sm-and-up
-        v-data-iterator.hidden-sm-and-up(:items='users', :search='search', sort-by='id')
+        v-data-iterator.hidden-sm-and-up(:items='users' :search='search' sort-by='id')
           template(v-slot:item='props')
-            .d-flex.pa-2.cursor-pointer.data-iterator-list-item(@click='edit(props.item)', v-ripple='{ class: "black--text" }')
+            .d-flex.pa-2.cursor-pointer.data-iterator-list-item(@click='edit(props.item)' v-ripple='{ class: "black--text" }')
               .flex-grow-1
                 .subtitle-1.grey--text.text--darken-3(v-text='props.item.username')
                 .body-1(v-text='props.item.email')
               .align-self-center(v-if='props.item.roles !== "None"')
-                v-chip(v-for='(role, index) in props.item.roles.split(", ")', :key='index') {{ role }}
+                v-chip(v-for='(role, index) in props.item.roles.split(", ")' :key='index') {{ role }}
             v-divider
 </template>
 
