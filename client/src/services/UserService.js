@@ -6,16 +6,16 @@ class UserService extends BaseService {
     return this.POST(api.activate, { activationCode })
   }
 
-  static sendActivationLink (identifier, sendViaSms) {
-    return this.POST(api.sendActivationLink, { options: { identifier, sendViaSms } })
+  static sendActivationLink (user) {
+    return this.POST(api.sendActivationLink, user)
   }
 
-  static sendUsername (user, sendViaSms) {
-    return this.POST(api.sendUsername, { options: { user, sendViaSms } })
+  static sendUsername (user) {
+    return this.POST(api.sendUsername, user)
   }
 
-  static sendPasswordResetLink (user, sendViaSms) {
-    return this.POST(api.sendPasswordResetLink, { options: { user, sendViaSms } })
+  static sendPasswordResetLink (user) {
+    return this.POST(api.sendPasswordResetLink, user)
   }
 
   static getSecurityQuestions (user) {
@@ -23,15 +23,15 @@ class UserService extends BaseService {
   }
 
   static verifySecurityQuestions (user) {
-    return this.POST(api.verifySecurityQuestions, { user })
+    return this.POST(api.verifySecurityQuestions, user)
   }
 
   static getSendOptions (user) {
-    return this.POST(api.getSendOptions, { user })
+    return this.POST(api.getSendOptions, user)
   }
 
   static resetPassword (user) {
-    return this.POST(api.setPassword, { user })
+    return this.POST(api.setPassword, user)
   }
 
   static all () {
@@ -74,28 +74,6 @@ class UserService extends BaseService {
 
   static changePassword (password) {
     return this.POST(api.password, password)
-  }
-
-  static obscuredPhone (user) {
-    if (user.phone) {
-      const lastDigits = user.phone.substr(user.phone.length - 2)
-      return user.isInternationalPhone ? `+•• •••••••••${lastDigits}` : `(•••) •••-••${lastDigits}`
-    } else {
-      return ''
-    }
-  }
-
-  static obscuredEmail (user) {
-    if (user.email) {
-      const emailComponents = user.email.split('@')
-      const username = emailComponents[0]
-      const domain = emailComponents[1]
-      const firstTwoCharacters = username.substring(0, 2)
-      const lastTwoCharacters = username.substring(username.length - 2)
-      return `${firstTwoCharacters}•••••••${lastTwoCharacters}@${domain}`
-    } else {
-      return ''
-    }
   }
 }
 

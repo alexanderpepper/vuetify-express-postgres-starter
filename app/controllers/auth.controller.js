@@ -91,7 +91,30 @@ exports.sendPasswordResetLink = async (req, res) => {
 }
 
 exports.verifySecurityQuestions = async (req, res) => {
-  res.json({})
+  const { identifier, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2 } = req.body
+  console.log(JSON.stringify(req.body, null, 2))
+  const user = await User.findOne({
+    attributes: ['email', 'phone'],
+    where: {
+      [Op.and]: [
+        {
+          [Op.or]: [
+            { username: identifier },
+            { email: identifier }
+          ]
+        },
+        { securityQuestion1 },
+        { securityQuestion2 },
+        { securityAnswer1 },
+        { securityAnswer2 }
+      ]
+    }
+  })
+  if (user) {
+    res.json({ email: obscuredEmail(user), phone: obscuredPhone(user) })
+  } else {
+    res.status(400).send({ messages: ['Account not found'] })
+  }
 }
 
 exports.getSendOptions = async (req, res) => {
@@ -104,4 +127,26 @@ exports.sendUsername = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   res.json({})
+}
+
+function obscuredPhone (user) {
+  if (user.phone) {
+    const lastDigits = user.phone.substr(user.phone.length - 2)
+    return user.isInternationalPhone ? `+•• •••••••••${lastDigits}` : `(•••) •••-••${lastDigits}`
+  } else {
+    return ''
+  }
+}
+
+function obscuredEmail (user) {
+  if (user.email) {
+    const emailComponents = user.email.split('@')
+    const username = emailComponents[0]
+    const domain = emailComponents[1]
+    const firstTwoCharacters = username.substring(0, 2)
+    const lastTwoCharacters = username.substring(username.length - 2)
+    return `${firstTwoCharacters}•••••••${lastTwoCharacters}@${domain}`
+  } else {
+    return ''
+  }
 }

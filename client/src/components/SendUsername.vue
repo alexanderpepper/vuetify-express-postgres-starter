@@ -3,15 +3,13 @@
     div(v-if='user.phone')
       .body-1 Where should we send your username?
       v-radio-group(v-model='sendViaSms', @change='$emit("set-send-via-sms", sendViaSms)')
-        v-radio(:label='`Email to ${obscuredEmail}`', :value='false')
-        v-radio(:label='`Text message to ${obscuredPhone}`', :value='true')
+        v-radio(:label='`Email to ${user.email}`', :value='false')
+        v-radio(:label='`Text message to ${user.phone}`', :value='true')
     div(v-else)
-      .body-1 We'll send your username to {{ obscuredEmail }}.
+      .body-1 We'll send your username to {{ user.email }}.
 </template>
 
 <script>
-import UserService from '../services/UserService'
-
 export default {
   name: 'sendUsername',
   props: {
@@ -19,14 +17,6 @@ export default {
   },
   data: () => ({
     sendViaSms: false
-  }),
-  computed: {
-    obscuredEmail () {
-      return UserService.obscuredEmail(this.user)
-    },
-    obscuredPhone () {
-      return UserService.obscuredPhone(this.user)
-    }
-  }
+  })
 }
 </script>
