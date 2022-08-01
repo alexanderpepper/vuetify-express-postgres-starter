@@ -19,5 +19,6 @@ export default () => ({
   securityQuestion2: null,
   securityAnswer2: null,
   isInternationalPhone: false,
+  sendViaSms: false,
   roles: []
 })

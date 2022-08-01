@@ -2,7 +2,7 @@
   .send-password-reset-link
     div(v-if='user.phone')
       .body-1 We'll send you a link to reset your password. Where should we send the link?
-      v-radio-group(v-model='sendViaSms', @change='$emit("set-send-via-sms", sendViaSms)')
+      v-radio-group(v-model='user.sendViaSms')
         v-radio(:label='`Email to ${user.email}`', :value='false')
         v-radio(:label='`Text message to ${user.phone}`', :value='true')
     div(v-else)
@@ -14,9 +14,6 @@ export default {
   name: 'sendPasswordResetLink',
   props: {
     user: Object
-  },
-  data: () => ({
-    sendViaSms: false
-  })
+  }
 }
 </script>

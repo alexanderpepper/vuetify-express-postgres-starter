@@ -22,10 +22,10 @@
             user-address(:user='user')
         v-window-item(:value='steps.activate')
           v-card-text
-            send-activation-link(:user='user', @set-send-via-sms='should => (sendViaSms = should)')
+            send-activation-link(:user='user')
         v-window-item(:value='steps.done')
           v-card-text
-            activation-link-sent(:user='user', :send-via-sms='sendViaSms')
+            activation-link-sent(:user='user')
       v-card-actions(v-if='step < steps.done')
         v-btn(v-if='step > 1', text, @click='step--') Back
         v-spacer
@@ -68,7 +68,6 @@ export default {
   },
   data: () => ({
     user: Object.assign({}, UserStructure),
-    sendViaSms: false,
     step: 1,
     steps: {
       credentials: 1,
@@ -131,7 +130,7 @@ export default {
     },
     async sendActivationLink () {
       try {
-        await UserService.sendActivationLink(this.user.email, this.sendViaSms)
+        await UserService.sendActivationLink(this.user)
         this.step++
       } catch (error) {
         this.$emit('show-snackbar', error, 'error')

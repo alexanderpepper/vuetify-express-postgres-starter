@@ -1,7 +1,7 @@
 <template lang="pug">
   .username-sent.text-center.my-2
     .body-1.d-inline.font-weight-light We've sent your username to
-    .body-2.d-inline &nbsp;{{ sendViaSms ? user.phone : user.email }}
+    .body-2.d-inline &nbsp;{{ user.sendViaSms ? user.phone : user.email }}
     .body-1.d-inline.font-weight-light .
 </template>
 
@@ -10,8 +10,7 @@
 export default {
   name: 'usernameSent',
   props: {
-    user: Object,
-    sendViaSms: Boolean
+    user: Object
   }
 }
 </script>

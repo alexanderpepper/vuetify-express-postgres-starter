@@ -29,10 +29,10 @@
               router-link.subtitle-1(:to='{ name: "support" }') Click here to contact support
         v-window-item(:value='steps.sendUsername')
           v-card-text
-            send-username(:user='user' @set-send-via-sms='should => sendViaSms = should')
+            send-username(:user='user')
         v-window-item(:value='steps.usernameSent')
           v-card-text
-            username-sent(:user='user' :send-via-sms='sendViaSms')
+            username-sent(:user='user')
         v-window-item(:value='steps.forgotPassword')
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide all of the following information
@@ -44,16 +44,16 @@
             user-security-answers(:user='user')
         v-window-item(:value='steps.sendPasswordResetLink')
           v-card-text
-            send-password-reset-link(:user='user' @set-send-via-sms='should => (sendViaSms = should)')
+            send-password-reset-link(:user='user')
         v-window-item(:value='steps.passwordResetLinkSent')
           v-card-text
-            password-reset-link-sent(:user='user' :send-via-sms='sendViaSms')
+            password-reset-link-sent(:user='user')
         v-window-item(:value='steps.sendActivationLink')
           v-card-text
-            send-activation-link(:user='user' @set-send-via-sms='should => (sendViaSms = should)')
+            send-activation-link(:user='user')
         v-window-item(:value='steps.activationLinkSent')
           v-card-text
-            activation-link-sent(:user='user' :send-via-sms='sendViaSms')
+            activation-link-sent(:user='user')
       v-card-actions(v-if='step > steps.signIn')
         v-btn(text @click='previous') Back
         v-spacer
@@ -111,8 +111,7 @@ export default {
     error: false,
     errors: [],
     hidePassword: true,
-    showResendCode: false,
-    sendViaSms: false
+    showResendCode: false
   }),
   created () {
     this.user = loginUserStructure()
@@ -197,7 +196,7 @@ export default {
     },
     async sendActivationLink () {
       try {
-        await UserService.sendActivationLink(this.user.email, this.sendViaSms)
+        await UserService.sendActivationLink(this.user)
         this.step = this.steps.activationLinkSent
       } catch (error) {
         this.$emit('show-snackbar', error, 'error')
@@ -205,7 +204,7 @@ export default {
     },
     async sendUsername () {
       try {
-        await UserService.sendUsername(this.user, this.sendViaSms)
+        await UserService.sendUsername(this.user)
         this.step = this.steps.usernameSent
       } catch (error) {
         this.$emit('show-snackbar', error, 'error')
@@ -213,7 +212,7 @@ export default {
     },
     async sendPasswordResetLink () {
       try {
-        await UserService.sendPasswordResetLink(this.user, this.sendViaSms)
+        await UserService.sendPasswordResetLink(this.user)
         this.step = this.steps.passwordResetLinkSent
       } catch (error) {
         this.$emit('show-snackbar', error, 'error')
