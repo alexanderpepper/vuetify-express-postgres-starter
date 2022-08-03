@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1186.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.2",
     "cors": "^2.8.5",
@@ -17,7 +18,8 @@
     "node-postgres": "^0.6.2",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.17.0"
+    "sequelize": "^6.17.0",
+    "twilio": "^3.80.0"
   },
   "devDependencies": {
     "eslint-config-standard": "^16.0.3"

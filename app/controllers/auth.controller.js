@@ -56,18 +56,19 @@ exports.changePassword = async (req, res) => {
 }
 
 exports.getSecurityQuestions = async (req, res) => {
+  const { identifier, phone, birthday } = req.body
   const user = await User.findOne({
     attributes: ['securityQuestion1', 'securityQuestion2'],
     where: {
       [Op.and]: [
         {
           [Op.or]: [
-            { username: req.body.identifier },
-            { email: req.body.identifier }
+            { username: identifier },
+            { email: identifier }
           ]
         },
-        { phone: req.body.phone },
-        { birthday: req.body.birthday }
+        { phone },
+        { birthday }
       ]
     }
   })
@@ -87,12 +88,41 @@ exports.sendActivationLink = async (req, res) => {
 }
 
 exports.sendPasswordResetLink = async (req, res) => {
-  res.json({})
+  const { identifier, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2, sendViaSms } = req.body
+  const user = await User.findOne({
+    attributes: ['email', 'phone'],
+    where: {
+      [Op.and]: [
+        {
+          [Op.or]: [
+            { username: identifier },
+            { email: identifier }
+          ]
+        },
+        { securityQuestion1 },
+        { securityQuestion2 },
+        { securityAnswer1 },
+        { securityAnswer2 }
+      ]
+    }
+  })
+  if (user) {
+    // Generate password reset code
+    if (sendViaSms) {
+      // await Sms.sendPasswordResetLink(savedUser, AppUser.app)
+    } else {
+      // await Email.sendPasswordResetLink(savedUser, AppUser.app)
+    }
+  } else {
+    res.status(400).send({
+      status: 400,
+      messages: ['Account not found']
+    })
+  }
 }
 
 exports.verifySecurityQuestions = async (req, res) => {
   const { identifier, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2 } = req.body
-  console.log(JSON.stringify(req.body, null, 2))
   const user = await User.findOne({
     attributes: ['email', 'phone'],
     where: {
@@ -118,7 +148,21 @@ exports.verifySecurityQuestions = async (req, res) => {
 }
 
 exports.getSendOptions = async (req, res) => {
-  res.json({})
+  const { phone, birthday } = req.body
+  const user = await User.findOne({
+    attributes: ['email', 'phone'],
+    where: {
+      [Op.and]: [
+        { phone },
+        { birthday }
+      ]
+    }
+  })
+  if (user) {
+    res.json({ email: obscuredEmail(user), phone: obscuredPhone(user) })
+  } else {
+    res.status(400).send({ messages: ['Account not found'] })
+  }
 }
 
 exports.sendUsername = async (req, res) => {
