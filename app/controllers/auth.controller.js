@@ -3,16 +3,25 @@ const config = require('../config/auth.config')
 const User = db.user
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const emailService = require('../services/email.service')
+const smsService = require('../services/sms.service')
+const { v4: uuid } = require('uuid')
 const TOKEN_VALIDITY_PERIOD = 86400
 const { withoutNullsOrKeys } = require('../utilities/object.utilities')
 const { Op } = require('sequelize')
 
 exports.signUp = async (req, res) => {
-  const data = withoutNullsOrKeys(req.body, ['activationCode', 'passwordResetCode', 'isActivated'])
-  data.password = bcrypt.hashSync(req.body.password, 8)
-  const user = await User.create(data)
+  const user = await User.create({
+    ...withoutNullsOrKeys(req.body, ['passwordResetCode']),
+    password: bcrypt.hashSync(req.body.password, 8),
+    activationCode: uuid(),
+    isActivated: false
+  })
   await user.setRoles([1])
-  res.send('User was registered successfully!')
+  res.json({
+    status: 200,
+    messages: ['User was registered successfully!']
+  })
 }
 
 exports.signIn = async (req, res) => {
@@ -75,22 +84,65 @@ exports.getSecurityQuestions = async (req, res) => {
   if (user) {
     res.json(user.get({ plain: true }))
   } else {
-    res.status(400).send({ messages: ['Account not found'] })
+    res.status(400).send({
+      status: 400,
+      messages: ['Account not found']
+    })
   }
 }
 
 exports.activate = async (req, res) => {
-  res.json({})
+  const { activationCode } = req.body
+  const user = await User.findOne({
+    where: { activationCode }
+  })
+  if (user) {
+    user.isActivated = true
+    user.activationCode = null
+    user.save()
+    res.json({
+      status: 200,
+      messages: ['User successfully activated.']
+    })
+  } else {
+    res.status(400).send({
+      status: 400,
+      messages: ['Account not found']
+    })
+  }
 }
 
 exports.sendActivationLink = async (req, res) => {
-  res.json({})
+  const { identifier, sendViaSms } = req.body
+  const user = await User.findOne({
+    where: {
+      [Op.or]: [
+        { username: identifier },
+        { email: identifier }
+      ]
+    }
+  })
+  if (user) {
+    if (sendViaSms) {
+      await smsService.sendActivationLink(user)
+    } else {
+      await emailService.sendActivationLink(user)
+    }
+    res.json({
+      status: 200,
+      messages: ['Activation link sent!']
+    })
+  } else {
+    res.status(400).send({
+      status: 400,
+      messages: ['Account not found']
+    })
+  }
 }
 
 exports.sendPasswordResetLink = async (req, res) => {
   const { identifier, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2, sendViaSms } = req.body
   const user = await User.findOne({
-    attributes: ['email', 'phone'],
     where: {
       [Op.and]: [
         {
@@ -107,11 +159,12 @@ exports.sendPasswordResetLink = async (req, res) => {
     }
   })
   if (user) {
-    // Generate password reset code
+    user.passwordResetCode = uuid()
+    user.save()
     if (sendViaSms) {
-      // await Sms.sendPasswordResetLink(savedUser, AppUser.app)
+      await smsService.sendPasswordResetLink(user)
     } else {
-      // await Email.sendPasswordResetLink(savedUser, AppUser.app)
+      await emailService.sendPasswordResetLink(user)
     }
   } else {
     res.status(400).send({
@@ -143,7 +196,10 @@ exports.verifySecurityQuestions = async (req, res) => {
   if (user) {
     res.json({ email: obscuredEmail(user), phone: obscuredPhone(user) })
   } else {
-    res.status(400).send({ messages: ['Account not found'] })
+    res.status(400).send({
+      status: 400,
+      messages: ['Account not found']
+    })
   }
 }
 
@@ -161,7 +217,10 @@ exports.getSendOptions = async (req, res) => {
   if (user) {
     res.json({ email: obscuredEmail(user), phone: obscuredPhone(user) })
   } else {
-    res.status(400).send({ messages: ['Account not found'] })
+    res.status(400).send({
+      status: 400,
+      messages: ['Account not found']
+    })
   }
 }
 

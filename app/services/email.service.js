@@ -1,4 +1,4 @@
-const credentials = require('../aws-credentials')
+const credentials = require('../config/aws.config')
 
 const AWS = require('aws-sdk')
 if (credentials.accessKeyId) {

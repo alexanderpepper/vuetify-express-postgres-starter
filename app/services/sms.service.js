@@ -1,10 +1,10 @@
-const credentials = require('../twilio-credentials')
+const credentials = require('../config/twilio.config')
 const Twilio = require('twilio')
 const client = credentials.accountSid ? new Twilio(credentials.accountSid, credentials.authToken) : {}
 
 module.exports = {
   sendActivationLink: function (user, app) {
-    return this.sendSms(user, `Welcome to vuetify-express-postgresql-starter! Click the following link to verify your mobile phone number and activate your acount: ${app.get('fullHost')}/activate/${user.activationCode}`)
+    return this.sendSms(user, `Welcome to vuetify-express-postgresql-starter! Click the following link to verify your mobile phone number and activate your account: ${app.get('fullHost')}/activate/${user.activationCode}`)
   },
   sendPasswordResetLink: function (user, app) {
     return this.sendSms(user, `Hi from vuetify-express-postgresql-starter. Click the following link to reset your password: ${app.get('fullHost')}/reset-password/${user.passwordResetCode}`)
