@@ -63,6 +63,7 @@ module.exports = {
     })
   },
   sendEmail: function ({ to, subject, message }) {
+    console.log('\n\nSending email:\n')
     console.log(message)
     // return new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail({
     //   Destination: { ToAddresses: [process.env.NODE_ENV === 'production' ? to : 'alexander.pepper@gmail.com'] },

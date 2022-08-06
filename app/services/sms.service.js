@@ -14,6 +14,7 @@ module.exports = {
     return this.sendSms(user, `Your vuetify-express-postgresql-starter username is ${user.username}`)
   },
   sendSms: function (user, body) {
+    console.log('\n\nSending sms:\n')
     console.log(body)
     // return client.messages.create({
     //   body,

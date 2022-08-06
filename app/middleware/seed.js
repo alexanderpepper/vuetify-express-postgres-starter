@@ -7,8 +7,8 @@ const fakeUserData = {
   username: null,
   name: null,
   email: null,
-  phone: '2108888888',
-  birthday: '1998-08-18',
+  phone: null,
+  birthday: null,
   password: bcrypt.hashSync('admin1234', 8),
   securityQuestion1: 'Q1',
   securityQuestion2: 'Q2',
@@ -36,7 +36,9 @@ module.exports = async () => {
     ...fakeUserData,
     username: 'test',
     name: 'test',
-    email: 'test@test.com'
+    email: 'test@test.com',
+    phone: '7777777777',
+    birthday: '1982-07-19'
   })
   await testUser.setRoles([1])
 
@@ -44,7 +46,9 @@ module.exports = async () => {
     ...fakeUserData,
     username: 'admin',
     name: 'admin',
-    email: 'admin@admin.com'
+    email: 'admin@admin.com',
+    phone: '8888888888',
+    birthday: '2008-08-08'
   })
   await adminUser.setRoles([2])
 }
