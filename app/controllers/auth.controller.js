@@ -225,11 +225,59 @@ exports.getSendOptions = async (req, res) => {
 }
 
 exports.sendUsername = async (req, res) => {
-  res.json({})
+  const { email, phone, birthday, sendViaSms } = req.body
+  const user = await User.findOne({
+    where: {
+      [Op.and]: [
+        { email },
+        { phone },
+        { birthday }
+      ]
+    }
+  })
+  if (user) {
+    if (sendViaSms) {
+      await smsService.sendUsername(user)
+    } else {
+      await emailService.sendUsername(user)
+    }
+  } else {
+    res.status(400).send({
+      status: 400,
+      messages: ['Account not found']
+    })
+  }
 }
 
 exports.resetPassword = async (req, res) => {
-  res.json({})
+  const { identifier, password, passwordResetCode } = req.body
+  const user = await User.findOne({
+    where: {
+      [Op.and]: [
+        {
+          [Op.or]: [
+            { username: identifier },
+            { email: identifier }
+          ]
+        },
+        { passwordResetCode }
+      ]
+    }
+  })
+  if (user) {
+    user.passwordResetCode = null
+    user.password = bcrypt.hashSync(password, 8)
+    user.save()
+
+    const token = jwt.sign({ id: user.id }, config.secret, { expiresIn: TOKEN_VALIDITY_PERIOD })
+    const expirationDate = new Date().getTime() + TOKEN_VALIDITY_PERIOD
+    res.json({ id: user.id, token, expirationDate })
+  } else {
+    res.status(400).send({
+      status: 400,
+      messages: ['Account not found']
+    })
+  }
 }
 
 function obscuredPhone (user) {

@@ -1,6 +1,7 @@
 const credentials = require('../config/aws.config')
-
 const AWS = require('aws-sdk')
+const host = 'http://localhost:8080'
+
 if (credentials.accessKeyId) {
   AWS.config.update({
     region: 'us-east-1',
@@ -29,7 +30,7 @@ module.exports = {
         <h1>Welcome to vuetify-express-postgresql-starter!</h1>
         <p>
           <span>You're almost there, just&nbsp;</span>
-          <a href="${app.get('fullHost')}/activate/${user.activationCode}">click here</a> 
+          <a href="${host}/activate/${user.activationCode}">click here</a> 
           <span>&nbsp;to verify your email address and activate your account.</span>
         </p>
       `
@@ -42,7 +43,7 @@ module.exports = {
       message: `
         <h1>Your vuetify-express-postgresql-starter Password Reset</h1>
         <p>
-          <a href="${app.get('fullHost')}/reset-password/${user.passwordResetCode}">Click here</a>
+          <a href="${host}/reset-password/${user.passwordResetCode}">Click here</a>
           <span>&nbsp;to reset yor password.
         </p>
       `
@@ -56,18 +57,20 @@ module.exports = {
         <h1>Your vuetify-express-postgresql-starter Username</h1>
         <p>
           <span>Your vuetify-express-postgresql-starter username is ${user.username}.&nbsp;</span>
-          <a href="${app.get('fullHost')}/login">Click here to Sign In</a>
+          <a href="${host}/login">Click here to Sign In</a>
         </p>
       `
     })
   },
   sendEmail: function ({ to, subject, message }) {
-    return new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail({
-      Destination: { ToAddresses: [process.env.NODE_ENV === 'production' ? to : 'alexander.pepper@gmail.com'] },
-      Message: {
-        Body: { Html: { Charset: 'UTF-8', Data: message } },
-        Subject: { Charset: 'UTF-8', Data: subject } },
-      Source: credentials.noReplyEmail
-    }).promise()
+    console.log(message)
+    // return new AWS.SES({ apiVersion: '2010-12-01' }).sendEmail({
+    //   Destination: { ToAddresses: [process.env.NODE_ENV === 'production' ? to : 'alexander.pepper@gmail.com'] },
+    //   Message: {
+    //     Body: { Html: { Charset: 'UTF-8', Data: message } },
+    //     Subject: { Charset: 'UTF-8', Data: subject }
+    //   },
+    //   Source: credentials.noReplyEmail
+    // }).promise()
   }
 }
