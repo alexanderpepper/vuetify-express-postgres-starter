@@ -9,6 +9,7 @@ const { v4: uuid } = require('uuid')
 const TOKEN_VALIDITY_PERIOD = 86400
 const { withoutNullsOrKeys } = require('../utilities/object.utilities')
 const { Op } = require('sequelize')
+const { obscuredPhone, obscuredEmail, formattedPhone } = require('../utilities/user.utilities')
 
 exports.signUp = async (req, res) => {
   const user = await User.create({
@@ -113,12 +114,12 @@ exports.activate = async (req, res) => {
 }
 
 exports.sendActivationLink = async (req, res) => {
-  const { identifier, sendViaSms } = req.body
+  const { username, email, identifier, sendViaSms } = req.body
   const user = await User.findOne({
     where: {
       [Op.or]: [
-        { username: identifier },
-        { email: identifier }
+        { username: username || identifier },
+        { email: email || identifier }
       ]
     }
   })
@@ -166,6 +167,10 @@ exports.sendPasswordResetLink = async (req, res) => {
     } else {
       await emailService.sendPasswordResetLink(user)
     }
+    res.json({
+      status: 200,
+      messages: [`Password reset link sent via ${sendViaSms ? 'SMS' : 'email'}`]
+    })
   } else {
     res.status(400).send({
       status: 400,
@@ -206,7 +211,6 @@ exports.verifySecurityQuestions = async (req, res) => {
 exports.getSendOptions = async (req, res) => {
   const { phone, birthday } = req.body
   const user = await User.findOne({
-    attributes: ['email', 'phone'],
     where: {
       [Op.and]: [
         { phone },
@@ -215,7 +219,7 @@ exports.getSendOptions = async (req, res) => {
     }
   })
   if (user) {
-    res.json({ email: obscuredEmail(user), phone: obscuredPhone(user) })
+    res.json({ email: obscuredEmail(user), phone })
   } else {
     res.status(400).send({
       status: 400,
@@ -225,11 +229,10 @@ exports.getSendOptions = async (req, res) => {
 }
 
 exports.sendUsername = async (req, res) => {
-  const { email, phone, birthday, sendViaSms } = req.body
+  const { phone, birthday, sendViaSms } = req.body
   const user = await User.findOne({
     where: {
       [Op.and]: [
-        { email },
         { phone },
         { birthday }
       ]
@@ -241,6 +244,10 @@ exports.sendUsername = async (req, res) => {
     } else {
       await emailService.sendUsername(user)
     }
+    res.json({
+      status: 200,
+      messages: [`Username sent via ${sendViaSms ? 'SMS' : 'email'}`]
+    })
   } else {
     res.status(400).send({
       status: 400,
@@ -277,27 +284,5 @@ exports.resetPassword = async (req, res) => {
       status: 400,
       messages: ['Account not found']
     })
-  }
-}
-
-function obscuredPhone (user) {
-  if (user.phone) {
-    const lastDigits = user.phone.substr(user.phone.length - 2)
-    return user.isInternationalPhone ? `+•• •••••••••${lastDigits}` : `(•••) •••-••${lastDigits}`
-  } else {
-    return ''
-  }
-}
-
-function obscuredEmail (user) {
-  if (user.email) {
-    const emailComponents = user.email.split('@')
-    const username = emailComponents[0]
-    const domain = emailComponents[1]
-    const firstTwoCharacters = username.substring(0, 2)
-    const lastTwoCharacters = username.substring(username.length - 2)
-    return `${firstTwoCharacters}•••••••${lastTwoCharacters}@${domain}`
-  } else {
-    return ''
   }
 }

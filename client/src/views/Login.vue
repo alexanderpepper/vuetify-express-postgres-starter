@@ -199,7 +199,7 @@ export default {
         await UserService.sendActivationLink(this.user)
         this.step = this.steps.activationLinkSent
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     },
     async sendUsername () {
@@ -207,7 +207,7 @@ export default {
         await UserService.sendUsername(this.user)
         this.step = this.steps.usernameSent
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     },
     async sendPasswordResetLink () {
@@ -215,7 +215,7 @@ export default {
         await UserService.sendPasswordResetLink(this.user)
         this.step = this.steps.passwordResetLinkSent
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     },
     async getSendOptions () {
@@ -224,17 +224,16 @@ export default {
         Object.assign(this.user, results)
         this.step = this.steps.sendUsername
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     },
     async getSecurityQuestions () {
       try {
         const results = await UserService.getSecurityQuestions(this.user)
-        console.log(results)
         Object.assign(this.user, results)
         this.step = this.steps.securityQuestions
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     },
     async verifySecurityQuestions () {
@@ -243,7 +242,7 @@ export default {
         Object.assign(this.user, results)
         this.step = this.steps.sendPasswordResetLink
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     },
     async loginClicked () {

@@ -15,16 +15,19 @@ export default {
   },
   mutations: {
     setCurrentUser: (state, user) => (state.currentUser = user),
-    setUserInfoReceived: (state, userInfoReceived) => (state.userInfoReceived = userInfoReceived)
+    setUserInfoReceived: (state, userInfoReceived) => (state.userInfoReceived = userInfoReceived),
+    setToken (state, response) {
+      window.localStorage.token = response.token
+      window.localStorage.id = response.id
+      window.localStorage.tokenExpirationDate = response.expirationDate
+    }
   },
   actions: {
     async login ({ commit, dispatch }, credentials) {
       if (credentials.identifier && credentials.password) {
         try {
           const response = await SignInService.signIn(credentials)
-          window.localStorage.token = response.token
-          window.localStorage.id = response.id
-          window.localStorage.tokenExpirationDate = response.expirationDate
+          commit('setToken', response)
           dispatch('getCurrentUser')
         } catch (error) {
           dispatch('logout')

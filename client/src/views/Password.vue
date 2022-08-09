@@ -15,18 +15,17 @@
 
 <script>
 import UserService from '../services/UserService'
+import EventBus from '@/services/EventBus'
 
 export default {
   name: 'password',
-  data () {
-    return {
-      password: {
-        oldPassword: '',
-        newPassword: ''
-      },
-      confirmPassword: ''
-    }
-  },
+  data: () => ({
+    password: {
+      oldPassword: '',
+      newPassword: ''
+    },
+    confirmPassword: ''
+  }),
   computed: {
     buttonEnabled: function () {
       return this.password.oldPassword &&
@@ -38,10 +37,10 @@ export default {
     async changePassword () {
       try {
         await UserService.changePassword(this.password)
-        this.$emit('show-snackbar', 'Password Changed')
+        EventBus.$emit('show-snackbar', 'Password Changed')
         this.$router.push({ name: 'account' })
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     }
   }

@@ -95,7 +95,7 @@ export default {
       this.$emit('set-photo', photoUrl)
       if (!this.isRegistration) {
         await UserService.save(this.currentUser)
-        this.$emit('show-snackbar', 'Saved')
+        EventBus.$emit('show-snackbar', 'Saved')
         this.reset()
       }
     },

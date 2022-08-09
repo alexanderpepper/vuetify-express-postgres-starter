@@ -33,7 +33,6 @@ export default {
   watch: {
     'user.birthday': {
       handler () {
-        console.log(this.user.birthday)
         this.dateFormatted = this.formatDate(this.user.birthday)
       },
       immediate: true

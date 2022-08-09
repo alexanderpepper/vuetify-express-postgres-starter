@@ -6,9 +6,9 @@ const origin = 'http://localhost:8080'
 const db = require('./app/models')
 const seed = require('./app/middleware/seed')
 const PORT = process.env.PORT || 3000
-const isProduction = process.env.NODE_ENV !== 'production'
+const isProduction = process.env.NODE_ENV === 'production'
 
-if (isProduction) {
+if (!isProduction) {
   app.use(cors({ origin }))
 }
 app.use(bodyParser.json())
@@ -20,11 +20,11 @@ require('./app/routes/role.routes')(app)
 
 app.use((err, req, res, next) => {
   if (!isProduction) {
-    console.log(err.stack)
+    console.err(err.stack)
   }
   res.status(500).send({
     status: 500,
-    messages: ['Something broke!' ]
+    messages: ['Something broke!']
   })
 })
 

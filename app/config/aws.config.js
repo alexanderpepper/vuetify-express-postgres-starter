@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   accessKeyId: '',
   secretAccessKey: '',
   supportEmail: 'support@vuetify-loopback-postgresql-starter.com',

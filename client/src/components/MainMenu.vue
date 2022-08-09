@@ -40,15 +40,13 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'mainMenu',
   components: { UserAvatar },
-  data () {
-    return {
-      menuItems: [
-        { icon: 'lock', title: 'Account', name: 'account' },
-        { icon: 'people', title: 'Manage Users', name: 'users', isAdminOnly: true },
-        { icon: 'help', title: 'Contact Support', name: 'support' }
-      ]
-    }
-  },
+  data: () => ({
+    menuItems: [
+      { icon: 'lock', title: 'Account', name: 'account' },
+      { icon: 'people', title: 'Manage Users', name: 'users', isAdminOnly: true },
+      { icon: 'help', title: 'Contact Support', name: 'support' }
+    ]
+  }),
   computed: mapGetters(['currentUser'])
 }
 </script>

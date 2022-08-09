@@ -52,6 +52,7 @@ import EditUserPhoto from '../components/EditUserPhoto'
 import UserSecurityQuestions from '../components/UserSecurityQuestions'
 import SendActivationLink from '../components/SendActivationLink'
 import ActivationLinkSent from '../components/ActivationLinkSent'
+import EventBus from '@/services/EventBus'
 
 export default {
   name: 'register',
@@ -122,10 +123,10 @@ export default {
   methods: {
     async save () {
       try {
-        this.user = await UserService.register(this.user)
+        await UserService.register(this.user)
         this.step = this.steps.activate
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     },
     async sendActivationLink () {
@@ -133,7 +134,7 @@ export default {
         await UserService.sendActivationLink(this.user)
         this.step++
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     }
   }

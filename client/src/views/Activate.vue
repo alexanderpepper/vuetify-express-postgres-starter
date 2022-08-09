@@ -21,7 +21,12 @@ export default {
     activationSuccess: null
   }),
   async created () {
-    this.activationSuccess = await UserService.activate(this.activationCode)
+    try {
+      await UserService.activate(this.activationCode)
+      this.activationSuccess = true
+    } catch (err) {
+      this.activationSuccess = false
+    }
   }
 }
 </script>

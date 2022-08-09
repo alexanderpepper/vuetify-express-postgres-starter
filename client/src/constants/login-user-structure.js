@@ -7,5 +7,6 @@ export default () => ({
   securityQuestion2: null,
   securityAnswer1: null,
   securityAnswer2: null,
-  sendViaSms: false
+  sendViaSms: false,
+  formattedPhone: null
 })

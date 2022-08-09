@@ -25,7 +25,7 @@
       :timeout='3000'
       :bottom='true'
       :color='snackbarStyle')
-      span(v-text='snackbarMessage')
+      span(v-html='snackbarMessage')
       v-btn(text, dark, @click='snackbar = false') Close
 </template>
 
@@ -38,18 +38,16 @@ import EventBus from '@/services/EventBus'
 export default {
   name: 'App',
   components: { MainMenu, QuickLogin },
-  data () {
-    return {
-      unauthenticatedRoutes: ['landing', 'activate', 'resetPassword', 'support'],
-      snackbar: false,
-      snackbarMessage: '',
-      snackbarStyle: '',
-      items: [
-        { icon: 'people', title: 'Manage Users', name: 'users' },
-        { icon: 'help', title: 'Contact Support', name: 'support' }
-      ]
-    }
-  },
+  data: () => ({
+    unauthenticatedRoutes: ['landing', 'activate', 'resetPassword', 'support'],
+    snackbar: false,
+    snackbarMessage: '',
+    snackbarStyle: '',
+    items: [
+      { icon: 'people', title: 'Manage Users', name: 'users' },
+      { icon: 'help', title: 'Contact Support', name: 'support' }
+    ]
+  }),
   computed: mapGetters(['currentUser', 'userInfoReceived']),
   async created () {
     this.$vuetify.theme.dark = window.localStorage.dark === 'true'
@@ -82,8 +80,8 @@ export default {
       this.logout()
       await this.$router.push({ name: 'landing' })
     },
-    showSnackbar (message, style) {
-      this.snackbarMessage = message
+    showSnackbar (response, style) {
+      this.snackbarMessage = response.messages.join('<br>')
       this.snackbarStyle = style
       this.snackbar = true
     }

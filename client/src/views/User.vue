@@ -75,6 +75,7 @@ import UserValidationService from '../services/UserValidationService'
 import UserBirthday from '../components/UserBirthday'
 import EditUserPhoto from '../components/EditUserPhoto'
 import { mapGetters } from 'vuex'
+import EventBus from '@/services/EventBus'
 
 export default {
   name: 'user',
@@ -89,22 +90,20 @@ export default {
     UserPhoto,
     UserSecurityQuestions
   },
-  data () {
-    return {
-      tabTitles: [
-        'General',
-        'Security',
-        'Photo',
-        'Address'
-      ],
-      activeTab: 0,
-      showDeleteDialog: false,
-      title: '',
-      roles: [],
-      user: JSON.parse(JSON.stringify(UserStructure)),
-      oldRoles: []
-    }
-  },
+  data: () => ({
+    tabTitles: [
+      'General',
+      'Security',
+      'Photo',
+      'Address'
+    ],
+    activeTab: 0,
+    showDeleteDialog: false,
+    title: '',
+    roles: [],
+    user: JSON.parse(JSON.stringify(UserStructure)),
+    oldRoles: []
+  }),
   async created () {
     try {
       this.roles = await RoleService.all()
@@ -166,9 +165,9 @@ export default {
           if (response.id !== this.user.id) {
             this.$router.push({ name: 'user', params: { id: response.id } })
           }
-          this.$emit('show-snackbar', 'Saved')
+          EventBus.$emit('show-snackbar', 'Saved')
         } catch (error) {
-          this.$emit('show-snackbar', error, 'error')
+          EventBus.$emit('show-snackbar', error, 'error')
         }
       }
     },

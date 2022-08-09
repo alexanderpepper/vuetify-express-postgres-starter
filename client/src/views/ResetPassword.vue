@@ -13,8 +13,9 @@
 <script>
 
 import UserService from '../services/UserService'
-import SignInService from '../services/SignInService'
 import UserPassword from '../components/UserPassword'
+import { mapActions, mapMutations } from 'vuex'
+import EventBus from '@/services/EventBus'
 
 export default {
   name: 'resetPassword',
@@ -25,13 +26,14 @@ export default {
     user: {}
   }),
   methods: {
+    ...mapMutations(['setToken']),
+    ...mapActions(['getCurrentUser']),
     async resetPassword () {
       this.user.passwordResetCode = this.passwordResetCode
-      const accessToken = await UserService.resetPassword(this.user)
-      SignInService.saveAccessToken(accessToken)
-      const user = await UserService.me()
-      this.$emit('login-success', user)
-      this.$emit('show-snackbar', 'Password Reset')
+      const response = await UserService.resetPassword(this.user)
+      this.setToken(response)
+      await this.getCurrentUser()
+      EventBus.$emit('show-snackbar', 'Password Reset')
       this.$router.push({ name: 'home' })
     }
   }

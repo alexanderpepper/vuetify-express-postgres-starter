@@ -26,18 +26,16 @@ import RoleService from '../services/RoleService'
 
 export default {
   name: 'users',
-  data () {
-    return {
-      search: '',
-      headers: [
-        { text: 'Name', value: 'name', align: 'left' },
-        { text: 'Username', value: 'username', align: 'left' },
-        { text: 'Email', value: 'email', align: 'left' },
-        { text: 'Roles', value: 'roles', align: 'left' }],
-      users: [],
-      roles: []
-    }
-  },
+  data: () => ({
+    search: '',
+    headers: [
+      { text: 'Name', value: 'name', align: 'left' },
+      { text: 'Username', value: 'username', align: 'left' },
+      { text: 'Email', value: 'email', align: 'left' },
+      { text: 'Roles', value: 'roles', align: 'left' }],
+    users: [],
+    roles: []
+  }),
   async created () {
     this.$emit('set-active-menu-item', 'users')
     this.getUsers()

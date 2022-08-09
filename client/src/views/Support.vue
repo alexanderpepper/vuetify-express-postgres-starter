@@ -54,7 +54,7 @@ export default {
         await SupportService.sendSupportMessage(this.message)
         this.success = true
       } catch (error) {
-        this.$emit('show-snackbar', error, 'error')
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     }
   }
