@@ -20,13 +20,10 @@
     v-main
       transition(name='fade-transition', mode='out-in')
         router-view.router-view.mx-auto
-    v-snackbar(
-      v-model='snackbar'
-      :timeout='3000'
-      :bottom='true'
-      :color='snackbarStyle')
+    v-snackbar( v-model='snackbar' :timeout='5000' :bottom='true' :color='snackbarStyle')
       span(v-html='snackbarMessage')
-      v-btn(text, dark, @click='snackbar = false') Close
+      template(#action='{ attrs }')
+        v-btn(v-bind='attrs' text dark @click='snackbar = false') Close
 </template>
 
 <script>
@@ -81,7 +78,7 @@ export default {
       await this.$router.push({ name: 'landing' })
     },
     showSnackbar (response, style) {
-      this.snackbarMessage = response.messages.join('<br>')
+      this.snackbarMessage = typeof response === 'string' ? response : response.messages.join('<br>')
       this.snackbarStyle = style
       this.snackbar = true
     }

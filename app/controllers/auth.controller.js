@@ -28,7 +28,6 @@ exports.signUp = async (req, res) => {
 exports.signIn = async (req, res) => {
   const { identifier } = req.body
   const user = await User.findOne({
-    attributes: ['id', 'password', 'isActivated'],
     where: {
       [Op.or]: [
         { email: identifier },
@@ -43,9 +42,13 @@ exports.signIn = async (req, res) => {
       const expirationDate = new Date().getTime() + TOKEN_VALIDITY_PERIOD
       res.json({ id: user.id, token, expirationDate })
     } else {
-      res.status(400).send({
-        status: 400,
-        messages: ['Account not activated']
+      res.status(403).send({
+        status: 403,
+        messages: ['Account not activated'],
+        user: {
+          obscuredEmail: obscuredEmail(user),
+          obscuredPhone: obscuredPhone(user)
+        }
       })
     }
   } else {
@@ -199,7 +202,10 @@ exports.verifySecurityQuestions = async (req, res) => {
     }
   })
   if (user) {
-    res.json({ email: obscuredEmail(user), phone: obscuredPhone(user) })
+    res.json({
+      obscuredEmail: obscuredEmail(user),
+      obscuredPhone: obscuredPhone(user)
+    })
   } else {
     res.status(400).send({
       status: 400,
@@ -219,7 +225,7 @@ exports.getSendOptions = async (req, res) => {
     }
   })
   if (user) {
-    res.json({ email: obscuredEmail(user), phone })
+    res.json({ obscuredEmail: obscuredEmail(user) })
   } else {
     res.status(400).send({
       status: 400,
@@ -276,9 +282,16 @@ exports.resetPassword = async (req, res) => {
     user.password = bcrypt.hashSync(password, 8)
     user.save()
 
-    const token = jwt.sign({ id: user.id }, config.secret, { expiresIn: TOKEN_VALIDITY_PERIOD })
-    const expirationDate = new Date().getTime() + TOKEN_VALIDITY_PERIOD
-    res.json({ id: user.id, token, expirationDate })
+    if (user.isActivated) {
+      const token = jwt.sign({ id: user.id }, config.secret, { expiresIn: TOKEN_VALIDITY_PERIOD })
+      const expirationDate = new Date().getTime() + TOKEN_VALIDITY_PERIOD
+      res.json({ id: user.id, token, expirationDate })
+    } else {
+      res.status(403).send({
+        status: 403,
+        messages: ['User not activated']
+      })
+    }
   } else {
     res.status(400).send({
       status: 400,

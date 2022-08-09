@@ -161,7 +161,7 @@ export default {
           const response = this.isAccount
             ? await UserService.saveAccount(this.user)
             : await UserService.save(this.user)
-          if (response.id !== this.user.id) {
+          if (!this.isAccount && response.id !== this.user.id) {
             this.$router.push({ name: 'user', params: { id: response.id } })
           }
           EventBus.$emit('show-snackbar', 'Saved')

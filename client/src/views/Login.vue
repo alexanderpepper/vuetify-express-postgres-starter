@@ -257,7 +257,12 @@ export default {
     loginError (error) {
       this.error = true
       this.errors = error.messages
-      this.showResendCode = error.status === 403
+      if (error.status === 403) {
+        this.showResendCode = true
+        Object.assign(this.user, error.user)
+      } else {
+        this.showResendCode = false
+      }
     }
   }
 }
