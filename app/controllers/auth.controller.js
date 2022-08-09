@@ -9,7 +9,7 @@ const { v4: uuid } = require('uuid')
 const TOKEN_VALIDITY_PERIOD = 86400
 const { withoutNullsOrKeys } = require('../utilities/object.utilities')
 const { Op } = require('sequelize')
-const { obscuredPhone, obscuredEmail, formattedPhone } = require('../utilities/user.utilities')
+const { obscuredPhone, obscuredEmail } = require('../utilities/user.utilities')
 
 exports.signUp = async (req, res) => {
   const user = await User.create({

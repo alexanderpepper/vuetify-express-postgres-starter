@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const fileUpload = require('express-fileupload')
 const cors = require('cors')
 const app = express()
 const origin = 'http://localhost:8080'
@@ -13,10 +14,12 @@ if (!isProduction) {
 }
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(fileUpload())
 
 require('./app/routes/auth.routes')(app)
 require('./app/routes/user.routes')(app)
 require('./app/routes/role.routes')(app)
+require('./app/routes/upload.routes')(app)
 
 app.use((err, req, res, next) => {
   if (!isProduction) {
