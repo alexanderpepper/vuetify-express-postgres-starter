@@ -101,7 +101,7 @@ export default {
     showDeleteDialog: false,
     title: '',
     roles: [],
-    user: JSON.parse(JSON.stringify(UserStructure)),
+    user: UserStructure(),
     oldRoles: []
   }),
   async created () {
@@ -110,7 +110,6 @@ export default {
     } catch (error) {
       this.roles = []
     }
-
     await this.initialize()
   },
   watch: {

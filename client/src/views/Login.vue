@@ -8,8 +8,8 @@
             form(@submit.prevent='login')
               input(type='text' name='username' style='opacity: 0; position: absolute; pointer-events: none;')
               input(type='email' name='email' style='opacity: 0; position: absolute; pointer-events: none;')
-              v-text-field.pt-0(label='Username or Email' v-model='user.identifier' required autocomplete='off')
-              v-text-field(label='Password' v-model='user.password' :type='hidePassword ? "password" : "text"' :append-icon='hidePassword ? "visibility_off" : "visibility"' @click:append="() => (hidePassword = !hidePassword)" @keyup.enter='login' required autocomplete='off')
+              v-text-field.pt-0(label='Username or Email' v-model='user.identifier' required autocomplete='off' @keyup.enter='loginClicked')
+              v-text-field(label='Password' v-model='user.password' :type='hidePassword ? "password" : "text"' :append-icon='hidePassword ? "visibility_off" : "visibility"' @click:append="() => (hidePassword = !hidePassword)" @keyup.enter='loginClicked' required autocomplete='off')
               v-btn.my-6(large block outlined @click='loginClicked' :disabled='!isValidLoginCredentials') Sign In
             v-alert.my-6(type='error' v-model='error' outlined)
               div(v-for='(error, index) in errors' :key='index' v-text='error')
