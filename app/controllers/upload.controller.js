@@ -11,28 +11,35 @@ if (credentials.accessKeyId) {
 }
 
 exports.upload = async (req, res) => {
-  const s3 = new AWS.S3();
+  const s3 = new AWS.S3()
 
   // Binary data base64
-  const fileContent  = Buffer.from(req.files.uploadedFileName.data, 'binary');
+  const fileContent = Buffer.from(req.files.file.data, 'binary')
 
   // Setting up S3 upload parameters
   const params = {
     Bucket: credentials.bucketName,
     Key: uuid(), // File name you want to save as in S3
     Body: fileContent
-  };
+  }
 
   // Uploading files to the bucket
-  s3.upload(params, function(err, data) {
+  s3.upload(params, (err, data) => {
     if (err) {
-      throw err;
+      console.log(err)
+      throw err
     }
-    res.send({
-      "response_code": 200,
-      "response_message": "Success",
-      "response_data": data
-    });
-  });
+    res.json(data)
+  })
+}
 
-})
+exports.download = async (req, res) => {
+  const s3 = new AWS.S3()
+  const data = await s3.getObject({
+    Bucket: credentials.bucketName,
+    Key: req.params.key
+  }).promise()
+  const buf = Buffer.from(data)
+  const base64 = buf.toString('base64')
+  res.send(base64)
+}

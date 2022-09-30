@@ -52,11 +52,13 @@ import Camera from '../components/Camera'
 import GravatarService from '../services/GravatarService'
 import UserService from '../services/UserService'
 import { mapGetters } from 'vuex'
+import EventBus from '@/services/EventBus'
 
 export default {
   name: 'editUserPhoto',
   components: { UploadButton, Camera },
   props: {
+    user: Object,
     isRegistration: Boolean
   },
   data: () => ({
@@ -92,6 +94,8 @@ export default {
       this.uploadingPhoto = true
       const blob = await this.croppa.promisedBlob('image/jpeg', 0.9)
       const photoUrl = await UploadService.uploadFile(blob)
+      console.log(photoUrl)
+      debugger
       this.$emit('set-photo', photoUrl)
       if (!this.isRegistration) {
         await UserService.save(this.currentUser)

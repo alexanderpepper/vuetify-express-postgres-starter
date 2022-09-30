@@ -17,7 +17,7 @@ export default {
   roles: `${host}/roles`,
   me: `${host}/me`,
   account: `${host}/account`,
-  uploadFile: `${host}/container/vuetify-express-postgresql-starter/upload`,
-  uploadedFile: path => `${host}/container/vuetify-express-postgresql-starter/download/${path}`,
+  uploadFile: `${host}/upload`,
+  downloadFile: `${host}/download`,
   sendSupportMessage: `${host}/support/send-message`
 }
