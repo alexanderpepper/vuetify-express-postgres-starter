@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 const User = db.user
 const Role = db.role
 const ACCOUNT_ATTRIBUTES = { exclude: ['password', 'passwordResetCode', 'activationCode'] }
-const ME_ATTRIBUTES = ['id', 'name', 'email']
+const ME_ATTRIBUTES = ['id', 'name', 'email', 'photo']
 
 const roleRelationship = {
   model: Role,

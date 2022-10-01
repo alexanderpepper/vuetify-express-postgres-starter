@@ -2,7 +2,14 @@ import SignInService from '@/services/SignInService'
 import UserService from '@/services/UserService'
 import EventBus from '@/services/EventBus'
 
-const newUser = () => ({ id: null, name: null, roles: [] })
+const newUser = () => ({
+  id: null,
+  name: null,
+  email: null,
+  photo: null,
+  isAdmin: false,
+  roles: []
+})
 
 export default {
   state: {

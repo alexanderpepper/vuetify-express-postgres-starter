@@ -100,6 +100,7 @@ export default {
       const blob = await this.croppa.promisedBlob('image/jpeg', 0.9)
       const response = await UploadService.uploadFile(blob)
       this.$emit('set-photo', response.key)
+      this.currentUser.photo = response.key
       if (!this.isRegistration) {
         await UserService.save(this.user)
         EventBus.$emit('show-snackbar', 'Saved')
