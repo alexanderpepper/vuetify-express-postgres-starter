@@ -35,11 +35,11 @@ exports.upload = async (req, res) => {
 
 exports.download = async (req, res) => {
   const s3 = new AWS.S3()
-  const data = await s3.getObject({
+  const params = {
     Bucket: credentials.bucketName,
     Key: req.params.key
-  }).promise()
-  const buf = Buffer.from(data)
-  const base64 = buf.toString('base64')
-  res.send(base64)
+  }
+  s3.getObject(params)
+    .createReadStream()
+    .pipe(res)
 }

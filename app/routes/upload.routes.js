@@ -6,5 +6,5 @@ module.exports = app => {
     next()
   })
   app.post('/api/upload', controller.upload)
-  app.post('/api/download', controller.download)
+  app.get('/api/download/:key', controller.download)
 }

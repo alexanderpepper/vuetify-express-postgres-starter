@@ -1,16 +1,23 @@
 <template lang="pug">
   .user-avatar-container.text-center.w-100(:class='[size, display]')
     v-icon.mx-auto(v-if='!user || !user.photo', :size='size === "large" ? 182 : 24') account_circle
-    img.mx-auto.user-avatar(:src='user.photo' v-if='user && user.photo', :class='[size, display, { "elevation-8": size === "large" }]')
+    img.mx-auto.user-avatar(:src='photoUrl' v-if='user && user.photo', :class='[size, display, { "elevation-8": size === "large" }]')
 </template>
 
 <script>
+import api from '@/constants/api'
+
 export default {
   name: 'userAvatar',
   props: {
     user: Object,
     size: String,
     display: String
+  },
+  computed: {
+    photoUrl () {
+      return api.downloadFile(this.user.photo)
+    }
   }
 }
 </script>

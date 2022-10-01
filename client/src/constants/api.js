@@ -18,6 +18,6 @@ export default {
   me: `${host}/me`,
   account: `${host}/account`,
   uploadFile: `${host}/upload`,
-  downloadFile: `${host}/download`,
+  downloadFile: key => `${host}/download/${key}`,
   sendSupportMessage: `${host}/support/send-message`
 }

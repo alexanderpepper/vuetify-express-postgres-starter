@@ -39,7 +39,7 @@
           v-btn(block, small, text, @click='reset') Cancel
     div(v-else)
       .mb-4.edit-user-photo-container.mx-auto(:style='{ "border-color": $vuetify.theme.dark ? "white" : "black" }')
-        img.edit-user-photo-img(:src='user.photo' v-if='!showCroppa', @error='imageLoadError')
+        img.edit-user-photo-img(:src='photoUrl' v-if='user.photo && !showCroppa', @error='imageLoadError')
       v-btn(block, small, outlined, @click='isEditing = true', v-if='!isRegistration') Edit Photo
     .absolute-fill(v-if='showCamera')
       camera(@data-captured='setCameraImage')
@@ -53,6 +53,7 @@ import GravatarService from '../services/GravatarService'
 import UserService from '../services/UserService'
 import { mapGetters } from 'vuex'
 import EventBus from '@/services/EventBus'
+import api from '@/constants/api'
 
 export default {
   name: 'editUserPhoto',
@@ -62,6 +63,7 @@ export default {
     isRegistration: Boolean
   },
   data: () => ({
+    photoData: null,
     showCamera: false,
     uploadingPhoto: false,
     isEditing: false,
@@ -75,6 +77,9 @@ export default {
     ...mapGetters(['currentUser']),
     showCroppa () {
       return !this.user.photo || this.isEditing
+    },
+    photoUrl () {
+      return api.downloadFile(this.user.photo)
     }
   },
   watch: {
