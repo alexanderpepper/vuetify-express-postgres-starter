@@ -18,6 +18,7 @@
 import UserValidationService from '../services/UserValidationService'
 import SupportService from '../services/SupportService'
 import { mapGetters } from 'vuex'
+import EventBus from '@/services/EventBus'
 
 export default {
   name: 'support',

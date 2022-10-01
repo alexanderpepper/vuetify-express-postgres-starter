@@ -35,11 +35,11 @@
                 v-spacer
                 v-btn(text, @click='showGravatarDialog = false') Cancel
                 v-btn(outlined, @click='getGravatar') Get Photo
-        .mt-2(v-if='currentUser.photo')
+        .mt-2(v-if='user.photo')
           v-btn(block, small, text, @click='reset') Cancel
     div(v-else)
       .mb-4.edit-user-photo-container.mx-auto(:style='{ "border-color": $vuetify.theme.dark ? "white" : "black" }')
-        img.edit-user-photo-img(:src='currentUser.photo' v-if='!showCroppa', @error='imageLoadError')
+        img.edit-user-photo-img(:src='user.photo' v-if='!showCroppa', @error='imageLoadError')
       v-btn(block, small, outlined, @click='isEditing = true', v-if='!isRegistration') Edit Photo
     .absolute-fill(v-if='showCamera')
       camera(@data-captured='setCameraImage')
@@ -74,7 +74,7 @@ export default {
   computed: {
     ...mapGetters(['currentUser']),
     showCroppa () {
-      return !this.currentUser.photo || this.isEditing
+      return !this.user.photo || this.isEditing
     }
   },
   watch: {
@@ -93,12 +93,11 @@ export default {
       this.showCamera = false
       this.uploadingPhoto = true
       const blob = await this.croppa.promisedBlob('image/jpeg', 0.9)
-      const photoUrl = await UploadService.uploadFile(blob)
-      console.log(photoUrl)
+      const response = await UploadService.uploadFile(blob)
       debugger
-      this.$emit('set-photo', photoUrl)
+      this.$emit('set-photo', response.key)
       if (!this.isRegistration) {
-        await UserService.save(this.currentUser)
+        await UserService.save(this.user)
         EventBus.$emit('show-snackbar', 'Saved')
         this.reset()
       }
