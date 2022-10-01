@@ -6,7 +6,6 @@ class UploadService {
       .attach('file', file)
       .set('Authorization', window.localStorage.token)
       .then(response => response.body)
-      .catch(err => console.log(err))
   }
 }
 

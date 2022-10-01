@@ -1,4 +1,4 @@
-# vuetify-loopback-postgresql-starter
+# vuetify-express-postgresql-starter
 
 ## Code style
 This project uses [JavaScript Standard Style](https://github.com/standard/standard), enforced (so far only in the front end) by [ESLint](https://eslint.org/).
@@ -8,7 +8,7 @@ Use of ES6+ features in this project is encouraged.
 ## Tech/framework used
 
 - [PostgreSQL](https://www.postgresql.org/)
-- [Loopback](https://loopback.io/)
+- [express](https://express.io/)
 - [PM2](http://pm2.keymetrics.io/)
 - [webpack](https://webpack.js.org/)
 - [ESLint](https://eslint.org/)
@@ -25,7 +25,7 @@ Use of ES6+ features in this project is encouraged.
 
 Clone the repository
 ```shell script
-git clone https://github.com/alexanderpepper/vuetify-loopback-postgresql-starter.git
+git clone https://github.com/alexanderpepper/vuetify-express-postgresql-starter.git
 ```
 
 Install NPM packages
@@ -51,8 +51,8 @@ npm install -g pm2
 {
   "accessKeyId": "<access key ID or empty string>",
   "secretAccessKey": "<secret access key or empty string>",
-  "supportEmail": "support@vuetify-loopback-postgresql-starter.com",
-  "noReplyEmail": "no-reply@vuetify-loopback-postgresql-starter.com"
+  "supportEmail": "support@vuetify-express-postgresql-starter.com",
+  "noReplyEmail": "no-reply@vuetify-express-postgresql-starter.com"
 }
 ```
 
@@ -74,11 +74,11 @@ The client app is
 * Configured in `client/.env.production` to use `/api` as the base API path when built for production
 
 ## Running the Server in Development
-To run the Loopback server in devepment mode on `https://localhost:3000`:
+To run the express server in devepment mode on `https://localhost:3000`:
 ```bash
 node .
 ```
-Loopback uses swagger to document the server's REST API. This can be viewed at `http://localhost:3000/explorer`
+express uses swagger to document the server's REST API. This can be viewed at `http://localhost:3000/explorer`
 
 ## Running the Client in Development
 To run the Vue client in development mode on `http://localhost:8080`

@@ -94,7 +94,6 @@ export default {
       this.uploadingPhoto = true
       const blob = await this.croppa.promisedBlob('image/jpeg', 0.9)
       const response = await UploadService.uploadFile(blob)
-      debugger
       this.$emit('set-photo', response.key)
       if (!this.isRegistration) {
         await UserService.save(this.user)
