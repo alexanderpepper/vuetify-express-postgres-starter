@@ -1,24 +1,9 @@
-const db = require('../models')
-const config = require('../config/auth.config')
-const User = db.user
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
-const emailService = require('../services/email.service')
-const smsService = require('../services/sms.service')
-const { v4: uuid } = require('uuid')
-const TOKEN_VALIDITY_PERIOD = 86400
-const { withoutNullsOrKeys } = require('../utilities/object.utilities')
-const { Op } = require('sequelize')
 const { obscuredPhone, obscuredEmail } = require('../utilities/user.utilities')
+const UserService = require('../services/user.service')
+const JwtService = require('../services/jwt.service')
 
 exports.signUp = async (req, res) => {
-  const user = await User.create({
-    ...withoutNullsOrKeys(req.body, ['passwordResetCode']),
-    password: bcrypt.hashSync(req.body.password, 8),
-    activationCode: uuid(),
-    isActivated: false
-  })
-  await user.setRoles([1])
+  await UserService.create(req.body)
   res.json({
     status: 200,
     messages: ['User was registered successfully!']
@@ -26,21 +11,14 @@ exports.signUp = async (req, res) => {
 }
 
 exports.signIn = async (req, res) => {
-  const { identifier } = req.body
-  const user = await User.findOne({
-    where: {
-      [Op.or]: [
-        { email: identifier },
-        { username: identifier }
-      ]
-    },
-    raw: true
-  })
-  if (user && bcrypt.compareSync(req.body.password, user.password)) {
+  const user = UserService.findByIdentifier(req.body.identifier)
+  if (user && UserService.validatePassword(req.body.password, user.password)) {
     if (user.isActivated) {
-      const token = jwt.sign({ id: user.id }, config.secret, { expiresIn: TOKEN_VALIDITY_PERIOD })
-      const expirationDate = new Date().getTime() + TOKEN_VALIDITY_PERIOD
-      res.json({ id: user.id, token, expirationDate })
+      res.json({
+        id: user.id,
+        token: JwtService.getToken(user),
+        expirationDate: JwtService.getExpirationDate()
+      })
     } else {
       res.status(403).send({
         status: 403,
@@ -60,33 +38,25 @@ exports.signIn = async (req, res) => {
 }
 
 exports.changePassword = async (req, res) => {
-  const user = await User.findOne({ where: { id: req.userId } })
-  if (user && bcrypt.compareSync(req.body.oldPassword, user.password)) {
-    user.password = bcrypt.hashSync(req.body.newPassword, 8)
-    user.save()
+  const success = await UserService.changePassword({
+    id: req.userId,
+    oldPassword: req.body.oldPassword,
+    newPassword: req.body.newPassword
+  })
+  if (success) {
     res.json({ messages: ['Password updated successfully'] })
+  } else {
+    res.status(401).send({
+      status: 401,
+      messages: ['Invalid password']
+    })
   }
 }
 
 exports.getSecurityQuestions = async (req, res) => {
-  const { identifier, phone, birthday } = req.body
-  const user = await User.findOne({
-    attributes: ['securityQuestion1', 'securityQuestion2'],
-    where: {
-      [Op.and]: [
-        {
-          [Op.or]: [
-            { username: identifier },
-            { email: identifier }
-          ]
-        },
-        { phone },
-        { birthday }
-      ]
-    }
-  })
+  const user = await UserService.getSecurityQuestions(req.body)
   if (user) {
-    res.json(user.get({ plain: true }))
+    res.json(user)
   } else {
     res.status(400).send({
       status: 400,
@@ -96,14 +66,8 @@ exports.getSecurityQuestions = async (req, res) => {
 }
 
 exports.activate = async (req, res) => {
-  const { activationCode } = req.body
-  const user = await User.findOne({
-    where: { activationCode }
-  })
-  if (user) {
-    user.isActivated = true
-    user.activationCode = null
-    user.save()
+  const success = await UserService.activate(req.body)
+  if (success) {
     res.json({
       status: 200,
       messages: ['User successfully activated.']
@@ -117,21 +81,8 @@ exports.activate = async (req, res) => {
 }
 
 exports.sendActivationLink = async (req, res) => {
-  const { username, email, identifier, sendViaSms } = req.body
-  const user = await User.findOne({
-    where: {
-      [Op.or]: [
-        { username: username || identifier },
-        { email: email || identifier }
-      ]
-    }
-  })
-  if (user) {
-    if (sendViaSms) {
-      await smsService.sendActivationLink(user)
-    } else {
-      await emailService.sendActivationLink(user)
-    }
+  const success = await UserService.sendActivationLink(req.body)
+  if (success) {
     res.json({
       status: 200,
       messages: ['Activation link sent!']
@@ -145,34 +96,11 @@ exports.sendActivationLink = async (req, res) => {
 }
 
 exports.sendPasswordResetLink = async (req, res) => {
-  const { identifier, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2, sendViaSms } = req.body
-  const user = await User.findOne({
-    where: {
-      [Op.and]: [
-        {
-          [Op.or]: [
-            { username: identifier },
-            { email: identifier }
-          ]
-        },
-        { securityQuestion1 },
-        { securityQuestion2 },
-        { securityAnswer1 },
-        { securityAnswer2 }
-      ]
-    }
-  })
-  if (user) {
-    user.passwordResetCode = uuid()
-    user.save()
-    if (sendViaSms) {
-      await smsService.sendPasswordResetLink(user)
-    } else {
-      await emailService.sendPasswordResetLink(user)
-    }
+  const success = UserService.sendPasswordResetLink(req.body)
+  if (success) {
     res.json({
       status: 200,
-      messages: [`Password reset link sent via ${sendViaSms ? 'SMS' : 'email'}`]
+      messages: [`Password reset link sent via ${req.body.sendViaSms ? 'SMS' : 'email'}`]
     })
   } else {
     res.status(400).send({
@@ -183,24 +111,7 @@ exports.sendPasswordResetLink = async (req, res) => {
 }
 
 exports.verifySecurityQuestions = async (req, res) => {
-  const { identifier, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2 } = req.body
-  const user = await User.findOne({
-    attributes: ['email', 'phone'],
-    where: {
-      [Op.and]: [
-        {
-          [Op.or]: [
-            { username: identifier },
-            { email: identifier }
-          ]
-        },
-        { securityQuestion1 },
-        { securityQuestion2 },
-        { securityAnswer1 },
-        { securityAnswer2 }
-      ]
-    }
-  })
+  const user = UserService.verifySecurityQuestions(req.body)
   if (user) {
     res.json({
       obscuredEmail: obscuredEmail(user),
@@ -215,15 +126,7 @@ exports.verifySecurityQuestions = async (req, res) => {
 }
 
 exports.getSendOptions = async (req, res) => {
-  const { phone, birthday } = req.body
-  const user = await User.findOne({
-    where: {
-      [Op.and]: [
-        { phone },
-        { birthday }
-      ]
-    }
-  })
+  const user = UserService.getSendOptions(req.body)
   if (user) {
     res.json({ obscuredEmail: obscuredEmail(user) })
   } else {
@@ -235,24 +138,11 @@ exports.getSendOptions = async (req, res) => {
 }
 
 exports.sendUsername = async (req, res) => {
-  const { phone, birthday, sendViaSms } = req.body
-  const user = await User.findOne({
-    where: {
-      [Op.and]: [
-        { phone },
-        { birthday }
-      ]
-    }
-  })
-  if (user) {
-    if (sendViaSms) {
-      await smsService.sendUsername(user)
-    } else {
-      await emailService.sendUsername(user)
-    }
+  const success = UserService.sendUsername(req.body)
+  if (success) {
     res.json({
       status: 200,
-      messages: [`Username sent via ${sendViaSms ? 'SMS' : 'email'}`]
+      messages: [`Username sent via ${req.body.sendViaSms ? 'SMS' : 'email'}`]
     })
   } else {
     res.status(400).send({
@@ -263,29 +153,14 @@ exports.sendUsername = async (req, res) => {
 }
 
 exports.resetPassword = async (req, res) => {
-  const { identifier, password, passwordResetCode } = req.body
-  const user = await User.findOne({
-    where: {
-      [Op.and]: [
-        {
-          [Op.or]: [
-            { username: identifier },
-            { email: identifier }
-          ]
-        },
-        { passwordResetCode }
-      ]
-    }
-  })
+  const user = UserService.resetPassword(req.body)
   if (user) {
-    user.passwordResetCode = null
-    user.password = bcrypt.hashSync(password, 8)
-    user.save()
-
     if (user.isActivated) {
-      const token = jwt.sign({ id: user.id }, config.secret, { expiresIn: TOKEN_VALIDITY_PERIOD })
-      const expirationDate = new Date().getTime() + TOKEN_VALIDITY_PERIOD
-      res.json({ id: user.id, token, expirationDate })
+      res.json({
+        id: user.id,
+        token: JwtService.getToken(user),
+        expirationDate: JwtService.getExpirationDate()
+      })
     } else {
       res.status(403).send({
         status: 403,
