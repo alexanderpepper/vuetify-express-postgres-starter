@@ -1,10 +1,5 @@
-const db = require('../models')
-const Role = db.role
+const RoleService = require('../services/role.service')
 
 exports.all = async (req, res) => {
-  const roles = await Role.findAll({
-    attributes: ['id', 'name'],
-    raw: true
-  })
-  res.json(roles)
+  res.json(RoleService.all())
 }

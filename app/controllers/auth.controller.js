@@ -3,7 +3,7 @@ const UserService = require('../services/user.service')
 const JwtService = require('../services/jwt.service')
 
 exports.signUp = async (req, res) => {
-  await UserService.create(req.body)
+  await UserService.register(req.body)
   res.json({
     status: 200,
     messages: ['User was registered successfully!']
