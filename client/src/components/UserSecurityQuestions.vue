@@ -12,7 +12,8 @@
 export default {
   name: 'userSecurityQuestions',
   props: {
-    user: Object
+    user: Object,
+    errors: Object
   }
 }
 </script>

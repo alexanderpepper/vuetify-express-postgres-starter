@@ -2,7 +2,7 @@
   .user.pa-md-12.pa-sm-8.pa-xs-0.max-width-800
     v-card.elevation-12(:class='{ "elevation-0": $vuetify.breakpoint.xsOnly }')
       v-card-text
-        v-layout.mb-4(wrap, align-center)
+        .d-flex.flex-wrap.mb-4
           .d-flex.headline
             span.font-weight-light(v-text='title')
             v-icon.align-self-center chevron_right
@@ -100,7 +100,8 @@ export default {
     title: '',
     roles: [],
     user: UserStructure(),
-    oldRoles: []
+    oldRoles: [],
+    errors: {}
   }),
   async created () {
     try {

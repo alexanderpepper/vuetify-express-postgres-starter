@@ -42,6 +42,18 @@ class UserService extends BaseService {
     return this.GET(api.user(id))
   }
 
+  static validateSignUpCredentials (user) {
+    return this.POST(api.validateSignUpCredentials, user)
+  }
+
+  static validateSignUpPassword (user) {
+    return this.POST(api.validateSignUpPassword, user)
+  }
+
+  static validateSignUpSecurityQuestions (user) {
+    return this.POST(api.validateSignUpSecurityQuestions, user)
+  }
+
   static register (user) {
     delete user.confirmPassword
     return this.POST(api.signUp, user)

@@ -1,13 +1,19 @@
 <template lang="pug">
   .user-phone
-    v-layout
-      v-text-field(label='Phone Number',
-        v-model='maskedPhone',
-        v-mask='user.isInternationalPhone ? "+#####################" : "(###) ### - ####"',
-        type='tel',
-        :placeholder='showPlaceholder ? user.isInternationalPhone ? "+888 8888888888" : "(888) 888 - 8888" : ""',
-        @keyup.enter='isNextEnabled && step++')
-      v-select.phone-format-select(:items='phoneFormats', item-value='isInternational', item-text='text' v-model='user.isInternationalPhone')
+    v-text-field(
+      label='Phone Number'
+      v-model='maskedPhone'
+      v-mask='user.isInternationalPhone ? "+#####################" : "(###) ### - ####"'
+      type='tel'
+      :error-messages='errors.phone'
+      :placeholder='showPlaceholder ? user.isInternationalPhone ? "+888 8888888888" : "(888) 888 - 8888" : ""'
+      @keyup.enter='$emit("next")')
+      v-select.phone-format-select(
+        v-model='user.isInternationalPhone'
+        item-value='isInternational'
+        item-text='text'
+        :items='phoneFormats'
+        :error='errors.phone && errors.phone.length > 0')
 </template>
 
 <script>
@@ -18,7 +24,8 @@ export default {
   directives: { mask },
   props: {
     user: Object,
-    showPlaceholder: Boolean
+    showPlaceholder: Boolean,
+    errors: Object
   },
   data: () => ({
     maskedPhone: '',
@@ -30,6 +37,7 @@ export default {
   watch: {
     maskedPhone () {
       this.$emit('set-phone', this.unmaskText(this.maskedPhone))
+      this.$emit('clear-errors')
     },
     'user.id' () {
       const phone = this.user.phone

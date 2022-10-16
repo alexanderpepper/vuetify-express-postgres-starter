@@ -39,8 +39,4 @@ const isAdmin = async (req, res, next) => {
   })
 }
 
-const authJwt = {
-  verifyToken: verifyToken,
-  isAdmin: isAdmin
-}
-module.exports = authJwt
+module.exports = { verifyToken, isAdmin }

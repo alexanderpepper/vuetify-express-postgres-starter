@@ -2,6 +2,9 @@ const host = process.env.VUE_APP_API_URL
 
 export default {
   signUp: `${host}/sign-up`,
+  validateSignUpCredentials: `${host}/sign-up/validate/credentials`,
+  validateSignUpPassword: `${host}/sign-up/validate/password`,
+  validateSignUpSecurityQuestions: `${host}/sign-up/validate/security-questions`,
   signIn: `${host}/sign-in`,
   activate: `${host}/activate`,
   sendActivationLink: `${host}/send-activation-link`,

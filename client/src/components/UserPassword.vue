@@ -9,7 +9,8 @@
 export default {
   name: 'userPassword',
   props: {
-    user: Object
+    user: Object,
+    errors: Object
   },
   data: () => ({
     hidePassword: true,

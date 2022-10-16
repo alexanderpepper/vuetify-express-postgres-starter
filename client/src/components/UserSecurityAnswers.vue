@@ -11,7 +11,8 @@
 export default {
   name: 'userSecurityAnswers',
   props: {
-    user: Object
+    user: Object,
+    errors: Object
   }
 }
 </script>

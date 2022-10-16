@@ -121,7 +121,7 @@ exports.verifySecurityQuestions = async (req, res) => {
   } else {
     res.status(400).send({
       status: 400,
-      messages: ['Account not found']
+      messages: ['One or more security questions answered incorrectly']
     })
   }
 }

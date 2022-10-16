@@ -12,7 +12,6 @@ import userContactMixin from '@/mixins/userContactMixin'
 
 export default {
   name: 'passwordResetLinkSent',
-  mixins: [userContactMixin
-  ]
+  mixins: [userContactMixin]
 }
 </script>

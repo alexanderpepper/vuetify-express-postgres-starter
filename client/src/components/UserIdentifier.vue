@@ -1,15 +1,27 @@
 <template lang="pug">
   .user-identifier
-    v-text-field(label='Name', v-model='user.name', required, autocomplete='newName')
-    v-text-field(label='Username', v-model='user.username', required, autocomplete='newUsername')
-    v-text-field(type='email', label='Email Address', v-model='user.email', required, autocomplete='newEmail')
+    v-text-field(label='Name' v-model='user.name' required autocomplete='newName' :error-messages='errors.name')
+    v-text-field(label='Username' v-model='user.username' required autocomplete='newUsername' :error-messages='errors.username')
+    v-text-field(type='email' label='Email Address' v-model='user.email' required autocomplete='newEmail' :error-messages='errors.email')
 </template>
 
 <script>
 export default {
   name: 'userIdentifier',
   props: {
-    user: Object
+    user: Object,
+    errors: Object
+  },
+  watch: {
+    'user.name' () {
+      this.$emit('clear-errors', 'name')
+    },
+    'user.username' () {
+      this.$emit('clear-errors', 'username')
+    },
+    'user.email' () {
+      this.$emit('clear-errors', 'email')
+    }
   }
 }
 </script>

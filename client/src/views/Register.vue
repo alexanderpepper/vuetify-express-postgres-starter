@@ -5,9 +5,20 @@
       v-window(v-model='step')
         v-window-item(:value='steps.credentials')
           v-card-text
-            user-identifier(:user='user')
-            user-birthday(:user='user')
-            user-phone(:user='user' @set-phone='phone => (user.phone = phone)')
+            user-identifier(
+              :user='user'
+              :errors='errors'
+              @clear-errors='key => errors[key] = []')
+            user-birthday(
+              :user='user'
+              :errors='errors'
+              @set-birthday='birthday => (user.birthday = birthday)'
+              @clear-errors='errors.birthday = []')
+            user-phone(
+              :user='user'
+              :errors='errors'
+              @set-phone='phone => (user.phone = phone)'
+              @clear-errors='errors.phone = []')
         v-window-item(:value='steps.password')
           v-card-text
             user-password(:user='user')
@@ -29,7 +40,7 @@
       v-card-actions(v-if='step < steps.done')
         v-btn(v-if='step > 1', text, @click='step--') Back
         v-spacer
-        v-btn(v-if='step < steps.address', outlined, @click='step++', :disabled='!isNextEnabled') Next: {{ nextButtonTitle }}
+        v-btn(v-if='step < steps.address', outlined, @click='next') Next: {{ nextButtonTitle }}
         v-btn(v-if='step === steps.address', outlined, @click='save')  Next: {{ nextButtonTitle }}
         v-btn(v-if='step === steps.activate', outlined, @click='sendActivationLink')  Next: {{ nextButtonTitle }}
     .create-account.mx-auto.mt-6.text-center(v-if='isRegisterButtonShown')
@@ -41,7 +52,6 @@
 
 <script>
 import UserService from '../services/UserService'
-import UserValidationService from '../services/UserValidationService'
 import UserStructure from '../constants/user-structure'
 import UserAddress from '../components/UserAddress'
 import UserBirthday from '../components/UserBirthday'
@@ -78,7 +88,8 @@ export default {
       address: 5,
       activate: 6,
       done: 7
-    }
+    },
+    errors: {}
   }),
   computed: {
     currentTitle () {
@@ -106,21 +117,25 @@ export default {
     isRegisterButtonShown () {
       return this.step > this.steps.securityQuestions &&
         [this.steps.done, this.steps.activate].indexOf(this.step) === -1
-    },
-    isNextEnabled () {
-      if (this.step === this.steps.credentials) {
-        return UserValidationService.hasValidPrimaryCredentials(this.user) &&
-          UserValidationService.hasValidBirthday(this.user) &&
-          UserValidationService.hasValidPhone(this.user)
-      } else if (this.step === this.steps.password) {
-        return UserValidationService.hasValidPassword(this.user)
-      } else if (this.step === this.steps.securityQuestions) {
-        return UserValidationService.hasValidSecurityQuestions(this.user)
-      }
-      return true
     }
   },
   methods: {
+    async next () {
+      const proceed = () => this.step++
+      const stepValidationMap = {
+        [this.steps.credentials]: UserService.validateSignUpCredentials.bind(UserService),
+        [this.steps.password]: UserService.validateSignUpPassword.bind(UserService),
+        [this.steps.securityQuestions]: UserService.validateSignUpSecurityQuestions.bind(UserService)
+      }
+      const validationFn = stepValidationMap[this.step]
+      if (validationFn) {
+        validationFn(this.user)
+          .then(proceed)
+          .catch(({ validationErrors }) => (this.errors = validationErrors))
+      } else {
+        proceed()
+      }
+    },
     async save () {
       try {
         await UserService.register(this.user)

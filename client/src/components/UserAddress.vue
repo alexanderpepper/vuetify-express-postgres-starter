@@ -15,7 +15,8 @@ import countries from '../constants/countries'
 export default {
   name: 'userAddress',
   props: {
-    user: Object
+    user: Object,
+    errors: Object
   },
   data: () => ({
     states,
