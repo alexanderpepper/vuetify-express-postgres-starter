@@ -1,5 +1,5 @@
 <template lang="pug">
-  .edit-user-photo.text-center
+  .edit-user-photo.text-center.pt-2
     div(v-if='showCroppa')
       croppa(
         :initial-image='cameraImage'
@@ -7,6 +7,7 @@
         :height='200'
         :prevent-white-space='true'
         v-model='croppa'
+        ref='croppa'
         remove-button-color='gray'
         :remove-button-size='20'
         :placeholder-font-size='16'

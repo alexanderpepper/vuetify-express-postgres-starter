@@ -19,7 +19,7 @@ app.use(fileUpload())
 require('./app/routes/auth.routes')(app)
 require('./app/routes/user.routes')(app)
 require('./app/routes/role.routes')(app)
-require('./app/routes/upload.routes')(app)
+require('./app/routes/file.routes')(app)
 
 app.use((err, req, res, next) => {
   if (!isProduction) {

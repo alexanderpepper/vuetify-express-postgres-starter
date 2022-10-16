@@ -39,5 +39,8 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   await UserService.delete({ id: req.params.id })
-  res.json('Deleted successfully')
+  res.json({
+    status: 200,
+    messages: ['Deleted successfully']
+  })
 }

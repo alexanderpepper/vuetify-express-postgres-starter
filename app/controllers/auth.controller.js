@@ -1,9 +1,9 @@
 const { obscuredPhone, obscuredEmail } = require('../utilities/user.utilities')
-const UserService = require('../services/user.service')
+const AuthService = require('../services/auth.service')
 const JwtService = require('../services/jwt.service')
 
 exports.signUp = async (req, res) => {
-  await UserService.register(req.body)
+  await AuthService.register(req.body)
   res.json({
     status: 200,
     messages: ['User was registered successfully!']
@@ -11,8 +11,8 @@ exports.signUp = async (req, res) => {
 }
 
 exports.signIn = async (req, res) => {
-  const user = UserService.findByIdentifier(req.body.identifier)
-  if (user && UserService.validatePassword(req.body.password, user.password)) {
+  const user = await AuthService.findByIdentifier(req.body.identifier)
+  if (user && AuthService.validatePassword(req.body.password, user.password)) {
     if (user.isActivated) {
       res.json({
         id: user.id,
@@ -38,7 +38,7 @@ exports.signIn = async (req, res) => {
 }
 
 exports.changePassword = async (req, res) => {
-  const success = await UserService.changePassword({
+  const success = await AuthService.changePassword({
     id: req.userId,
     oldPassword: req.body.oldPassword,
     newPassword: req.body.newPassword
@@ -54,7 +54,7 @@ exports.changePassword = async (req, res) => {
 }
 
 exports.getSecurityQuestions = async (req, res) => {
-  const user = await UserService.getSecurityQuestions(req.body)
+  const user = await AuthService.getSecurityQuestions(req.body)
   if (user) {
     res.json(user)
   } else {
@@ -66,7 +66,7 @@ exports.getSecurityQuestions = async (req, res) => {
 }
 
 exports.activate = async (req, res) => {
-  const success = await UserService.activate(req.body)
+  const success = await AuthService.activate(req.body)
   if (success) {
     res.json({
       status: 200,
@@ -81,7 +81,7 @@ exports.activate = async (req, res) => {
 }
 
 exports.sendActivationLink = async (req, res) => {
-  const success = await UserService.sendActivationLink(req.body)
+  const success = await AuthService.sendActivationLink(req.body)
   if (success) {
     res.json({
       status: 200,
@@ -96,7 +96,7 @@ exports.sendActivationLink = async (req, res) => {
 }
 
 exports.sendPasswordResetLink = async (req, res) => {
-  const success = UserService.sendPasswordResetLink(req.body)
+  const success = await AuthService.sendPasswordResetLink(req.body)
   if (success) {
     res.json({
       status: 200,
@@ -111,7 +111,7 @@ exports.sendPasswordResetLink = async (req, res) => {
 }
 
 exports.verifySecurityQuestions = async (req, res) => {
-  const user = UserService.verifySecurityQuestions(req.body)
+  const user = await AuthService.verifySecurityQuestions(req.body)
   if (user) {
     res.json({
       obscuredEmail: obscuredEmail(user),
@@ -126,7 +126,7 @@ exports.verifySecurityQuestions = async (req, res) => {
 }
 
 exports.getSendOptions = async (req, res) => {
-  const user = UserService.getSendOptions(req.body)
+  const user = await AuthService.getSendOptions(req.body)
   if (user) {
     res.json({ obscuredEmail: obscuredEmail(user) })
   } else {
@@ -138,7 +138,7 @@ exports.getSendOptions = async (req, res) => {
 }
 
 exports.sendUsername = async (req, res) => {
-  const success = UserService.sendUsername(req.body)
+  const success = await AuthService.sendUsername(req.body)
   if (success) {
     res.json({
       status: 200,
@@ -153,7 +153,7 @@ exports.sendUsername = async (req, res) => {
 }
 
 exports.resetPassword = async (req, res) => {
-  const user = UserService.resetPassword(req.body)
+  const user = await AuthService.resetPassword(req.body)
   if (user) {
     if (user.isActivated) {
       res.json({

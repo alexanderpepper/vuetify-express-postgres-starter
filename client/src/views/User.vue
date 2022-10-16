@@ -69,7 +69,6 @@ import UserAddress from '../components/UserAddress'
 import UserIdentifier from '../components/UserIdentifier'
 import UserPassword from '../components/UserPassword'
 import UserPhone from '../components/UserPhone'
-import UserPhoto from '../components/UserPhoto'
 import UserSecurityQuestions from '../components/UserSecurityQuestions'
 import UserValidationService from '../services/UserValidationService'
 import UserBirthday from '../components/UserBirthday'
@@ -87,7 +86,6 @@ export default {
     UserIdentifier,
     UserPassword,
     UserPhone,
-    UserPhoto,
     UserSecurityQuestions
   },
   data: () => ({

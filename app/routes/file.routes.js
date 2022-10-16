@@ -1,4 +1,4 @@
-const controller = require('../controllers/upload.controller')
+const controller = require('../controllers/file.controller')
 
 module.exports = app => {
   app.use((req, res, next) => {
