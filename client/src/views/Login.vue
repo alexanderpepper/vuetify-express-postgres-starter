@@ -8,7 +8,7 @@
             form(@submit.prevent='login')
               input(type='text' name='username' style='opacity: 0; position: absolute; pointer-events: none;')
               input(type='email' name='email' style='opacity: 0; position: absolute; pointer-events: none;')
-              v-text-field.pt-0(label='Username or Email' v-model='user.identifier' required autocomplete='off' @keyup.enter='loginClicked')
+              v-text-field.pt-0(label='Username' v-model='user.username' required autocomplete='off' @keyup.enter='loginClicked')
               v-text-field(label='Password' v-model='user.password' :type='hidePassword ? "password" : "text"' :append-icon='hidePassword ? "visibility_off" : "visibility"' @click:append="() => (hidePassword = !hidePassword)" @keyup.enter='loginClicked' required autocomplete='off')
               v-btn.my-6(large block outlined @click='loginClicked' :disabled='!isValidLoginCredentials') Sign In
             v-alert.my-6(type='error' v-model='error' outlined)
@@ -36,7 +36,7 @@
         v-window-item(:value='steps.forgotPassword')
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide all of the following information
-            v-text-field(v-model='user.identifier' label='Username or email address')
+            v-text-field(v-model='user.username' label='Username')
             user-phone(:show-placeholder='true' :user='user' @set-phone='phone => (user.phone = phone)')
             user-birthday(:show-placeholder='true' :user='user')
         v-window-item(:value='steps.securityQuestions')
@@ -146,7 +146,7 @@ export default {
         return UserValidationService.hasValidPhone(this.user) &&
           UserValidationService.hasValidBirthday(this.user)
       } else if (this.step === this.steps.forgotPassword) {
-        return this.user.identifier &&
+        return this.user.username &&
             UserValidationService.hasValidPhone(this.user) &&
             UserValidationService.hasValidBirthday(this.user)
       } else if (this.step === this.steps.securityQuestions) {
@@ -256,7 +256,7 @@ export default {
     },
     loginError (error) {
       this.error = true
-      this.errors = error.messages
+      this.errors = error.messages || ['Unknown error occurred']
       if (error.status === 403) {
         this.showResendCode = true
         Object.assign(this.user, error.user)

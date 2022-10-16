@@ -6,7 +6,7 @@ export default {
   }),
   computed: {
     isValidLoginCredentials () {
-      return this.user.identifier && this.user.password
+      return this.user.username && this.user.password
     }
   }
 }

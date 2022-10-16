@@ -31,7 +31,7 @@ export default {
   },
   actions: {
     async login ({ commit, dispatch }, credentials) {
-      if (credentials.identifier && credentials.password) {
+      if (credentials.username && credentials.password) {
         try {
           const response = await SignInService.signIn(credentials)
           commit('setToken', response)

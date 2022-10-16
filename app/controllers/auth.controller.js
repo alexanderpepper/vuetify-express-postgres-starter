@@ -1,5 +1,6 @@
 const { obscuredPhone, obscuredEmail } = require('../utilities/user.utilities')
 const AuthService = require('../services/auth.service')
+const UserService = require('../services/user.service')
 const JwtService = require('../services/jwt.service')
 
 exports.signUp = async (req, res) => {
@@ -11,7 +12,7 @@ exports.signUp = async (req, res) => {
 }
 
 exports.signIn = async (req, res) => {
-  const user = await AuthService.findByIdentifier(req.body.identifier)
+  const user = await UserService.findByUsername(req.body.username)
   if (user && AuthService.validatePassword(req.body.password, user.password)) {
     if (user.isActivated) {
       res.json({

@@ -4,7 +4,6 @@ const User = db.user
 const Role = db.role
 const { withoutNullsOrKeys, withoutKeys } = require('../utilities/object.utilities')
 const bcrypt = require('bcryptjs')
-const { Op } = require('sequelize')
 const ACCOUNT_ATTRIBUTES = { exclude: ['password', 'passwordResetCode', 'activationCode'] }
 const ME_ATTRIBUTES = ['id', 'name', 'email', 'photo']
 
@@ -76,16 +75,8 @@ exports.updateAccount = async user => {
   return await User.update(data, { where: { id: user.id } })
 }
 
-exports.findByIdentifier = async identifier => {
-  return await User.findOne({
-    where: {
-      [Op.or]: [
-        { email: identifier },
-        { username: identifier }
-      ]
-    },
-    raw: true
-  })
+exports.findByUsername = async username => {
+  return await User.findOne({ where: { username } })
 }
 
 exports.findById = async id => {

@@ -3,8 +3,8 @@ import api from '../constants/api.js'
 
 class SignInService extends BaseService {
   static signIn (user) {
-    const { identifier, password } = user
-    return this.POST(api.signIn, { identifier, password })
+    const { username, password } = user
+    return this.POST(api.signIn, { username, password })
   }
 }
 

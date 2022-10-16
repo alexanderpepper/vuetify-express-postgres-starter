@@ -2,8 +2,8 @@
   .quick-login
     v-text-field.login-field.d-inline-block.pt-0.mr-4(
       height='32'
-      placeholder='Username or Email'
-      v-model='user.identifier'
+      placeholder='Username'
+      v-model='user.username'
       required
       hide-details
       autocomplete='off'

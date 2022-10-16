@@ -22,24 +22,8 @@ exports.encryptPassword = password => {
   return bcrypt.hashSync(password, 8)
 }
 
-exports.findByIdentifier = async identifier => {
-  return await User.findOne({
-    where: {
-      [Op.or]: [
-        { email: identifier },
-        { username: identifier }
-      ]
-    },
-    raw: true
-  })
-}
-
-exports.findById = async id => {
-  return await User.findOne({ where: { id } })
-}
-
-exports.validatePassword = (sentPassword, existingPassword) => {
-  return sentPassword && existingPassword && bcrypt.compareSync(sentPassword, existingPassword)
+exports.validatePassword = (sentPassword, actualPassword) => {
+  return sentPassword && actualPassword && bcrypt.compareSync(sentPassword, actualPassword)
 }
 
 exports.changePassword = async ({ id, oldPassword, newPassword }) => {
@@ -53,17 +37,12 @@ exports.changePassword = async ({ id, oldPassword, newPassword }) => {
   }
 }
 
-exports.getSecurityQuestions = async ({ identifier, phone, birthday }) => {
+exports.getSecurityQuestions = async ({ username, phone, birthday }) => {
   const user = await User.findOne({
     attributes: ['securityQuestion1', 'securityQuestion2'],
     where: {
       [Op.and]: [
-        {
-          [Op.or]: [
-            { username: identifier },
-            { email: identifier }
-          ]
-        },
+        { username },
         { phone },
         { birthday }
       ]
@@ -90,15 +69,8 @@ exports.activate = async ({ activationCode }) => {
   }
 }
 
-exports.sendActivationLink = async ({ username, email, identifier, sendViaSms }) => {
-  const user = await User.findOne({
-    where: {
-      [Op.or]: [
-        { username: username || identifier },
-        { email: email || identifier }
-      ]
-    }
-  })
+exports.sendActivationLink = async ({ username, sendViaSms }) => {
+  const user = await User.findOne({ where: { username } })
   if (user) {
     if (sendViaSms) {
       await smsService.sendActivationLink(user)
@@ -111,16 +83,11 @@ exports.sendActivationLink = async ({ username, email, identifier, sendViaSms })
   }
 }
 
-exports.sendPasswordResetLink = async ({ identifier, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2, sendViaSms }) => {
+exports.sendPasswordResetLink = async ({ username, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2, sendViaSms }) => {
   const user = await User.findOne({
     where: {
       [Op.and]: [
-        {
-          [Op.or]: [
-            { username: identifier },
-            { email: identifier }
-          ]
-        },
+        { username },
         { securityQuestion1 },
         { securityQuestion2 },
         { securityAnswer1 },
@@ -163,17 +130,12 @@ exports.sendUsername = async ({ phone, birthday, sendViaSms }) => {
   }
 }
 
-exports.verifySecurityQuestions = async ({ identifier, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2 }) => {
+exports.verifySecurityQuestions = async ({ username, securityQuestion1, securityQuestion2, securityAnswer1, securityAnswer2 }) => {
   return await User.findOne({
     attributes: ['email', 'phone'],
     where: {
       [Op.and]: [
-        {
-          [Op.or]: [
-            { username: identifier },
-            { email: identifier }
-          ]
-        },
+        { username },
         { securityQuestion1 },
         { securityQuestion2 },
         { securityAnswer1 },
@@ -194,16 +156,11 @@ exports.getSendOptions = async ({ phone, birthday }) => {
   })
 }
 
-exports.resetPassword = async ({ identifier, password, passwordResetCode }) => {
+exports.resetPassword = async ({ username, password, passwordResetCode }) => {
   const user = await User.findOne({
     where: {
       [Op.and]: [
-        {
-          [Op.or]: [
-            { username: identifier },
-            { email: identifier }
-          ]
-        },
+        { username },
         { passwordResetCode }
       ]
     }
