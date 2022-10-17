@@ -21,16 +21,28 @@
               @clear-errors='errors.phone = []')
         v-window-item(:value='steps.password')
           v-card-text
-            user-password(:user='user')
+            user-password(
+              :user='user'
+              :errors='errors'
+              @clear-errors='key => errors[key] = []')
         v-window-item(:value='steps.securityQuestions')
           v-card-text
-            user-security-questions(:user='user')
+            user-security-questions(
+              :user='user'
+              :errors='errors'
+              @clear-errors='key => errors[key] = []')
         v-window-item(:value='steps.photo')
           v-card-text.text-center
-            edit-user-photo(:user='user', :is-registration='true' @set-photo='photo => (user.photo = photo)')
+            edit-user-photo(
+              :user='user'
+              :is-registration='true'
+              @set-photo='photo => (user.photo = photo)')
         v-window-item(:value='steps.address')
           v-card-text
-            user-address(:user='user')
+            user-address(
+              :user='user'
+              :errors='errors'
+              @clear-errors='key => errors[key] = []')
         v-window-item(:value='steps.activate')
           v-card-text
             send-activation-link(:user='user')

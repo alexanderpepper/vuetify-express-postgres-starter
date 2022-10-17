@@ -106,7 +106,7 @@ exports.addSignUpPasswordValidationErrors = (user, validationErrors) => {
     ]
   }
 
-  if (!this.hasValidPassword(user)) {
+  if (!this.isValidPassword(user.password)) {
     validationErrors.password = [
       ...(validationErrors.password || []),
       'Passwords must be at least 8 characters.'
@@ -120,7 +120,7 @@ exports.addSignUpPasswordValidationErrors = (user, validationErrors) => {
     ]
   }
 
-  if (this.hasMatchingConfirmPassword(user)) {
+  if (!this.hasMatchingConfirmPassword(user)) {
     validationErrors.confirmPassword = [
       ...(validationErrors.confirmPassword || []),
       'Password and confirmation password must match.'
@@ -134,7 +134,6 @@ exports.addSignUpSecurityQuestionValidationErrors = (user, validationErrors) => 
       ...(validationErrors.securityQuestion1 || []),
       'The first security question is required.'
     ]
-    validationErrors.push()
   }
 
   if (!user.securityQuestion2) {
