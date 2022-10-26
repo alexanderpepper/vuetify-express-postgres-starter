@@ -55,12 +55,10 @@ class UserService extends BaseService {
   }
 
   static register (user) {
-    delete user.confirmPassword
     return this.POST(api.signUp, user)
   }
 
   static save (user) {
-    delete user.confirmPassword
     if (user.id) {
       return this.PUT(api.user(user.id), user)
     } else {

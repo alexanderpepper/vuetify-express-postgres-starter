@@ -35,7 +35,7 @@ exports.validateSignUp = async (req, res, next) => {
 
   await UserValidationService.addSignUpGeneralValidationErrors(req.body, validationErrors)
   UserValidationService.addSignUpPasswordValidationErrors(req.body, validationErrors)
-  UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body.validationErrors)
+  UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
     res.status(400).send({ status: 400, validationErrors })

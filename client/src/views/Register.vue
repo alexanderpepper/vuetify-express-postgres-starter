@@ -90,7 +90,7 @@ export default {
     UserSecurityQuestions
   },
   data: () => ({
-    user: Object.assign({}, UserStructure),
+    user: UserStructure(),
     step: 1,
     steps: {
       credentials: 1,

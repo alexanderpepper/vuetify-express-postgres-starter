@@ -16,7 +16,7 @@ const roleRelationship = {
 
 exports.create = async user => {
   const data = {
-    ...withoutNullsOrKeys(user, ['activationCode', 'passwordResetCode']),
+    ...withoutNullsOrKeys(user, ['confirmPassword', 'activationCode', 'passwordResetCode']),
     password: bcrypt.hashSync(user.password, 8)
   }
   const savedUser = await User.create(data)
