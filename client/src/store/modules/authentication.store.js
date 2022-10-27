@@ -30,7 +30,7 @@ export default {
     }
   },
   actions: {
-    async login ({ commit, dispatch }, credentials) {
+    async signIn ({ commit, dispatch }, credentials) {
       if (credentials.username && credentials.password) {
         try {
           const response = await SignInService.signIn(credentials)
@@ -38,7 +38,7 @@ export default {
           dispatch('getCurrentUser')
         } catch (error) {
           dispatch('logout')
-          EventBus.$emit('login-error', error)
+          EventBus.$emit('sign-in-error', error)
           throw error
         }
       } else {

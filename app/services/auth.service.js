@@ -8,7 +8,7 @@ const { Op } = require('sequelize')
 const smsService = require('../services/sms.service')
 const emailService = require('../services/email.service')
 
-exports.register = async user => {
+exports.signUp = async user => {
   const saved = await User.create({
     ...withoutNullsOrKeys(user, ['passwordResetCode']),
     password: module.exports.encryptPassword(user.password),

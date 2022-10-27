@@ -5,6 +5,7 @@
       name='password'
       style='opacity: 0; position: absolute; pointer-events: none;')
     v-text-field(
+      ref='autofocusField'
       label='Password'
       v-model='user.password'
       :type='hidePassword ? "password" : "text"'
@@ -27,8 +28,11 @@
 </template>
 
 <script>
+import autofocusFieldMixin from '@/mixins/autofocusFieldMixin'
+
 export default {
   name: 'userPassword',
+  mixins: [autofocusFieldMixin],
   props: {
     user: Object,
     errors: Object

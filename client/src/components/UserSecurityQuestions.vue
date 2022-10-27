@@ -2,31 +2,35 @@
   .user-security-questions
     .subtitle-2 Security Question 1
     v-text-field(
-      label='Question'
-      v-model='user.securityQuestion1'
       required
+      v-model='user.securityQuestion1'
+      label='Question'
+      ref='autofocusField'
       :error-messages='errors.securityQuestion1')
     v-text-field(
+      required
       label='Answer'
       v-model='user.securityAnswer1'
-      required
       :error-messages='errors.securityAnswer1')
     .subtitle-2 Security Question 2
     v-text-field(
-      label='Question'
-      v-model='user.securityQuestion2'
       required
+      v-model='user.securityQuestion2'
+      label='Question'
       :error-messages='errors.securityQuestion2')
     v-text-field(
-      label='Answer'
-      v-model='user.securityAnswer2'
       required
+      v-model='user.securityAnswer2'
+      label='Answer'
       :error-messages='errors.securityAnswer2')
 </template>
 
 <script>
+import autofocusFieldMixin from '@/mixins/autofocusFieldMixin'
+
 export default {
   name: 'userSecurityQuestions',
+  mixins: [autofocusFieldMixin],
   props: {
     user: Object,
     errors: Object

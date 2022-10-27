@@ -41,7 +41,7 @@
     div(v-else)
       .mb-4.edit-user-photo-container.mx-auto(:style='{ "border-color": $vuetify.theme.dark ? "white" : "black" }')
         img.edit-user-photo-img(:src='photoUrl' v-if='user.photo && !showCroppa', @error='imageLoadError')
-      v-btn(block, small, outlined, @click='isEditing = true', v-if='!isRegistration') Edit Photo
+      v-btn(block, small, outlined, @click='isEditing = true', v-if='!isSignUp') Edit Photo
     .absolute-fill(v-if='showCamera')
       camera(@data-captured='setCameraImage')
 </template>
@@ -61,7 +61,7 @@ export default {
   components: { UploadButton, Camera },
   props: {
     user: Object,
-    isRegistration: Boolean
+    isSignUp: Boolean
   },
   data: () => ({
     photoData: null,
@@ -102,7 +102,7 @@ export default {
       const response = await UploadService.uploadFile(blob)
       this.$emit('set-photo', response.key)
       this.currentUser.photo = response.key
-      if (!this.isRegistration) {
+      if (!this.isSignUp) {
         await UserService.save(this.user)
         EventBus.$emit('show-snackbar', 'Saved')
         this.reset()

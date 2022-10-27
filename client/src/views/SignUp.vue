@@ -1,5 +1,5 @@
 <template lang="pug">
-  .register.pa-md-12.pa-sm-8.pa-xs-0
+  .sign-up.pa-md-12.pa-sm-8.pa-xs-0
     v-card.mx-auto.elevation-12(max-width='400', flat)
       v-card-title.headline(v-if='step < steps.done') {{ currentTitle }}
       v-window(v-model='step')
@@ -35,7 +35,7 @@
           v-card-text.text-center
             edit-user-photo(
               :user='user'
-              :is-registration='true'
+              :is-sign-up='true'
               @set-photo='photo => (user.photo = photo)')
         v-window-item(:value='steps.address')
           v-card-text
@@ -55,7 +55,7 @@
         v-btn(v-if='step < steps.address', outlined, @click='next') Next: {{ nextButtonTitle }}
         v-btn(v-if='step === steps.address', outlined, @click='save')  Next: {{ nextButtonTitle }}
         v-btn(v-if='step === steps.activate', outlined, @click='sendActivationLink')  Next: {{ nextButtonTitle }}
-    .create-account.mx-auto.mt-6.text-center(v-if='isRegisterButtonShown')
+    .create-account.mx-auto.mt-6.text-center(v-if='isCreateAccountNowButtonShown')
       .mx-2
         .caption You've entered all the required information.
         .caption Feel free to skip ahead.
@@ -77,7 +77,7 @@ import ActivationLinkSent from '../components/ActivationLinkSent'
 import EventBus from '@/services/EventBus'
 
 export default {
-  name: 'register',
+  name: 'signUp',
   components: {
     ActivationLinkSent,
     SendActivationLink,
@@ -126,7 +126,7 @@ export default {
         [this.steps.activate]: 'Send Link'
       }[this.step]
     },
-    isRegisterButtonShown () {
+    isCreateAccountNowButtonShown () {
       return this.step > this.steps.securityQuestions &&
         [this.steps.done, this.steps.activate].indexOf(this.step) === -1
     }
@@ -150,7 +150,7 @@ export default {
     },
     async save () {
       try {
-        await UserService.register(this.user)
+        await UserService.signUp(this.user)
         this.step = this.steps.activate
       } catch (error) {
         EventBus.$emit('show-snackbar', error, 'error')

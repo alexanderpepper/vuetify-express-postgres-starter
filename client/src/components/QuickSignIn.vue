@@ -1,36 +1,37 @@
 <template lang="pug">
-  .quick-login
-    v-text-field.login-field.d-inline-block.pt-0.mr-4(
+  .quick-sign-in
+    v-text-field.sign-in-field.d-inline-block.pt-0.mr-4(
       height='32'
       placeholder='Username'
       v-model='user.username'
       required
       hide-details
       autocomplete='off'
-      @keyup.enter='loginClicked')
-    v-text-field.login-field.d-inline-block.pt-0.mr-4(
+      @keyup.enter='signInClicked')
+    v-text-field.sign-in-field.d-inline-block.pt-0.mr-4(
       height='32'
       placeholder='Password'
       v-model='user.password'
       type='password'
-      @keyup.enter='loginClicked'
+      @keyup.enter='signInClicked'
       hide-details
       required
       autocomplete='off')
-    v-btn.d-inline-block(outlined, small, @click='loginClicked') Sign In
+    v-btn.d-inline-block(outlined, small, @click='signInClicked') Sign In
 </template>
 
 <script>
-import loginMixin from '../mixins/loginMixin'
+import signInMixin from '../mixins/signInMixin'
 import { mapActions } from 'vuex'
+
 export default {
-  name: 'quickLogin',
-  mixins: [loginMixin],
+  name: 'quickSignIn',
+  mixins: [signInMixin],
   methods: {
-    ...mapActions(['login']),
-    async loginClicked () {
+    ...mapActions(['signIn']),
+    async signInClicked () {
       try {
-        await this.login(this.user)
+        await this.signIn(this.user)
         this.$router.push({ name: 'home' })
       } catch (error) {
         if (this.$route.name !== 'landing') {
@@ -43,7 +44,7 @@ export default {
 </script>
 
 <style scoped>
-  .login-field {
+  .sign-in-field {
     width: 150px
   }
 </style>

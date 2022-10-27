@@ -54,7 +54,7 @@ class UserService extends BaseService {
     return this.POST(api.validateSignUpSecurityQuestions, user)
   }
 
-  static register (user) {
+  static signUp (user) {
     return this.POST(api.signUp, user)
   }
 

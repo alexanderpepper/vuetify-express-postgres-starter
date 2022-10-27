@@ -14,7 +14,7 @@
         v-if='currentUser.id',
         @logout='logoutClicked',
         @toggle-theme='toggleTheme')
-      quick-login.hidden-xs-only(v-if='userInfoReceived && !currentUser.id')
+      quick-sign-in.hidden-xs-only(v-if='userInfoReceived && !currentUser.id')
       v-btn.ml-2(small, text, icon, v-if='userInfoReceived && !currentUser.id', @click='toggleTheme')
         v-icon invert_colors
     v-main
@@ -28,13 +28,13 @@
 
 <script>
 import MainMenu from './components/MainMenu'
-import QuickLogin from './components/QuickLogin'
+import quickSignIn from './components/QuickSignIn'
 import { mapActions, mapGetters } from 'vuex'
 import EventBus from '@/services/EventBus'
 
 export default {
   name: 'App',
-  components: { MainMenu, QuickLogin },
+  components: { MainMenu, quickSignIn },
   data: () => ({
     unauthenticatedRoutes: ['landing', 'activate', 'resetPassword', 'support'],
     snackbar: false,
@@ -59,7 +59,7 @@ export default {
       }
     }
     this.$store.subscribeAction(async action => {
-      if (action.type === 'loginSuccess') {
+      if (action.type === 'signInSuccess') {
         await this.getCurrentUser()
         await this.$router.push({ name: 'home' })
       }

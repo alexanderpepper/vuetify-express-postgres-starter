@@ -1,16 +1,16 @@
 <template lang="pug">
-  .login.pa-md-12.pa-sm-8.pa-xs-0
+  .sign-in.pa-md-12.pa-sm-8.pa-xs-0
     v-card.mx-auto.elevation-12(max-width='400' :class='{ "elevation-0": $vuetify.breakpoint.xsOnly }')
       v-card-title.headline(v-text='currentTitle')
       v-window(v-model='step')
         v-window-item(:value='steps.signIn')
           v-card-text
-            form(@submit.prevent='login')
+            form(@submit.prevent='signIn')
               input(type='text' name='username' style='opacity: 0; position: absolute; pointer-events: none;')
               input(type='email' name='email' style='opacity: 0; position: absolute; pointer-events: none;')
-              v-text-field.pt-0(label='Username' v-model='user.username' required autocomplete='off' @keyup.enter='loginClicked')
-              v-text-field(label='Password' v-model='user.password' :type='hidePassword ? "password" : "text"' :append-icon='hidePassword ? "visibility_off" : "visibility"' @click:append="() => (hidePassword = !hidePassword)" @keyup.enter='loginClicked' required autocomplete='off')
-              v-btn.my-6(large block outlined @click='loginClicked' :disabled='!isValidLoginCredentials') Sign In
+              v-text-field.pt-0(label='Username' v-model='user.username' required autocomplete='off' @keyup.enter='signInClicked' ref='autofocusField1')
+              v-text-field(label='Password' v-model='user.password' :type='hidePassword ? "password" : "text"' :append-icon='hidePassword ? "visibility_off" : "visibility"' @click:append="() => (hidePassword = !hidePassword)" @keyup.enter='signInClicked' required autocomplete='off')
+              v-btn.my-6(large, block, outlined, @click='signInClicked', :disabled='!isValidSignInCredentials') Sign In
             v-alert.my-6(type='error' v-model='error' outlined)
               div(v-for='(error, index) in errors' :key='index' v-text='error')
             a.d-block.text-center.mb-4.subtitle-1(href='#' v-if='showResendCode' @click='step = steps.sendActivationLink') Resend my activation link
@@ -23,7 +23,7 @@
         v-window-item(:value='steps.forgotUsername')
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide your birthday and phone number
-            user-phone(:show-placeholder='true' :user='user' @set-phone='phone => (user.phone = phone)')
+            user-phone(:show-placeholder='true' :user='user' @set-phone='phone => (user.phone = phone)' ref='autofocusField3')
             user-birthday(:show-placeholder='true' :user='user')
             .text-center
               router-link.subtitle-1(:to='{ name: "support" }') Click here to contact support
@@ -36,7 +36,7 @@
         v-window-item(:value='steps.forgotPassword')
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide all of the following information
-            v-text-field(v-model='user.username' label='Username')
+            v-text-field(v-model='user.username' label='Username' ref='autofocusField6')
             user-phone(:show-placeholder='true' :user='user' @set-phone='phone => (user.phone = phone)')
             user-birthday(:show-placeholder='true' :user='user')
         v-window-item(:value='steps.securityQuestions')
@@ -71,15 +71,15 @@ import PasswordResetLinkSent from '../components/PasswordResetLinkSent'
 import UsernameSent from '../components/UsernameSent'
 import UserSecurityAnswers from '../components/UserSecurityAnswers'
 import UserValidationService from '../services/UserValidationService'
-import loginMixin from '../mixins/loginMixin'
+import signInMixin from '../mixins/signInMixin'
 import UserBirthday from '../components/UserBirthday'
 import UserPhone from '../components/UserPhone'
 import { mapActions } from 'vuex'
 import EventBus from '@/services/EventBus'
-import loginUserStructure from '../constants/login-user-structure'
+import authenticationUserStructure from '../constants/authentication-user-structure'
 
 export default {
-  name: 'login',
+  name: 'signIn',
   components: {
     UserPhone,
     UserBirthday,
@@ -91,7 +91,7 @@ export default {
     SendPasswordResetLink,
     SendActivationLink
   },
-  mixins: [loginMixin],
+  mixins: [signInMixin],
   data: () => ({
     forgotUsername: true,
     step: 1,
@@ -114,8 +114,11 @@ export default {
     showResendCode: false
   }),
   created () {
-    this.user = loginUserStructure()
-    EventBus.$on('login-error', this.loginError)
+    this.user = authenticationUserStructure()
+    EventBus.$on('sign-in-error', this.signInError)
+  },
+  mounted () {
+    this.autofocusFieldForCurrentStep()
   },
   computed: {
     showNext () {
@@ -157,7 +160,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['login']),
+    ...mapActions(['signIn']),
     previous () {
       if ([this.steps.forgotUsernameOrPassword, this.steps.sendActivationLink].indexOf(this.step) > -1) {
         this.step = this.steps.signIn
@@ -166,6 +169,7 @@ export default {
       } else {
         this.step--
       }
+      this.autofocusFieldForCurrentStep()
     },
     next () {
       if (this.step === this.steps.forgotUsernameOrPassword) {
@@ -189,9 +193,20 @@ export default {
       } else {
         this.step++
       }
+      this.autofocusFieldForCurrentStep()
+    },
+    autofocusFieldForCurrentStep () {
+      const autofocusField = this.$refs[`autofocusField${this.step}`]
+      if (autofocusField) {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            autofocusField.$refs.input.focus()
+          })
+        })
+      }
     },
     forgotUsernameOrPassword () {
-      this.user = loginUserStructure()
+      this.user = authenticationUserStructure()
       this.step = this.steps.forgotUsernameOrPassword
     },
     async sendActivationLink () {
@@ -245,16 +260,16 @@ export default {
         EventBus.$emit('show-snackbar', error, 'error')
       }
     },
-    async loginClicked () {
+    async signInClicked () {
       try {
-        await this.login(this.user)
+        await this.signIn(this.user)
         this.error = false
         this.$router.push({ name: 'home' })
       } catch (error) {
-        this.loginError(error)
+        this.signInError(error)
       }
     },
-    loginError (error) {
+    signInError (error) {
       this.error = true
       this.errors = error.messages || ['Unknown error occurred']
       if (error.status === 403) {

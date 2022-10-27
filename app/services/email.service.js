@@ -57,7 +57,7 @@ module.exports = {
         <h1>Your vuetify-express-postgresql-starter Username</h1>
         <p>
           <span>Your vuetify-express-postgresql-starter username is ${user.username}.&nbsp;</span>
-          <a href="${host}/login">Click here to Sign In</a>
+          <a href="${host}/sign-in">Click here to Sign In</a>
         </p>
       `
     })
