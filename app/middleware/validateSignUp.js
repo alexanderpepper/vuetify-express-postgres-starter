@@ -43,3 +43,7 @@ exports.validateSignUp = async (req, res, next) => {
     next()
   }
 }
+
+exports.validateAccountUpdate = async (req, res, next) => {
+
+}

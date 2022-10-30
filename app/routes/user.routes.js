@@ -1,4 +1,4 @@
-const { jwt } = require('../middleware')
+const { jwt, } = require('../middleware')
 const controller = require('../controllers/user.controller')
 
 module.exports = app => {
@@ -8,7 +8,7 @@ module.exports = app => {
   })
   app.get('/api/me', [jwt.verifyToken], controller.me)
   app.get('/api/account', [jwt.verifyToken], controller.account)
-  app.put('/api/account', [jwt.verifyToken], controller.updateAccount)
+  app.put('/api/account', [jwt.verifyToken, ], controller.updateAccount)
   app.get('/api/users', [jwt.verifyToken, jwt.isAdmin], controller.all)
   app.post('/api/users', [jwt.verifyToken, jwt.isAdmin], controller.create)
   app.get('/api/users/:id', [jwt.verifyToken, jwt.isAdmin], controller.get)

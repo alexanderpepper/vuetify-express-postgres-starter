@@ -49,6 +49,11 @@ export default {
   watch: {
     datePickerMenu (val) {
       val && setTimeout(() => (this.activePicker = 'YEAR'))
+    },
+    user (newVal, oldVal) {
+      if (newVal.id && !oldVal.id) {
+        this.datePicked()
+      }
     }
   },
   methods: {

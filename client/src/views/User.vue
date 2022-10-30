@@ -9,16 +9,31 @@
             span.font-weight-thin(v-text='tabTitles[activeTab]')
           v-spacer
           v-btn.hidden-xs-only.mr-2(text, onclick='window.history.back()') Back
-          v-btn(outlined, @click='save', :disabled='!isValid') Save
+          v-btn(outlined, @click='save') Save
         v-tabs(:vertical='$vuetify.breakpoint.smAndUp', v-model='activeTab')
           v-tab(ripple, v-for='tabTitle in tabTitles', :key='tabTitle') {{ tabTitle }}
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
-                user-identifier(:user='user')
-                user-birthday(:user='user')
-                user-phone(:user='user' @set-phone='phone => (user.phone = phone)')
-                user-password(v-if='!user.id', :user='user')
+                user-identifier(
+                  :user='user',
+                  :errors='errors',
+                  @clear-errors='key => errors[key] = []')
+                user-birthday(
+                  :user='user',
+                  :errors='errors',
+                  @set-birthday='birthday => (user.birthday = birthday)',
+                  @clear-errors='key => errors[key] = []')
+                user-phone(
+                  :user='user',
+                  :errors='errors',
+                  @set-phone='phone => (user.phone = phone)',
+                  @clear-errors='errors.phone = []')
+                user-password(
+                  v-if='!user.id',
+                  :user='user',
+                  :errors='errors',
+                  @clear-errors='key => errors[key] = []')
                 div(v-if='!isAccount && currentUser.isAdmin')
                   .caption.grey--text.text--darken-1 Roles
                   v-chip.mr-2(
@@ -48,7 +63,10 @@
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
-                user-security-questions(:user='user')
+                user-security-questions(
+                  :user='user',
+                  :errors='errors',
+                  @clear-errors='key => errors[key] = []')
                 .mt-6(v-if='isAccount')
                   v-btn(block, outlined, :router='true', :to='{ name: "password" }') Change Password
           v-tab-item
@@ -70,7 +88,6 @@ import UserIdentifier from '../components/UserIdentifier'
 import UserPassword from '../components/UserPassword'
 import UserPhone from '../components/UserPhone'
 import UserSecurityQuestions from '../components/UserSecurityQuestions'
-import UserValidationService from '../services/UserValidationService'
 import UserBirthday from '../components/UserBirthday'
 import EditUserPhoto from '../components/EditUserPhoto'
 import { mapGetters } from 'vuex'
@@ -132,12 +149,6 @@ export default {
     },
     isAccount () {
       return this.$route.name === 'account'
-    },
-    isValid () {
-      return UserValidationService.hasValidPrimaryCredentials(this.user) &&
-        UserValidationService.hasValidBirthday(this.user) &&
-        UserValidationService.hasValidSecurityQuestions(this.user) &&
-        UserValidationService.hasValidSecondaryIdentifier(this.user)
     }
   },
   methods: {
@@ -155,18 +166,17 @@ export default {
       this.title = this.isAccount ? 'Account' : (this.id ? 'Edit User' : 'New User')
     },
     async save () {
-      if (this.isValid) {
-        try {
-          const response = this.isAccount
-            ? await UserService.saveAccount(this.user)
-            : await UserService.save(this.user)
-          if (!this.isAccount && response.id !== this.user.id) {
-            this.$router.push({ name: 'user', params: { id: response.id } })
-          }
-          EventBus.$emit('show-snackbar', 'Saved')
-        } catch (error) {
-          EventBus.$emit('show-snackbar', error, 'error')
+      try {
+        const response = this.isAccount
+          ? await UserService.saveAccount(this.user)
+          : await UserService.save(this.user)
+        if (!this.isAccount && response.id !== this.user.id) {
+          this.$router.push({ name: 'user', params: { id: response.id } })
         }
+        EventBus.$emit('show-snackbar', 'Saved')
+      } catch (error) {
+        console.log(error)
+        EventBus.$emit('show-snackbar', error, 'error')
       }
     },
     updateRoles () {
