@@ -42,7 +42,7 @@ exports.changePassword = async (req, res) => {
   const success = await AuthService.changePassword({
     id: req.userId,
     oldPassword: req.body.oldPassword,
-    newPassword: req.body.newPassword
+    newPassword: req.body.password
   })
   if (success) {
     res.json({ messages: ['Password updated successfully'] })

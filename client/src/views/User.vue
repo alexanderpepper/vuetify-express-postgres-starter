@@ -11,7 +11,8 @@
           v-btn.hidden-xs-only.mr-2(text, onclick='window.history.back()') Back
           v-btn(outlined, @click='save') Save
         v-tabs(:vertical='$vuetify.breakpoint.smAndUp', v-model='activeTab')
-          v-tab(ripple, v-for='tabTitle in tabTitles', :key='tabTitle') {{ tabTitle }}
+          v-tab(ripple, v-for='tabTitle in tabTitles', :key='tabTitle' )
+            span(:class='{ "error--text" : tabErrors[tabTitle] }') {{ tabTitle }}
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
@@ -23,7 +24,7 @@
                   :user='user',
                   :errors='errors',
                   @set-birthday='birthday => (user.birthday = birthday)',
-                  @clear-errors='key => errors[key] = []')
+                  @clear-errors='errors.birthday = []')
                 user-phone(
                   :user='user',
                   :errors='errors',
@@ -106,6 +107,12 @@ export default {
     UserSecurityQuestions
   },
   data: () => ({
+    tabs: {
+      general: 'General',
+      security: 'Security',
+      photo: 'Photo',
+      address: 'Address'
+    },
     tabTitles: [
       'General',
       'Security',
@@ -137,6 +144,17 @@ export default {
   },
   computed: {
     ...mapGetters(['currentUser']),
+    tabErrors () {
+      const tabErrors = {}
+      const hasErrors = keys => keys.find(key => this.errors[key] && this.errors[key].length)
+      if (hasErrors(['username', 'email', 'name', 'birthday', 'phone', 'password'])) {
+        tabErrors[this.tabs.general] = true
+      }
+      if (hasErrors(['securityQuestion1', 'securityQuestion2', 'securityAnswer1', 'securityAnswer2'])) {
+        tabErrors[this.tabs.security] = true
+      }
+      return tabErrors
+    },
     availableRoles () {
       if (this.user.roles) {
         const assignedRoleIds = this.user.roles.map(role => role.id)
@@ -174,9 +192,9 @@ export default {
           this.$router.push({ name: 'user', params: { id: response.id } })
         }
         EventBus.$emit('show-snackbar', 'Saved')
-      } catch (error) {
-        console.log(error)
-        EventBus.$emit('show-snackbar', error, 'error')
+      } catch ({ validationErrors }) {
+        this.errors = validationErrors
+        EventBus.$emit('show-snackbar', 'Error saving changes', 'error')
       }
     },
     updateRoles () {

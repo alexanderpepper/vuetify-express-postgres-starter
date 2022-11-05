@@ -1,6 +1,7 @@
 const db = require('../models')
 const moment = require('moment')
 const User = db.user
+const AuthService = require('../services/auth.service')
 
 exports.isValidPassword = password => {
   return password.length >= 8
@@ -38,7 +39,7 @@ exports.addSignUpGeneralValidationErrors = async (user, validationErrors) => {
     ]
   } else {
     const found = await User.findOne({ where: { username: user.username } })
-    if (found) {
+    if (found && found.id !== user.id) {
       validationErrors.username = [
         ...(validationErrors.username || []),
         'Account already exists with this username.'
@@ -65,7 +66,7 @@ exports.addSignUpGeneralValidationErrors = async (user, validationErrors) => {
     ]
   } else {
     const found = await User.findOne({ where: { email: user.email } })
-    if (found) {
+    if (found && found.id !== user.id) {
       validationErrors.email = [
         ...(validationErrors.email || []),
         'Account already exists with this email.'
@@ -95,6 +96,25 @@ exports.addSignUpGeneralValidationErrors = async (user, validationErrors) => {
       ...(validationErrors.phone || []),
       'U.S. phone numbers are required in 10-digit format.'
     ]
+  }
+}
+
+exports.addChangePasswordValidationErrors = async (user, validationErrors) => {
+  module.exports.addSignUpPasswordValidationErrors(user, validationErrors)
+
+  if (!user.oldPassword) {
+    validationErrors.oldPassword = [
+      ...(validationErrors.oldPassword || []),
+      'Old password is required.'
+    ]
+  } else {
+    const found = await AuthService.checkPassword({ id: user.id, password: user.oldPassword })
+    if (!found) {
+      validationErrors.oldPassword = [
+        ...(validationErrors.oldPassword || []),
+        'Old password is incorrect.'
+      ]
+    }
   }
 }
 

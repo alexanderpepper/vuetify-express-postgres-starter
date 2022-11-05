@@ -82,8 +82,8 @@ class UserService extends BaseService {
     return this.GET(api.account)
   }
 
-  static changePassword (password) {
-    return this.POST(api.password, password)
+  static changePassword (data) {
+    return this.POST(api.password, data)
   }
 }
 

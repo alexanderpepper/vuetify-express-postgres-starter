@@ -7,6 +7,7 @@ const { v4: uuid } = require('uuid')
 const { Op } = require('sequelize')
 const smsService = require('../services/sms.service')
 const emailService = require('../services/email.service')
+const userService = require('../services/user.service')
 
 exports.signUp = async user => {
   const saved = await User.create({
@@ -26,9 +27,18 @@ exports.validatePassword = (sentPassword, actualPassword) => {
   return sentPassword && actualPassword && bcrypt.compareSync(sentPassword, actualPassword)
 }
 
+exports.checkPassword = async ({ id, password }) => {
+  const user = await userService.findById(id)
+  if (user && exports.validatePassword(password, user.password)) {
+    return user
+  } else {
+    return null
+  }
+}
+
 exports.changePassword = async ({ id, oldPassword, newPassword }) => {
-  const user = await exports.findById(id)
-  if (user && exports.validatePassword(oldPassword, user.password)) {
+  const user = await module.exports.checkPassword({ id, password: oldPassword })
+  if (user) {
     user.password = exports.encryptPassword(newPassword)
     user.save()
     return true

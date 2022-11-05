@@ -11,7 +11,7 @@ module.exports = app => {
   app.post('/api/sign-up/validate/credentials', [validateSignUp.validateSignUpCredentials], genericController.validationSuccessResponse)
   app.post('/api/sign-up/validate/password', [validateSignUp.validateSignUpPassword], genericController.validationSuccessResponse)
   app.post('/api/sign-up/validate/security-questions', [validateSignUp.validateSignUpSecurityQuestions], genericController.validationSuccessResponse)
-  app.post('/api/change-password', [jwt.verifyToken, verifyPasswordChange.checkPasswordChange], controller.changePassword)
+  app.post('/api/change-password', [jwt.verifyToken, validateSignUp.validatePasswordChange], controller.changePassword)
   app.post('/api/sign-in', controller.signIn)
   app.post('/api/get-security-questions', controller.getSecurityQuestions)
   app.post('/api/activate', controller.activate)

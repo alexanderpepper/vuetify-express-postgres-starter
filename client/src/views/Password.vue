@@ -4,13 +4,28 @@
       v-card-text
         .headline.font-weight-light Change Password
         form(novalidate, @submit.stop.prevent='changePassword', autocomplete='off')
-          v-text-field.mt-2(label='Old Password', v-model='password.oldPassword', type='password')
-          v-text-field.mt-1(label='New Password', v-model='password.newPassword', type='password')
-          v-text-field.mt-1(label='Confirm Password', v-model='confirmPassword', type='password')
+          v-text-field.mt-2(
+            label='Old Password',
+            v-model='request.oldPassword',
+            type='password',
+            :error-messages='errors.oldPassword'
+            @input='errors.oldPassword = []')
+          v-text-field.mt-1(
+            label='New Password',
+            v-model='request.password',
+            type='password',
+            :error-messages='errors.password'
+            @input='errors.password = []')
+          v-text-field.mt-1(
+            label='Confirm Password',
+            v-model='request.confirmPassword',
+            type='password',
+            :error-messages='errors.confirmPassword'
+            @input='errors.confirmPassword = []')
       v-card-actions
         v-spacer
         v-btn(text, router-link, :to='{ name: "account" }') Cancel
-        v-btn(outlined, @click='changePassword', :disabled='!buttonEnabled') Change Password
+        v-btn(outlined, @click='changePassword') Change Password
 </template>
 
 <script>
@@ -20,27 +35,22 @@ import EventBus from '@/services/EventBus'
 export default {
   name: 'password',
   data: () => ({
-    password: {
+    request: {
       oldPassword: '',
-      newPassword: ''
+      password: '',
+      confirmPassword: ''
     },
-    confirmPassword: ''
+    errors: {}
   }),
-  computed: {
-    buttonEnabled: function () {
-      return this.password.oldPassword &&
-        this.password.newPassword && this.confirmPassword &&
-        this.password.newPassword === this.confirmPassword
-    }
-  },
   methods: {
     async changePassword () {
       try {
-        await UserService.changePassword(this.password)
+        await UserService.changePassword(this.request)
         EventBus.$emit('show-snackbar', 'Password Changed')
         this.$router.push({ name: 'account' })
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
+      } catch ({ validationErrors }) {
+        this.errors = validationErrors
+        EventBus.$emit('show-snackbar', 'Unable to change password', 'error')
       }
     }
   }

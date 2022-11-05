@@ -1,19 +1,19 @@
 <template lang="pug">
-  .user-phone
+  .user-phone.d-flex
     v-text-field(
-      label='Phone Number'
-      v-model='maskedPhone'
-      v-mask='user.isInternationalPhone ? "+#####################" : "(###) ### - ####"'
-      type='tel'
-      :error-messages='errors.phone'
-      :placeholder='showPlaceholder ? user.isInternationalPhone ? "+888 8888888888" : "(888) 888 - 8888" : ""'
+      label='Phone Number',
+      v-model='maskedPhone',
+      v-mask='user.isInternationalPhone ? "+#####################" : "(###) ### - ####"',
+      type='tel',
+      :error-messages='errors.phone',
+      :placeholder='showPlaceholder ? user.isInternationalPhone ? "+888 8888888888" : "(888) 888 - 8888" : ""',
       @keyup.enter='$emit("next")')
-      v-select.phone-format-select(
-        v-model='user.isInternationalPhone'
-        item-value='isInternational'
-        item-text='text'
-        :items='phoneFormats'
-        :error='errors.phone && errors.phone.length > 0')
+    v-select.phone-format-select(
+      v-model='user.isInternationalPhone',
+      item-value='isInternational',
+      item-text='text',
+      :items='phoneFormats',
+      :error='errors.phone && errors.phone.length > 0')
 </template>
 
 <script>
