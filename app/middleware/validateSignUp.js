@@ -59,7 +59,7 @@ exports.validateSignUp = async (req, res, next) => {
     res.status(400).send({
       status: 400,
       validationErrors,
-      messages: ['Unable to create user']
+      messages: ['Unable to create account']
     })
   } else {
     next()
@@ -97,12 +97,4 @@ exports.validateAccountUpdate = async (req, res, next) => {
   } else {
     next()
   }
-}
-
-exports.validateCreateUser = async (req, res, next) => {
-
-}
-
-exports.validateUpdateUser = async (req, res, next) => {
-
 }

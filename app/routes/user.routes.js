@@ -13,5 +13,5 @@ module.exports = app => {
   app.get('/api/users/:id', [jwt.verifyToken, jwt.isAdmin], controller.get)
   app.delete('/api/users/:id', [jwt.verifyToken, jwt.isAdmin], controller.delete)
   app.post('/api/users', [jwt.verifyToken, jwt.isAdmin, validateSignUp.validateSignUp], controller.create)
-  app.put('/api/users/:id', [jwt.verifyToken, jwt.isAdmin, validateSignUp.validateUpdateUser], controller.update)
+  app.put('/api/users/:id', [jwt.verifyToken, jwt.isAdmin, validateSignUp.validateAccountUpdate], controller.update)
 }

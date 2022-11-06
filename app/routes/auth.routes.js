@@ -1,4 +1,4 @@
-const { validateSignUp, verifyPasswordChange, jwt } = require('../middleware')
+const { validateSignUp, jwt } = require('../middleware')
 const controller = require('../controllers/auth.controller')
 const genericController = require('../controllers/generic.controller')
 
