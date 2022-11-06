@@ -96,6 +96,14 @@ exports.addSignUpGeneralValidationErrors = async (user, validationErrors) => {
       ...(validationErrors.phone || []),
       'U.S. phone numbers are required in 10-digit format.'
     ]
+  } else {
+    const found = await User.findOne({ where: { phone: user.phone } })
+    if (found && found.id !== user.id) {
+      validationErrors.phone = [
+        ...(validationErrors.phone || []),
+        'Account already exists with this phone.'
+      ]
+    }
   }
 }
 
