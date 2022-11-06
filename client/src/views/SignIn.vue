@@ -210,55 +210,31 @@ export default {
       this.step = this.steps.forgotUsernameOrPassword
     },
     async sendActivationLink () {
-      try {
-        await UserService.sendActivationLink(this.user)
-        this.step = this.steps.activationLinkSent
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
-      }
+      await UserService.sendActivationLink(this.user)
+      this.step = this.steps.activationLinkSent
     },
     async sendUsername () {
-      try {
-        await UserService.sendUsername(this.user)
-        this.step = this.steps.usernameSent
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
-      }
+      await UserService.sendUsername(this.user)
+      this.step = this.steps.usernameSent
     },
     async sendPasswordResetLink () {
-      try {
-        await UserService.sendPasswordResetLink(this.user)
-        this.step = this.steps.passwordResetLinkSent
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
-      }
+      await UserService.sendPasswordResetLink(this.user)
+      this.step = this.steps.passwordResetLinkSent
     },
     async getSendOptions () {
-      try {
-        const results = await UserService.getSendOptions(this.user)
-        Object.assign(this.user, results)
-        this.step = this.steps.sendUsername
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
-      }
+      const results = await UserService.getSendOptions(this.user)
+      Object.assign(this.user, results)
+      this.step = this.steps.sendUsername
     },
     async getSecurityQuestions () {
-      try {
-        const results = await UserService.getSecurityQuestions(this.user)
-        Object.assign(this.user, results)
-        this.step = this.steps.securityQuestions
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
-      }
+      const results = await UserService.getSecurityQuestions(this.user)
+      Object.assign(this.user, results)
+      this.step = this.steps.securityQuestions
     },
     async verifySecurityQuestions () {
-      try {
-        const results = await UserService.verifySecurityQuestions(this.user)
-        Object.assign(this.user, results)
-        this.step = this.steps.sendPasswordResetLink
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
-      }
+      const results = await UserService.verifySecurityQuestions(this.user)
+      Object.assign(this.user, results)
+      this.step = this.steps.sendPasswordResetLink
     },
     async signInClicked () {
       try {

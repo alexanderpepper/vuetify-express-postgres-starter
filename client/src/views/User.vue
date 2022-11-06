@@ -51,9 +51,9 @@
                       v-list-item(@click='addRole(role)', v-for='(role, index) in availableRoles', :key='index')
                         v-list-item-title {{ role.name | capitalize }}
                   v-checkbox(label='Activated', v-model='user.isActivated')
-                  v-dialog(v-show='user.id && !isAccount && currentUser.isAdmin', v-model='showDeleteDialog', width='300')
+                  v-dialog(v-model='showDeleteDialog', width='300')
                     template(v-slot:activator='{ on }')
-                      v-btn.mx-0(v-on='on', small, outlined, slot='activator') Delete User
+                      v-btn.mx-0(v-on='on', small, outlined, slot='activator', v-show='user.id && !isAccount && currentUser.isAdmin') Delete User
                     v-card
                       v-card-title.headline Delete this user?
                       v-card-text Are you sure you want to delete this user? This action cannot be undone.
@@ -171,15 +171,14 @@ export default {
   },
   methods: {
     async initialize () {
+      this.errors = {}
       if (this.isAccount) {
-        UserService.account().then(user => {
-          this.user = user
-        })
+        this.user = await UserService.account()
       } else if (this.id) {
-        UserService.get(this.id).then(user => {
-          this.user = user
-          this.oldRoles = JSON.parse(JSON.stringify(user.roles))
-        })
+        this.user = await UserService.get(this.id)
+        this.oldRoles = this.user.roles
+          ? JSON.parse(JSON.stringify(this.user.roles))
+          : []
       }
       this.title = this.isAccount ? 'Account' : (this.id ? 'Edit User' : 'New User')
     },
@@ -191,10 +190,9 @@ export default {
         if (!this.isAccount && response.id !== this.user.id) {
           this.$router.push({ name: 'user', params: { id: response.id } })
         }
-        EventBus.$emit('show-snackbar', 'Saved')
+        EventBus.$emit('show-success-snackbar', 'User saved successfully')
       } catch ({ validationErrors }) {
         this.errors = validationErrors
-        EventBus.$emit('show-snackbar', 'Error saving changes', 'error')
       }
     },
     updateRoles () {
@@ -220,7 +218,9 @@ export default {
       this.user.roles = this.user.roles.filter(role => role.enabled !== false)
     },
     async deleteUser () {
-      await UserService.remove(this.user)
+      this.showDeleteDialog = false
+      const response = await UserService.remove(this.user)
+      EventBus.$emit('show-success-snackbar', response)
       this.$router.push({ name: 'users' })
     }
   }

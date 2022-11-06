@@ -6,7 +6,11 @@ exports.validateSignUpCredentials = async (req, res, next) => {
   await UserValidationService.addSignUpGeneralValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({ status: 400, validationErrors })
+    res.status(400).send({
+      status: 400,
+      validationErrors,
+      messages: ['Please fix validation errors']
+    })
   } else {
     next()
   }
@@ -18,7 +22,11 @@ exports.validateSignUpPassword = async (req, res, next) => {
   UserValidationService.addSignUpPasswordValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({ status: 400, validationErrors })
+    res.status(400).send({
+      status: 400,
+      validationErrors,
+      messages: ['Please fix validation errors']
+    })
   } else {
     next()
   }
@@ -30,7 +38,11 @@ exports.validateSignUpSecurityQuestions = async (req, res, next) => {
   await UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({ status: 400, validationErrors })
+    res.status(400).send({
+      status: 400,
+      validationErrors,
+      messages: ['Please fix validation errors']
+    })
   } else {
     next()
   }
@@ -44,7 +56,27 @@ exports.validateSignUp = async (req, res, next) => {
   UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({ status: 400, validationErrors })
+    res.status(400).send({
+      status: 400,
+      validationErrors,
+      messages: ['Unable to create user']
+    })
+  } else {
+    next()
+  }
+}
+
+exports.validatePasswordChange = async (req, res, next) => {
+  const validationErrors = {}
+
+  await UserValidationService.addChangePasswordValidationErrors({ ...req.body, id: req.userId }, validationErrors)
+
+  if (Object.keys(validationErrors).length) {
+    res.status(400).send({
+      status: 400,
+      validationErrors,
+      messages: ['Unable to change password']
+    })
   } else {
     next()
   }
@@ -57,20 +89,20 @@ exports.validateAccountUpdate = async (req, res, next) => {
   UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({ status: 400, validationErrors })
+    res.status(400).send({
+      status: 400,
+      validationErrors,
+      messages: ['Unable to update account']
+    })
   } else {
     next()
   }
 }
 
-exports.validatePasswordChange = async (req, res, next) => {
-  const validationErrors = {}
+exports.validateCreateUser = async (req, res, next) => {
 
-  await UserValidationService.addChangePasswordValidationErrors({ ...req.body, id: req.userId }, validationErrors)
+}
 
-  if (Object.keys(validationErrors).length) {
-    res.status(400).send({ status: 400, validationErrors })
-  } else {
-    next()
-  }
+exports.validateUpdateUser = async (req, res, next) => {
+
 }

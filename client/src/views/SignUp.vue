@@ -74,7 +74,6 @@ import EditUserPhoto from '../components/EditUserPhoto'
 import UserSecurityQuestions from '../components/UserSecurityQuestions'
 import SendActivationLink from '../components/SendActivationLink'
 import ActivationLinkSent from '../components/ActivationLinkSent'
-import EventBus from '@/services/EventBus'
 
 export default {
   name: 'signUp',
@@ -149,20 +148,12 @@ export default {
       }
     },
     async save () {
-      try {
-        await UserService.signUp(this.user)
-        this.step = this.steps.activate
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
-      }
+      await UserService.signUp(this.user)
+      this.step = this.steps.activate
     },
     async sendActivationLink () {
-      try {
-        await UserService.sendActivationLink(this.user)
-        this.step++
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
-      }
+      await UserService.sendActivationLink(this.user)
+      this.step++
     }
   }
 }

@@ -103,8 +103,8 @@ export default {
       this.$emit('set-photo', response.key)
       this.currentUser.photo = response.key
       if (!this.isSignUp) {
-        await UserService.save(this.user)
-        EventBus.$emit('show-snackbar', 'Saved')
+        const response = await UserService.save(this.user)
+        EventBus.$emit('show-success-snackbar', response)
         this.reset()
       }
     },

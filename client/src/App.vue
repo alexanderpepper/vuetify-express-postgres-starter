@@ -20,7 +20,7 @@
     v-main
       transition(name='fade-transition', mode='out-in')
         router-view.router-view.mx-auto
-    v-snackbar( v-model='snackbar' :timeout='5000' :bottom='true' :color='snackbarStyle')
+    v-snackbar(v-model='snackbar' :timeout='5000' :bottom='true' :color='snackbarStyle')
       span(v-html='snackbarMessage')
       template(#action='{ attrs }')
         v-btn(v-bind='attrs' text dark @click='snackbar = false') Close
@@ -65,7 +65,8 @@ export default {
       }
     })
 
-    EventBus.$on('show-snackbar', this.showSnackbar)
+    EventBus.$on('show-error-snackbar', this.showErrorSnackbar)
+    EventBus.$on('show-success-snackbar', this.showSuccessSnackbar)
   },
   methods: {
     ...mapActions(['getCurrentUser', 'resetUserState', 'logout']),
@@ -77,8 +78,18 @@ export default {
       this.logout()
       await this.$router.push({ name: 'landing' })
     },
-    showSnackbar (response, style) {
-      this.snackbarMessage = typeof response === 'string' ? response : response.messages.join('<br>')
+    showSuccessSnackbar (response) {
+      this.showSnackbar(response, 'success')
+    },
+    showErrorSnackbar (response) {
+      this.showSnackbar(response, 'error')
+    },
+    showSnackbar (data, style) {
+      this.snackbarMessage = typeof data === 'string'
+        ? data
+        : data.messages
+          ? data.messages.join('<br>')
+          : 'Unknown error occurred'
       this.snackbarStyle = style
       this.snackbar = true
     }

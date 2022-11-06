@@ -3,7 +3,6 @@ const Role = db.role
 
 exports.all = async () => {
   return await Role.findAll({
-    attributes: ['id', 'name'],
-    raw: true
+    attributes: ['id', 'name']
   })
 }

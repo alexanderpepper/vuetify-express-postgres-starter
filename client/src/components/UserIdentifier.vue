@@ -15,7 +15,6 @@ export default {
     user: Object,
     errors: Object
   },
-
   watch: {
     'user.name' () {
       this.$emit('clear-errors', 'name')

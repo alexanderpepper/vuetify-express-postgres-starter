@@ -33,7 +33,7 @@ exports.update = async user => {
 }
 
 exports.delete = async ({ id }) => {
-  return await User.destroy({ where: { id } })
+  return User.destroy({ where: { id } })
 }
 
 exports.get = async ({ id }) => {
@@ -42,7 +42,7 @@ exports.get = async ({ id }) => {
     where: { id },
     include: [roleRelationship]
   })
-  return user.get({ plain: true })
+  return user && user.get({ plain: true })
 }
 
 exports.all = async () => {
@@ -58,7 +58,7 @@ exports.me = async ({ id }) => {
     where: { id },
     include: [roleRelationship]
   })
-  return user.get({ plain: true })
+  return user && user.get({ plain: true })
 }
 
 exports.account = async ({ id }) => {
@@ -67,7 +67,7 @@ exports.account = async ({ id }) => {
     where: { id },
     include: [roleRelationship]
   })
-  return user.get({ plain: true })
+  return user && user.get({ plain: true })
 }
 
 exports.updateAccount = async user => {

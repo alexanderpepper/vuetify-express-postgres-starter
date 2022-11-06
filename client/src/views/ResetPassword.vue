@@ -32,7 +32,7 @@ export default {
       const response = await UserService.resetPassword(this.user)
       this.setToken(response)
       await this.getCurrentUser()
-      EventBus.$emit('show-snackbar', 'Password Reset')
+      EventBus.$emit('show-success-snackbar', 'Password Reset')
       this.$router.push({ name: 'home' })
     }
   }

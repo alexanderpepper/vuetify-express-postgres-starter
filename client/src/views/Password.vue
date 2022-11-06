@@ -45,12 +45,11 @@ export default {
   methods: {
     async changePassword () {
       try {
-        await UserService.changePassword(this.request)
-        EventBus.$emit('show-snackbar', 'Password Changed')
+        const response = await UserService.changePassword(this.request)
+        EventBus.$emit('show-success-snackbar', response)
         this.$router.push({ name: 'account' })
       } catch ({ validationErrors }) {
         this.errors = validationErrors
-        EventBus.$emit('show-snackbar', 'Unable to change password', 'error')
       }
     }
   }

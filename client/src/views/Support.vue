@@ -18,7 +18,6 @@
 import UserValidationService from '../services/UserValidationService'
 import SupportService from '../services/SupportService'
 import { mapGetters } from 'vuex'
-import EventBus from '@/services/EventBus'
 
 export default {
   name: 'support',
@@ -51,12 +50,8 @@ export default {
       }
     },
     async submit () {
-      try {
-        await SupportService.sendSupportMessage(this.message)
-        this.success = true
-      } catch (error) {
-        EventBus.$emit('show-snackbar', error, 'error')
-      }
+      await SupportService.sendSupportMessage(this.message)
+      this.success = true
     }
   }
 }

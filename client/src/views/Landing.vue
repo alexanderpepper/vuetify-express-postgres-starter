@@ -4,8 +4,7 @@
     sign-in.mx-auto(
       ref='signIn',
       v-show='isShowingSignIn',
-      @sign-in-success='user => $emit("sign-in-success", user)',
-      @show-snackbar='(message, type) => $emit("show-snackbar", message, type)')
+      @sign-in-success='user => $emit("sign-in-success", user)')
     .text-center
       .mt-12(v-if='isShowingInitialView')
         .display-1 Landing Page

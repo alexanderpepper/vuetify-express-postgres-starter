@@ -124,9 +124,7 @@ exports.addSignUpPasswordValidationErrors = (user, validationErrors) => {
       ...(validationErrors.password || []),
       'Password is required.'
     ]
-  }
-
-  if (!this.isValidPassword(user.password)) {
+  } else if (!this.isValidPassword(user.password)) {
     validationErrors.password = [
       ...(validationErrors.password || []),
       'Passwords must be at least 8 characters.'
