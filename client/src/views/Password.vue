@@ -7,19 +7,25 @@
           v-text-field.mt-2(
             label='Old Password',
             v-model='request.oldPassword',
-            type='password',
+            :type='hideOldPassword ? "password" : "text"',
+            :append-icon='hideOldPassword ? "visibility_off" : "visibility"',
+            @click:append="() => (hideOldPassword = !hideOldPassword)"
             :error-messages='errors.oldPassword'
             @input='errors.oldPassword = []')
           v-text-field.mt-1(
             label='New Password',
             v-model='request.password',
-            type='password',
-            :error-messages='errors.password'
+            :type='hidePassword ? "password" : "text"',
+            :append-icon='hidePassword ? "visibility_off" : "visibility"',
+            @click:append="() => (hidePassword = !hidePassword)"
+            :error-messages='errors.password',
             @input='errors.password = []')
           v-text-field.mt-1(
             label='Confirm Password',
             v-model='request.confirmPassword',
-            type='password',
+            :type='hideConfirmPassword ? "password" : "text"',
+            :append-icon='hideConfirmPassword ? "visibility_off" : "visibility"',
+            @click:append="() => (hideConfirmPassword = !hideConfirmPassword)"
             :error-messages='errors.confirmPassword'
             @input='errors.confirmPassword = []')
       v-card-actions
@@ -40,7 +46,10 @@ export default {
       password: '',
       confirmPassword: ''
     },
-    errors: {}
+    errors: {},
+    hideOldPassword: true,
+    hidePassword: true,
+    hideConfirmPassword: true
   }),
   methods: {
     async changePassword () {

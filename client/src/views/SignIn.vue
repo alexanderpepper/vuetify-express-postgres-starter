@@ -8,8 +8,22 @@
             form(@submit.prevent='signIn')
               input(type='text' name='username' style='opacity: 0; position: absolute; pointer-events: none;')
               input(type='email' name='email' style='opacity: 0; position: absolute; pointer-events: none;')
-              v-text-field.pt-0(label='Username' v-model='user.username' required autocomplete='off' @keyup.enter='signInClicked' ref='autofocusField1')
-              v-text-field(label='Password' v-model='user.password' :type='hidePassword ? "password" : "text"' :append-icon='hidePassword ? "visibility_off" : "visibility"' @click:append="() => (hidePassword = !hidePassword)" @keyup.enter='signInClicked' required autocomplete='off')
+              v-text-field.pt-0(
+                label='Username',
+                v-model='user.username',
+                required,
+                autocomplete='off',
+                ref='autofocusField1',
+                @keyup.enter='signInClicked')
+              v-text-field(
+                label='Password',
+                v-model='user.password',
+                :type='hidePassword ? "password" : "text"',
+                :append-icon='hidePassword ? "visibility_off" : "visibility"',
+                @click:append="() => (hidePassword = !hidePassword)"
+                @keyup.enter='signInClicked'
+                required
+                autocomplete='off')
               v-btn.my-6(large, block, outlined, @click='signInClicked', :disabled='!isValidSignInCredentials') Sign In
             v-alert.my-6(type='error' v-model='error' outlined)
               div(v-for='(error, index) in errors' :key='index' v-text='error')
@@ -23,10 +37,21 @@
         v-window-item(:value='steps.forgotUsername')
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide your birthday and phone number
-            user-phone(:show-placeholder='true' :user='user' @set-phone='phone => (user.phone = phone)' ref='autofocusField3')
-            user-birthday(:show-placeholder='true' :user='user')
-            .text-center
-              router-link.subtitle-1(:to='{ name: "support" }') Click here to contact support
+            user-phone(
+              :show-placeholder='true'
+              :user='user'
+              :errors='errors'
+              @clear-errors='errors.phone = []'
+              @set-phone='phone => (user.phone = phone)'
+              ref='autofocusField3')
+            user-birthday(
+              :show-placeholder='true'
+              :user='user'
+              :errors='errors'
+              @set-birthday='birthday => (user.birthday = birthday)',
+              @clear-errors='errors.birthday = []')
+            .text-center.mt-2
+              router-link.subtitle-1(:to='{ name: "support" }') Contact support
         v-window-item(:value='steps.sendUsername')
           v-card-text
             send-username(:user='user')
@@ -36,12 +61,28 @@
         v-window-item(:value='steps.forgotPassword')
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide all of the following information
-            v-text-field(v-model='user.username' label='Username' ref='autofocusField6')
-            user-phone(:show-placeholder='true' :user='user' @set-phone='phone => (user.phone = phone)')
-            user-birthday(:show-placeholder='true' :user='user')
+            v-text-field(
+              v-model='user.username',
+              label='Username',
+              :error-messages='errors.username'
+              @input='errors.username = []'
+              ref='autofocusField6')
+            user-phone(
+              :show-placeholder='true',
+              :user='user',
+              @set-phone='phone => (user.phone = phone)')
+            user-birthday(
+              :show-placeholder='true'
+              :user='user'
+              :errors='errors'
+              @set-birthday='birthday => (user.birthday = birthday)',
+              @clear-errors='errors.birthday = []')
         v-window-item(:value='steps.securityQuestions')
           v-card-text
-            user-security-answers(:user='user')
+            user-security-answers(
+              :user='user'
+              :errors='errors'
+              @clear-errors='key => errors[key] = []')
         v-window-item(:value='steps.sendPasswordResetLink')
           v-card-text
             send-password-reset-link(:user='user')
@@ -55,10 +96,10 @@
           v-card-text
             activation-link-sent(:user='user')
       v-card-actions(v-if='step > steps.signIn')
-        v-btn(text @click='previous') Back
+        v-btn(text, @click='previous') Back
         v-spacer
-        v-btn(v-if='showNext' :disabled='!isNextEnabled' outlined @click='next') Next
-        v-btn(v-if='!showNext' outlined @click='step = steps.signIn') Sign In
+        v-btn(v-if='showNext', outlined, @click='next') Next
+        v-btn(v-if='!showNext', outlined, @click='step = steps.signIn') Sign In
 </template>
 
 <script>
@@ -70,7 +111,6 @@ import ActivationLinkSent from '../components/ActivationLinkSent'
 import PasswordResetLinkSent from '../components/PasswordResetLinkSent'
 import UsernameSent from '../components/UsernameSent'
 import UserSecurityAnswers from '../components/UserSecurityAnswers'
-import UserValidationService from '../services/UserValidationService'
 import signInMixin from '../mixins/signInMixin'
 import UserBirthday from '../components/UserBirthday'
 import UserPhone from '../components/UserPhone'
@@ -109,7 +149,8 @@ export default {
       activationLinkSent: 11
     },
     error: false,
-    errors: [],
+    errors: {},
+    errorMessages: [],
     hidePassword: true,
     showResendCode: false
   }),
@@ -142,20 +183,6 @@ export default {
         case this.steps.sendActivationLink: return 'Send Activation Link'
         case this.steps.activationLinkSent: return 'Activation Link Sent'
         default: return ''
-      }
-    },
-    isNextEnabled () {
-      if (this.step === this.steps.forgotUsername) {
-        return UserValidationService.hasValidPhone(this.user) &&
-          UserValidationService.hasValidBirthday(this.user)
-      } else if (this.step === this.steps.forgotPassword) {
-        return this.user.username &&
-            UserValidationService.hasValidPhone(this.user) &&
-            UserValidationService.hasValidBirthday(this.user)
-      } else if (this.step === this.steps.securityQuestions) {
-        return UserValidationService.hasValidSecurityQuestions(this.user)
-      } else {
-        return true
       }
     }
   },
@@ -196,14 +223,20 @@ export default {
       this.autofocusFieldForCurrentStep()
     },
     autofocusFieldForCurrentStep () {
-      const autofocusField = this.$refs[`autofocusField${this.step}`]
-      if (autofocusField) {
-        this.$nextTick(() => {
-          setTimeout(() => {
-            autofocusField.$refs.input.focus()
-          })
+      this.$nextTick(() => {
+        setTimeout(() => {
+          const autofocusField = this.$refs[`autofocusField${this.step}`]
+          if (autofocusField) {
+            let input = autofocusField.$refs.input
+            if (input) {
+              if (input && input.$refs) {
+                input = input.$refs.input
+              }
+            }
+            input.focus()
+          }
         })
-      }
+      })
     },
     forgotUsernameOrPassword () {
       this.user = authenticationUserStructure()
@@ -222,19 +255,31 @@ export default {
       this.step = this.steps.passwordResetLinkSent
     },
     async getSendOptions () {
-      const results = await UserService.getSendOptions(this.user)
-      Object.assign(this.user, results)
-      this.step = this.steps.sendUsername
+      try {
+        const results = await UserService.getSendOptions(this.user)
+        Object.assign(this.user, results)
+        this.step = this.steps.sendUsername
+      } catch ({ validationErrors }) {
+        this.errors = validationErrors
+      }
     },
     async getSecurityQuestions () {
-      const results = await UserService.getSecurityQuestions(this.user)
-      Object.assign(this.user, results)
-      this.step = this.steps.securityQuestions
+      try {
+        const results = await UserService.getSecurityQuestions(this.user)
+        Object.assign(this.user, results)
+        this.step = this.steps.securityQuestions
+      } catch ({ validationErrors }) {
+        this.errors = validationErrors
+      }
     },
     async verifySecurityQuestions () {
-      const results = await UserService.verifySecurityQuestions(this.user)
-      Object.assign(this.user, results)
-      this.step = this.steps.sendPasswordResetLink
+      try {
+        const results = await UserService.verifySecurityQuestions(this.user)
+        Object.assign(this.user, results)
+        this.step = this.steps.sendPasswordResetLink
+      } catch ({ validationErrors }) {
+        this.errors = validationErrors
+      }
     },
     async signInClicked () {
       try {
@@ -247,7 +292,7 @@ export default {
     },
     signInError (error) {
       this.error = true
-      this.errors = error.messages || ['Unknown error occurred']
+      this.errorMessages = error.messages || ['Unknown error occurred']
       if (error.status === 403) {
         this.showResendCode = true
         Object.assign(this.user, error.user)

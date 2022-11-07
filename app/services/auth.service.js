@@ -47,13 +47,12 @@ exports.changePassword = async ({ id, oldPassword, newPassword }) => {
   }
 }
 
-exports.getSecurityQuestions = async ({ username, phone, birthday }) => {
+exports.getSecurityQuestions = async ({ username, birthday }) => {
   const user = await User.findOne({
     attributes: ['securityQuestion1', 'securityQuestion2'],
     where: {
       [Op.and]: [
         { username },
-        { phone },
         { birthday }
       ]
     }

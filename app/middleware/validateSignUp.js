@@ -98,3 +98,51 @@ exports.validateAccountUpdate = async (req, res, next) => {
     next()
   }
 }
+
+exports.validateGetSendOptions = async (req, res, next) => {
+  const validationErrors = {}
+
+  UserValidationService.addGetSendOptionsValidationErrors(req.body, validationErrors)
+
+  if (Object.keys(validationErrors).length) {
+    res.status(400).send({
+      status: 400,
+      validationErrors,
+      messages: ['Please fix validation errors']
+    })
+  } else {
+    next()
+  }
+}
+
+exports.validateGetSecurityQuestions = async (req, res, next) => {
+  const validationErrors = {}
+
+  UserValidationService.addGetSecurityQuestionsValidationErrors(req.body, validationErrors)
+
+  if (Object.keys(validationErrors).length) {
+    res.status(400).send({
+      status: 400,
+      validationErrors,
+      messages: ['Please fix validation errors']
+    })
+  } else {
+    next()
+  }
+}
+
+exports.validateSecurityAnswers = async (req, res, next) => {
+  const validationErrors = {}
+
+  UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body, validationErrors)
+
+  if (Object.keys(validationErrors).length) {
+    res.status(400).send({
+      status: 400,
+      validationErrors,
+      messages: ['Please fix validation errors']
+    })
+  } else {
+    next()
+  }
+}

@@ -2,6 +2,7 @@ const db = require('../models')
 const moment = require('moment')
 const User = db.user
 const AuthService = require('../services/auth.service')
+const MINIMUM_AGE = 13
 
 exports.isValidPassword = password => {
   return password.length >= 8
@@ -25,6 +26,10 @@ exports.hasValidAddress = user => {
 
 exports.hasValidBirthday = user => {
   return moment(user.birthday, 'YYYY-MM-DD').isValid()
+}
+
+exports.isOldEnough = user => {
+  return moment().diff(moment(user.birthday, 'YYYY-MM-DD'), 'years', false) >= MINIMUM_AGE
 }
 
 exports.isValidEmail = input => {
@@ -83,6 +88,11 @@ exports.addSignUpGeneralValidationErrors = async (user, validationErrors) => {
     validationErrors.birthday = [
       ...(validationErrors.birthday || []),
       'Birthday is not a valid date.'
+    ]
+  } else if (!this.isOldEnough(user)) {
+    validationErrors.birthday = [
+      ...(validationErrors.birthday || []),
+      `Must be at least ${MINIMUM_AGE} years old.`
     ]
   }
 
@@ -180,6 +190,36 @@ exports.addSignUpSecurityQuestionValidationErrors = (user, validationErrors) => 
     validationErrors.securityAnswer2 = [
       ...(validationErrors.securityAnswer2 || []),
       'The answer to the second security question is required.'
+    ]
+  }
+}
+
+exports.addGetSendOptionsValidationErrors = (user, validationErrors) => {
+  if (!user.phone) {
+    validationErrors.phone = [
+      ...(validationErrors.phone || []),
+      'Phone number is required.'
+    ]
+  }
+  if (!user.birthday) {
+    validationErrors.birthday = [
+      ...(validationErrors.birthday || []),
+      'Birthday is required.'
+    ]
+  }
+}
+
+exports.addGetSecurityQuestionsValidationErrors = (user, validationErrors) => {
+  if (!user.username) {
+    validationErrors.username = [
+      ...(validationErrors.username || []),
+      'Username is required.'
+    ]
+  }
+  if (!user.birthday) {
+    validationErrors.birthday = [
+      ...(validationErrors.birthday || []),
+      'Birthday is required.'
     ]
   }
 }
