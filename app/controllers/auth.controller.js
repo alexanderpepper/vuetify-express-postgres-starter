@@ -101,7 +101,7 @@ exports.sendPasswordResetLink = async (req, res) => {
   if (success) {
     res.json({
       status: 200,
-      messages: [`Password reset link sent via ${req.body.sendViaSms ? 'SMS' : 'email'}`]
+      messages: [`Password reset link sent via ${req.body.sendViaSms ? 'text message' : 'email'}`]
     })
   } else {
     res.status(400).send({
@@ -143,7 +143,7 @@ exports.sendUsername = async (req, res) => {
   if (success) {
     res.json({
       status: 200,
-      messages: [`Username sent via ${req.body.sendViaSms ? 'SMS' : 'email'}`]
+      messages: [`Username sent via ${req.body.sendViaSms ? 'text message' : 'email'}`]
     })
   } else {
     res.status(400).send({

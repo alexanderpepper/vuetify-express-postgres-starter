@@ -53,7 +53,7 @@
                   v-checkbox(label='Activated', v-model='user.isActivated')
                   v-dialog(v-model='showDeleteDialog', width='300')
                     template(v-slot:activator='{ on }')
-                      v-btn.mx-0(v-on='on', small, outlined, slot='activator', v-show='user.id && !isAccount && currentUser.isAdmin') Delete User
+                      v-btn(v-on='on', small, outlined, slot='activator', v-show='user.id && !isAccount && currentUser.isAdmin') Delete User
                     v-card
                       v-card-title.headline Delete this user?
                       v-card-text Are you sure you want to delete this user? This action cannot be undone.
@@ -61,6 +61,14 @@
                         v-spacer
                         v-btn(text, @click='showDeleteDialog = false') Cancel
                         v-btn(outlined, @click='deleteUser') Delete
+                  v-menu(offset-y, right, v-show='availableRoles.length')
+                    template(v-slot:activator='{ on }')
+                      v-btn.ml-2(v-on='on', outlined, small, slot='activator', v-show='availableRoles.length') Send Password Reset Link
+                    v-list(dense)
+                      v-list-item(@click='sendPasswordResetLink(false)')
+                        v-list-item-title Send Link in Email
+                      v-list-item(@click='sendPasswordResetLink(true)')
+                        v-list-item-title Send Link in Text Message
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
@@ -222,6 +230,10 @@ export default {
       const response = await UserService.remove(this.user)
       EventBus.$emit('show-success-snackbar', response)
       this.$router.push({ name: 'users' })
+    },
+    async sendPasswordResetLink (sendViaSms) {
+      const response = await UserService.sendPasswordResetLink({ ...this.user, sendViaSms })
+      EventBus.$emit('show-success-snackbar', response)
     }
   }
 }
