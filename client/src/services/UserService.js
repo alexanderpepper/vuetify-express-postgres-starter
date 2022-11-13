@@ -85,6 +85,10 @@ class UserService extends BaseService {
   static changePassword (data) {
     return this.POST(api.password, data)
   }
+
+  static lockUser (user, isLocked) {
+    return this.POST(api.lockUser(user.id, isLocked))
+  }
 }
 
 export default UserService

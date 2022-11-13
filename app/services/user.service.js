@@ -4,7 +4,7 @@ const User = db.user
 const Role = db.role
 const { withoutNullsOrKeys, withoutKeys } = require('../utilities/object.utilities')
 const bcrypt = require('bcryptjs')
-const ACCOUNT_ATTRIBUTES = { exclude: ['password', 'passwordResetCode', 'activationCode'] }
+const ACCOUNT_ATTRIBUTES = { exclude: ['password', 'passwordResetCode', 'activationCode', 'authenticationFailures'] }
 const ME_ATTRIBUTES = ['id', 'name', 'email', 'photo']
 
 const roleRelationship = {
@@ -16,7 +16,7 @@ const roleRelationship = {
 
 exports.create = async user => {
   const data = {
-    ...withoutNullsOrKeys(user, ['confirmPassword', 'activationCode', 'passwordResetCode']),
+    ...withoutNullsOrKeys(user, ['confirmPassword', 'activationCode', 'passwordResetCode', 'authenticationFailures', 'isLocked']),
     password: bcrypt.hashSync(user.password, 8)
   }
   const savedUser = await User.create(data)
@@ -34,6 +34,10 @@ exports.update = async user => {
 
 exports.delete = async ({ id }) => {
   return User.destroy({ where: { id } })
+}
+
+exports.lock = async ({ id, isLocked }) => {
+  return User.update({ isLocked }, { where: { id } })
 }
 
 exports.get = async ({ id }) => {
@@ -71,7 +75,7 @@ exports.account = async ({ id }) => {
 }
 
 exports.updateAccount = async user => {
-  const data = withoutKeys(user, ['activationCode', 'passwordResetCode', 'id', 'password'])
+  const data = withoutKeys(user, ['activationCode', 'passwordResetCode', 'id', 'password', 'authenticationFailures', 'isLocked', 'isActivated'])
   return await User.update(data, { where: { id: user.id } })
 }
 

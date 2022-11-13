@@ -2,28 +2,30 @@ const { obscuredPhone, obscuredEmail } = require('../utilities/user.utilities')
 const AuthService = require('../services/auth.service')
 const UserService = require('../services/user.service')
 const JwtService = require('../services/jwt.service')
+const MAX_AUTHENTICATION_FAILURES = 5
 
 exports.signUp = async (req, res) => {
   await AuthService.signUp(req.body)
-  res.json({
-    status: 200,
-    messages: ['Sign up successful!']
-  })
+  res.success(['Sign up successful!'])
 }
 
 exports.signIn = async (req, res) => {
   const user = await UserService.findByUsername(req.body.username)
-  if (user && AuthService.validatePassword(req.body.password, user.password)) {
+  if (!user) {
+    res.unauthorized(['Invalid username or password'])
+  } else if (user.isLocked) {
+    res.forbidden(['Account is locked'])
+  } else if (AuthService.validatePassword(req.body.password, user.password)) {
     if (user.isActivated) {
+      user.authenticationFailures = 0
+      await user.save()
       res.json({
         id: user.id,
         token: JwtService.getToken(user),
         expirationDate: JwtService.getExpirationDate()
       })
     } else {
-      res.status(403).send({
-        status: 403,
-        messages: ['Account not activated'],
+      res.forbidden(['Account not yet activated'], {
         user: {
           obscuredEmail: obscuredEmail(user),
           obscuredPhone: obscuredPhone(user)
@@ -31,10 +33,17 @@ exports.signIn = async (req, res) => {
       })
     }
   } else {
-    res.status(401).send({
-      status: 401,
-      messages: ['Invalid username or password']
-    })
+    const messages = ['Invalid username or password']
+    user.authenticationFailures++
+    if (user.authenticationFailures < MAX_AUTHENTICATION_FAILURES) {
+      const remainingAttempts = MAX_AUTHENTICATION_FAILURES - user.authenticationFailures
+      messages.push(`${remainingAttempts} attempt${remainingAttempts === 1 ? '' : 's'} remaining`)
+    } else if (user.authenticationFailures === MAX_AUTHENTICATION_FAILURES) {
+      messages.push('Account is locked, please contact support')
+      user.isLocked = true
+    }
+    user.save()
+    res.unauthorized(messages)
   }
 }
 
@@ -45,12 +54,9 @@ exports.changePassword = async (req, res) => {
     newPassword: req.body.password
   })
   if (success) {
-    res.json({ messages: ['Password updated successfully'] })
+    res.success(['Password updated successfully'])
   } else {
-    res.status(401).send({
-      status: 401,
-      messages: ['Invalid password']
-    })
+    res.unauthorized(['Invalid password'])
   }
 }
 
@@ -59,55 +65,34 @@ exports.getSecurityQuestions = async (req, res) => {
   if (user) {
     res.json(user)
   } else {
-    res.status(400).send({
-      status: 400,
-      messages: ['Account not found']
-    })
+    res.badRequest(['Account not found'])
   }
 }
 
 exports.activate = async (req, res) => {
   const success = await AuthService.activate(req.body)
   if (success) {
-    res.json({
-      status: 200,
-      messages: ['User successfully activated.']
-    })
+    res.success(['User successfully activated.'])
   } else {
-    res.status(400).send({
-      status: 400,
-      messages: ['Account not found']
-    })
+    res.badRequest(['Account not found'])
   }
 }
 
 exports.sendActivationLink = async (req, res) => {
   const success = await AuthService.sendActivationLink(req.body)
   if (success) {
-    res.json({
-      status: 200,
-      messages: ['Activation link sent!']
-    })
+    res.success(['Activation link sent!'])
   } else {
-    res.status(400).send({
-      status: 400,
-      messages: ['Account not found']
-    })
+    res.badRequest(['Account not found'])
   }
 }
 
 exports.sendPasswordResetLink = async (req, res) => {
   const success = await AuthService.sendPasswordResetLink(req.body)
   if (success) {
-    res.json({
-      status: 200,
-      messages: [`Password reset link sent via ${req.body.sendViaSms ? 'text message' : 'email'}`]
-    })
+    res.success([`Password reset link sent via ${req.body.sendViaSms ? 'text message' : 'email'}`])
   } else {
-    res.status(400).send({
-      status: 400,
-      messages: ['Account not found']
-    })
+    res.badRequest(['Account not found'])
   }
 }
 
@@ -119,10 +104,7 @@ exports.verifySecurityQuestions = async (req, res) => {
       obscuredPhone: obscuredPhone(user)
     })
   } else {
-    res.status(400).send({
-      status: 400,
-      messages: ['One or more security questions answered incorrectly']
-    })
+    res.badRequest(['One or more security questions answered incorrectly'])
   }
 }
 
@@ -131,25 +113,16 @@ exports.getSendOptions = async (req, res) => {
   if (user) {
     res.json({ obscuredEmail: obscuredEmail(user) })
   } else {
-    res.status(400).send({
-      status: 400,
-      messages: ['Account not found']
-    })
+    res.badRequest(['Account not found'])
   }
 }
 
 exports.sendUsername = async (req, res) => {
   const success = await AuthService.sendUsername(req.body)
   if (success) {
-    res.json({
-      status: 200,
-      messages: [`Username sent via ${req.body.sendViaSms ? 'text message' : 'email'}`]
-    })
+    res.success([`Username sent via ${req.body.sendViaSms ? 'text message' : 'email'}`])
   } else {
-    res.status(400).send({
-      status: 400,
-      messages: ['Account not found']
-    })
+    res.badRequest(['Account not found'])
   }
 }
 
@@ -163,15 +136,9 @@ exports.resetPassword = async (req, res) => {
         expirationDate: JwtService.getExpirationDate()
       })
     } else {
-      res.status(403).send({
-        status: 403,
-        messages: ['User not activated']
-      })
+      res.forbidden(['User not activated'])
     }
   } else {
-    res.status(400).send({
-      status: 400,
-      messages: ['Account not found']
-    })
+    res.badRequest(['Account not found'])
   }
 }

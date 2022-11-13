@@ -50,7 +50,9 @@
                     v-list
                       v-list-item(@click='addRole(role)', v-for='(role, index) in availableRoles', :key='index')
                         v-list-item-title {{ role.name | capitalize }}
-                  v-checkbox(label='Activated', v-model='user.isActivated')
+                  .d-flex
+                    v-checkbox.mr-6(label='Activated', v-model='user.isActivated')
+                    v-checkbox(label='Locked', v-model='user.isLocked', disabled)
                   v-dialog(v-model='showDeleteDialog', width='300')
                     template(v-slot:activator='{ on }')
                       v-btn(v-on='on', small, outlined, slot='activator', v-show='user.id && !isAccount && currentUser.isAdmin') Delete User
@@ -69,6 +71,8 @@
                         v-list-item-title Send Link in Email
                       v-list-item(@click='sendPasswordResetLink(true)')
                         v-list-item-title Send Link in Text Message
+                  v-btn.ml-2(small, outlined, v-if='user.isLocked', @click='setLocked(false)') Unlock User
+                  v-btn.ml-2(small, outlined, v-if='!user.isLocked', @click='setLocked(true)') Lock User
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
@@ -203,22 +207,6 @@ export default {
         this.errors = validationErrors
       }
     },
-    updateRoles () {
-      const promises = []
-      const currentRoleIds = this.user.roles.map(role => role.id)
-      const oldRoleIds = this.oldRoles.map(role => role.id)
-      this.oldRoles.forEach(role => {
-        if (!currentRoleIds.includes(role.id)) {
-          promises.push(RoleService.removeRole(role))
-        }
-      })
-      this.user.roles.forEach(role => {
-        if (!oldRoleIds.includes(role.id)) {
-          promises.push(RoleService.addRole(this.user, role.role))
-        }
-      })
-      return Promise.all(promises)
-    },
     addRole (role) {
       this.user.roles.push(role)
     },
@@ -233,6 +221,11 @@ export default {
     },
     async sendPasswordResetLink (sendViaSms) {
       const response = await UserService.sendPasswordResetLink({ ...this.user, sendViaSms })
+      EventBus.$emit('show-success-snackbar', response)
+    },
+    async setLocked (isLocked) {
+      const response = await UserService.lockUser(this.user, isLocked)
+      await this.initialize()
       EventBus.$emit('show-success-snackbar', response)
     }
   }

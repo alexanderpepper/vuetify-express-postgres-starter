@@ -26,7 +26,7 @@
                 autocomplete='off')
               v-btn.my-6(large, block, outlined, @click='signInClicked', :disabled='!isValidSignInCredentials') Sign In
             v-alert.my-6(type='error' v-model='error' outlined)
-              div(v-for='(error, index) in errors' :key='index' v-text='error')
+              div(v-for='(error, index) in errorMessages' :key='index' v-text='error')
             a.d-block.text-center.mb-4.subtitle-1(href='#' v-if='showResendCode' @click='step = steps.sendActivationLink') Resend my activation link
             a.d-block.text-center.mb-2.subtitle-1(href='#' @click='forgotUsernameOrPassword') Forgot your username or password?
         v-window-item(:value='steps.forgotUsernameOrPassword')

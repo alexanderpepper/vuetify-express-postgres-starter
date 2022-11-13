@@ -6,11 +6,7 @@ exports.validateSignUpCredentials = async (req, res, next) => {
   await UserValidationService.addSignUpGeneralValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({
-      status: 400,
-      validationErrors,
-      messages: ['Please fix validation errors']
-    })
+    res.badRequest(['Please fix validation errors'], { validationErrors })
   } else {
     next()
   }
@@ -22,11 +18,7 @@ exports.validateSignUpPassword = async (req, res, next) => {
   UserValidationService.addSignUpPasswordValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({
-      status: 400,
-      validationErrors,
-      messages: ['Please fix validation errors']
-    })
+    res.badRequest(['Please fix validation errors'], { validationErrors })
   } else {
     next()
   }
@@ -38,11 +30,7 @@ exports.validateSignUpSecurityQuestions = async (req, res, next) => {
   await UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({
-      status: 400,
-      validationErrors,
-      messages: ['Please fix validation errors']
-    })
+    res.badRequest(['Please fix validation errors'], { validationErrors })
   } else {
     next()
   }
@@ -56,11 +44,7 @@ exports.validateSignUp = async (req, res, next) => {
   UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({
-      status: 400,
-      validationErrors,
-      messages: ['Unable to create account']
-    })
+    res.badRequest(['Unable to create account'], { validationErrors })
   } else {
     next()
   }
@@ -72,11 +56,7 @@ exports.validatePasswordChange = async (req, res, next) => {
   await UserValidationService.addChangePasswordValidationErrors({ ...req.body, id: req.userId }, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({
-      status: 400,
-      validationErrors,
-      messages: ['Unable to change password']
-    })
+    res.badRequest(['Unable to change password'], { validationErrors })
   } else {
     next()
   }
@@ -89,11 +69,7 @@ exports.validateAccountUpdate = async (req, res, next) => {
   UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({
-      status: 400,
-      validationErrors,
-      messages: ['Unable to update account']
-    })
+    res.badRequest(['Unable to update account'], { validationErrors })
   } else {
     next()
   }
@@ -105,11 +81,7 @@ exports.validateGetSendOptions = async (req, res, next) => {
   UserValidationService.addGetSendOptionsValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({
-      status: 400,
-      validationErrors,
-      messages: ['Please fix validation errors']
-    })
+    res.badRequest(['Please fix validation errors'], { validationErrors })
   } else {
     next()
   }
@@ -121,11 +93,7 @@ exports.validateGetSecurityQuestions = async (req, res, next) => {
   UserValidationService.addGetSecurityQuestionsValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({
-      status: 400,
-      validationErrors,
-      messages: ['Please fix validation errors']
-    })
+    res.badRequest(['Please fix validation errors'], { validationErrors })
   } else {
     next()
   }
@@ -137,11 +105,7 @@ exports.validateSecurityAnswers = async (req, res, next) => {
   UserValidationService.addSignUpSecurityQuestionValidationErrors(req.body, validationErrors)
 
   if (Object.keys(validationErrors).length) {
-    res.status(400).send({
-      status: 400,
-      validationErrors,
-      messages: ['Please fix validation errors']
-    })
+    res.badRequest(['Please fix validation errors'], { validationErrors })
   } else {
     next()
   }

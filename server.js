@@ -16,19 +16,33 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(fileUpload())
 
+app.use((req, res, next) => {
+  const responder = (status, defaultMessages) =>
+    (messages, data) =>
+      res.status(status).send({
+        ...data,
+        status,
+        messages: messages || defaultMessages
+      })
+
+  res.success = responder(200, ['Success'])
+  res.badRequest = responder(400, ['Bad Request'])
+  res.unauthorized = responder(401, ['Unauthorized'])
+  res.forbidden = responder(403, ['Forbidden'])
+  res.serverError = responder(500, ['Something broke'])
+
+  next()
+})
 require('./app/routes/auth.routes')(app)
 require('./app/routes/user.routes')(app)
 require('./app/routes/role.routes')(app)
 require('./app/routes/file.routes')(app)
 
-app.use((err, req, res, next) => {
+app.use((error, req, res, next) => {
   if (!isProduction) {
-    console.err(err.stack)
+    console.log(error.stack)
   }
-  res.status(500).send({
-    status: 500,
-    messages: ['Something broke!']
-  })
+  res.serverError()
 })
 
 app.listen(PORT, () => {

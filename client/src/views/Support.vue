@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import UserValidationService from '../services/UserValidationService'
 import SupportService from '../services/SupportService'
 import { mapGetters } from 'vuex'
 
@@ -31,8 +30,7 @@ export default {
   computed: {
     ...mapGetters(['currentUser']),
     isSubmitEnabled () {
-      return this.message.email && this.message.body &&
-        UserValidationService.isValidEmail(this.message.email)
+      return this.message.email && this.message.body
     }
   },
   watch: {

@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) =>
+ module.exports = (sequelize, Sequelize) =>
   sequelize.define('app_user', {
     username: {
       type: Sequelize.STRING
@@ -62,6 +62,12 @@ module.exports = (sequelize, Sequelize) =>
     },
     securityAnswer2: {
       type: Sequelize.STRING
+    },
+    isLocked: {
+      type: Sequelize.BOOLEAN
+    },
+    authenticationFailures: {
+      type: Sequelize.INTEGER
     }
   },
   {

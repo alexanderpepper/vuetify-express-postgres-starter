@@ -16,6 +16,7 @@ export default {
   setPassword: `${host}/set-password`,
   users: `${host}/users`,
   user: id => `${host}/users/${id}`,
+  lockUser: (id, isLocked) => `${host}/users/${id}/lock/${isLocked}`,
   password: `${host}/change-password`,
   roles: `${host}/roles`,
   me: `${host}/me`,

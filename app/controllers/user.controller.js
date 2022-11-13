@@ -5,10 +5,7 @@ exports.me = async (req, res) => {
   if (user) {
     res.json(user)
   } else {
-    res.json({
-      status: 400,
-      messages: ['User not found ']
-    })
+    res.badRequest(['Account not found '])
   }
 }
 
@@ -17,10 +14,7 @@ exports.account = async (req, res) => {
   if (user) {
     res.json(user)
   } else {
-    res.json({
-      status: 400,
-      messages: ['User not found ']
-    })
+    res.badRequest(['Account not found '])
   }
 }
 
@@ -29,10 +23,7 @@ exports.updateAccount = async (req, res) => {
     const id = await UserService.updateAccount(req.body)
     res.json({ id })
   } else {
-    res.status(403).send({
-      status: 403,
-      messages: ['Unauthorized']
-    })
+    res.forbidden(['Unauthorized'])
   }
 }
 
@@ -45,16 +36,14 @@ exports.get = async (req, res) => {
   if (user) {
     res.json(user)
   } else {
-    res.json({
-      status: 400,
-      messages: ['User not found']
-    })
+    res.badRequest(['Account not found'])
   }
 }
 
 exports.create = async (req, res) => {
   res.json(await UserService.create(req.body))
 }
+
 exports.update = async (req, res) => {
   res.json(await UserService.update(req.body))
 }
@@ -62,14 +51,18 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   const success = await UserService.delete({ id: req.params.id })
   if (success) {
-    res.json({
-      status: 200,
-      messages: ['Deleted successfully']
-    })
+    res.success(['Deleted successfully'])
   } else {
-    res.json({
-      status: 400,
-      messages: ['User not found']
-    })
+    res.badRequest(['Account not found'])
+  }
+}
+
+exports.lock = async (req, res) => {
+  const { id, isLocked } = req.params
+  const success = await UserService.lock({ id, isLocked })
+  if (success) {
+    res.success([`${isLocked ? 'Locked' : 'Unlocked'} successfully`])
+  } else {
+    res.badRequest(['Account not found'])
   }
 }
