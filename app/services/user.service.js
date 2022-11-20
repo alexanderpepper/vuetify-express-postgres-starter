@@ -57,12 +57,18 @@ exports.all = async () => {
 }
 
 exports.me = async ({ id }) => {
-  const user = await User.findOne({
+  let user = await User.findOne({
     attributes: ME_ATTRIBUTES,
     where: { id },
     include: [roleRelationship]
   })
-  return user && user.get({ plain: true })
+  if (user) {
+    user = user.get({ plain: true })
+    user.roles.forEach(role => {
+      user[`is${role.name}`] = true
+    })
+  }
+  return user
 }
 
 exports.account = async ({ id }) => {

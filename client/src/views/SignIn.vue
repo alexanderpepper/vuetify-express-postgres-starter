@@ -9,22 +9,26 @@
               input(type='text' name='username' style='opacity: 0; position: absolute; pointer-events: none;')
               input(type='email' name='email' style='opacity: 0; position: absolute; pointer-events: none;')
               v-text-field.pt-0(
+                required,
                 label='Username',
                 v-model='user.username',
-                required,
-                autocomplete='off',
+                autocomplete='signInUsername',
                 ref='autofocusField1',
+                :error-messages='errors.username',
+                @input='errors.username = []',
                 @keyup.enter='signInClicked')
               v-text-field(
+                required,
+                autocomplete='signInPassword'
                 label='Password',
                 v-model='user.password',
                 :type='hidePassword ? "password" : "text"',
                 :append-icon='hidePassword ? "visibility_off" : "visibility"',
-                @click:append="() => (hidePassword = !hidePassword)"
-                @keyup.enter='signInClicked'
-                required
-                autocomplete='off')
-              v-btn.my-6(large, block, outlined, @click='signInClicked', :disabled='!isValidSignInCredentials') Sign In
+                :error-messages='errors.password'
+                @input='errors.password = []'
+                @click:append='() => (hidePassword = !hidePassword)',
+                @keyup.enter='signInClicked')
+              v-btn.my-6(large, block, outlined, @click='signInClicked') Sign In
             v-alert.my-6(type='error' v-model='error' outlined)
               div(v-for='(error, index) in errorMessages' :key='index' v-text='error')
             a.d-block.text-center.mb-4.subtitle-1(href='#' v-if='showResendCode' @click='step = steps.sendActivationLink') Resend my activation link
@@ -292,6 +296,7 @@ export default {
     },
     signInError (error) {
       this.error = true
+      this.errors = error.validationErrors || {}
       this.errorMessages = error.messages || ['Unknown error occurred']
       if (error.status === 403) {
         this.showResendCode = true

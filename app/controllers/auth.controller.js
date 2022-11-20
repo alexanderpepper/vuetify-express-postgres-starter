@@ -14,7 +14,7 @@ exports.signIn = async (req, res) => {
   if (!user) {
     res.unauthorized(['Invalid username or password'])
   } else if (user.isLocked) {
-    res.forbidden(['Account is locked'])
+    res.forbidden(['Account is locked, please contact support'])
   } else if (AuthService.validatePassword(req.body.password, user.password)) {
     if (user.isActivated) {
       user.authenticationFailures = 0
@@ -42,7 +42,7 @@ exports.signIn = async (req, res) => {
       messages.push('Account is locked, please contact support')
       user.isLocked = true
     }
-    user.save()
+    await user.save()
     res.unauthorized(messages)
   }
 }

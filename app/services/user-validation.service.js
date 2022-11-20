@@ -117,6 +117,21 @@ exports.addSignUpGeneralValidationErrors = async (user, validationErrors) => {
   }
 }
 
+exports.addSignInValidationErrors = (user, validationErrors) => {
+  if (!user.username) {
+    validationErrors.username = [
+      ...(validationErrors.username || []),
+      'Username is required.'
+    ]
+  }
+  if (!user.password) {
+    validationErrors.password = [
+      ...(validationErrors.password || []),
+      'Password is required.'
+    ]
+  }
+}
+
 exports.addChangePasswordValidationErrors = async (user, validationErrors) => {
   module.exports.addSignUpPasswordValidationErrors(user, validationErrors)
 
@@ -220,6 +235,70 @@ exports.addGetSecurityQuestionsValidationErrors = (user, validationErrors) => {
     validationErrors.birthday = [
       ...(validationErrors.birthday || []),
       'Birthday is required.'
+    ]
+  }
+}
+
+exports.addActivationValidationErrors = (user, validationErrors) => {
+  if (!user.activationCode) {
+    validationErrors.activationCode = [
+      ...(validationErrors.activationCode || []),
+      'Activation code is required.'
+    ]
+  }
+}
+
+exports.addSendActivationLinkValidationErrors = (user, validationErrors) => {
+  if (!user.username) {
+    validationErrors.username = [
+      ...(validationErrors.username || []),
+      'Username is required.'
+    ]
+  }
+}
+
+exports.addSendPasswordResetLinkValidationErrors = (user, validationErrors) => {
+  module.exports.addSignUpSecurityQuestionValidationErrors(user, validationErrors)
+  if (!user.username) {
+    validationErrors.username = [
+      ...(validationErrors.username || []),
+      'Username is required.'
+    ]
+  }
+}
+
+exports.addSendUsernameValidationErrors = (user, validationErrors) => {
+  if (!user.phone) {
+    validationErrors.phone = [
+      ...(validationErrors.phone || []),
+      'Phone number is required.'
+    ]
+  }
+  if (!user.birthday) {
+    validationErrors.birthday = [
+      ...(validationErrors.birthday || []),
+      'Birthday is required.'
+    ]
+  }
+}
+
+exports.addSetPasswordValidationErrors = (user, validationErrors) => {
+  if (!user.username) {
+    validationErrors.username = [
+      ...(validationErrors.username || []),
+      'Username is required.'
+    ]
+  }
+  if (!user.password) {
+    validationErrors.password = [
+      ...(validationErrors.password || []),
+      'Password is required.'
+    ]
+  }
+  if (!user.passwordResetCode) {
+    validationErrors.passwordResetCode = [
+      ...(validationErrors.passwordResetCode || []),
+      'Password reset code is required.'
     ]
   }
 }

@@ -40,7 +40,7 @@ exports.changePassword = async ({ id, oldPassword, newPassword }) => {
   const user = await module.exports.checkPassword({ id, password: oldPassword })
   if (user) {
     user.password = exports.encryptPassword(newPassword)
-    user.save()
+    await user.save()
     return true
   } else {
     return false
@@ -68,10 +68,10 @@ exports.activate = async ({ activationCode }) => {
   const user = await User.findOne({
     where: { activationCode }
   })
-  if (user) {
+  if (user && !user.isActivated) {
     user.isActivated = true
     user.activationCode = null
-    user.save()
+    await user.save()
     return true
   } else {
     return false
@@ -80,7 +80,9 @@ exports.activate = async ({ activationCode }) => {
 
 exports.sendActivationLink = async ({ username, sendViaSms }) => {
   const user = await User.findOne({ where: { username } })
-  if (user) {
+  if (user && !user.isActivated) {
+    user.activationCode = uuid()
+    await user.save()
     if (sendViaSms) {
       await smsService.sendActivationLink(user)
     } else {
@@ -106,7 +108,7 @@ exports.sendPasswordResetLink = async ({ username, securityQuestion1, securityQu
   })
   if (user) {
     user.passwordResetCode = uuid()
-    user.save()
+    await user.save()
     if (sendViaSms) {
       await smsService.sendPasswordResetLink(user)
     } else {
@@ -177,7 +179,7 @@ exports.resetPassword = async ({ username, password, passwordResetCode }) => {
   if (user) {
     user.passwordResetCode = null
     user.password = bcrypt.hashSync(password, 8)
-    user.save()
+    await user.save()
     return user
   } else {
     return null

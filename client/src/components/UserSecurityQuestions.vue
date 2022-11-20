@@ -12,7 +12,7 @@
       label='Answer'
       v-model='user.securityAnswer1'
       :error-messages='errors.securityAnswer1')
-    .subtitle-2 Security Question 2
+    .subtitle-2.mt-4 Security Question 2
     v-text-field(
       required
       v-model='user.securityQuestion2'

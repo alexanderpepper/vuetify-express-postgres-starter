@@ -31,18 +31,14 @@ export default {
   },
   actions: {
     async signIn ({ commit, dispatch }, credentials) {
-      if (credentials.username && credentials.password) {
-        try {
-          const response = await SignInService.signIn(credentials)
-          commit('setToken', response)
-          dispatch('getCurrentUser')
-        } catch (error) {
-          dispatch('logout')
-          EventBus.$emit('sign-in-error', error)
-          throw error
-        }
-      } else {
+      try {
+        const response = await SignInService.signIn(credentials)
+        commit('setToken', response)
+        dispatch('getCurrentUser')
+      } catch (error) {
         dispatch('logout')
+        EventBus.$emit('sign-in-error', error)
+        throw error
       }
     },
     logout ({ commit }) {
@@ -55,7 +51,6 @@ export default {
     async getCurrentUser ({ commit, dispatch }) {
       try {
         const user = await UserService.me()
-        user.roles.forEach(role => (user[`is${role.name}`] = true))
         if (user) {
           commit('setCurrentUser', user)
         } else {
