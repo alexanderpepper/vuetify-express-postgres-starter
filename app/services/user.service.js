@@ -9,8 +9,8 @@ const USER_LIST_ATTRIBUTES = ['id', 'username', 'name', 'email']
 const EXCLUDED_ACCOUNT_UPDATE_ATTRIBUTES = ['activationCode', 'passwordResetCode', 'id', 'password', 'authenticationFailures', 'isLocked', 'isActivated']
 const { v4: uuid } = require('uuid')
 const { Op } = require('sequelize')
-const smsService = require('../services/sms.service')
-const emailService = require('../services/email.service')
+const SmsService = require('../services/sms.service')
+const EmailService = require('../services/email.service')
 
 const roleRelationship = {
   model: Role,
@@ -169,9 +169,9 @@ exports.sendActivationLink = async ({ username, sendViaSms }) => {
     user.activationCode = uuid()
     await user.save()
     if (sendViaSms) {
-      await smsService.sendActivationLink(user)
+      await SmsService.sendActivationLink(user)
     } else {
-      await emailService.sendActivationLink(user)
+      await EmailService.sendActivationLink(user)
     }
     return true
   } else {
@@ -211,9 +211,9 @@ exports.sendPasswordResetLink = async ({ username, securityQuestion1, securityQu
     user.passwordResetCode = uuid()
     await user.save()
     if (sendViaSms) {
-      await smsService.sendPasswordResetLink(user)
+      await SmsService.sendPasswordResetLink(user)
     } else {
-      await emailService.sendPasswordResetLink(user)
+      await EmailService.sendPasswordResetLink(user)
     }
     return true
   } else {
@@ -225,9 +225,9 @@ exports.sendUsername = async ({ phone, birthday, sendViaSms }) => {
   const user = await exports.findByPhoneAndBirthday({ phone, birthday })
   if (user) {
     if (sendViaSms) {
-      await smsService.sendUsername(user)
+      await SmsService.sendUsername(user)
     } else {
-      await emailService.sendUsername(user)
+      await EmailService.sendUsername(user)
     }
     return true
   } else {
