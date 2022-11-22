@@ -9,15 +9,15 @@
             v-model='request.oldPassword',
             :type='hideOldPassword ? "password" : "text"',
             :append-icon='hideOldPassword ? "visibility_off" : "visibility"',
-            @click:append="() => (hideOldPassword = !hideOldPassword)"
-            :error-messages='errors.oldPassword'
+            @click:append='hideOldPassword = !hideOldPassword',
+            :error-messages='errors.oldPassword',
             @input='errors.oldPassword = []')
           v-text-field.mt-1(
             label='New Password',
             v-model='request.password',
             :type='hidePassword ? "password" : "text"',
             :append-icon='hidePassword ? "visibility_off" : "visibility"',
-            @click:append="() => (hidePassword = !hidePassword)"
+            @click:append='hidePassword = !hidePassword',
             :error-messages='errors.password',
             @input='errors.password = []')
           v-text-field.mt-1(
@@ -25,8 +25,8 @@
             v-model='request.confirmPassword',
             :type='hideConfirmPassword ? "password" : "text"',
             :append-icon='hideConfirmPassword ? "visibility_off" : "visibility"',
-            @click:append="() => (hideConfirmPassword = !hideConfirmPassword)"
-            :error-messages='errors.confirmPassword'
+            @click:append='hideConfirmPassword = !hideConfirmPassword',
+            :error-messages='errors.confirmPassword',
             @input='errors.confirmPassword = []')
       v-card-actions
         v-spacer

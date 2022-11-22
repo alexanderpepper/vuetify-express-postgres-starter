@@ -5,7 +5,6 @@
     v-text-field(
       v-model='user.securityAnswer1',
       label='Answer',
-      ref='autoFocusField',
       :error-messages='errors.securityAnswer1')
     .subtitle-1.mt-4(v-text='user.securityQuestion2')
     v-text-field(
@@ -15,11 +14,8 @@
 </template>
 
 <script>
-import autofocusFieldMixin from '@/mixins/autofocusFieldMixin'
-
 export default {
   name: 'userSecurityAnswers',
-  mixins: [autofocusFieldMixin],
   props: {
     user: Object,
     errors: Object

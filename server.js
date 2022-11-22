@@ -14,15 +14,19 @@ const isProduction = process.env.NODE_ENV === 'production'
 if (!isProduction) {
   app.use(cors({ origin }))
 }
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Headers', 'Authorization, Origin, Content-Type, Accept')
+  next()
+})
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(fileUpload())
 app.use(responders)
 
-require('./app/routes/auth.routes')(app)
 require('./app/routes/user.routes')(app)
 require('./app/routes/role.routes')(app)
 require('./app/routes/file.routes')(app)
+require('./app/routes/support.routes')(app)
 
 app.use(errorHandler(isProduction))
 

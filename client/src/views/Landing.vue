@@ -63,7 +63,6 @@ export default {
     showSignIn () {
       this.isShowingSignIn = true
       this.isShowingSignUp = false
-      this.$refs.signIn.autofocusFieldForCurrentStep()
     },
     showSignup () {
       this.isShowingSignIn = false

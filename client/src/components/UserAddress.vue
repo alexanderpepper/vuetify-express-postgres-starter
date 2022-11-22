@@ -1,6 +1,6 @@
 <template lang="pug">
   .user-address
-    v-autocomplete(label='Country', :items='countries', item-text='name', item-value='name', v-model='user.country', autocomplete='off', ref='autofocusField')
+    v-autocomplete(label='Country', :items='countries', item-text='name', item-value='name', v-model='user.country', autocomplete='off')
     v-text-field.pt-0(label='Street Address Line 1', v-model='user.addressLine1')
     v-text-field(label='Street Address Line 2', v-model='user.addressLine2')
     v-text-field(label='City', v-model='user.city')
@@ -11,11 +11,9 @@
 <script>
 import states from '../constants/states'
 import countries from '../constants/countries'
-import autofocusFieldMixin from '@/mixins/autofocusFieldMixin'
 
 export default {
   name: 'userAddress',
-  mixins: [autofocusFieldMixin],
   props: {
     user: Object,
     errors: Object

@@ -13,7 +13,6 @@
                 label='Username',
                 v-model='user.username',
                 autocomplete='signInUsername',
-                ref='autofocusField1',
                 :error-messages='errors.username',
                 @input='errors.username = []',
                 @keyup.enter='signInClicked')
@@ -46,8 +45,7 @@
               :user='user'
               :errors='errors'
               @clear-errors='errors.phone = []'
-              @set-phone='phone => (user.phone = phone)'
-              ref='autofocusField3')
+              @set-phone='phone => (user.phone = phone)')
             user-birthday(
               :show-placeholder='true'
               :user='user'
@@ -69,8 +67,7 @@
               v-model='user.username',
               label='Username',
               :error-messages='errors.username'
-              @input='errors.username = []'
-              ref='autofocusField6')
+              @input='errors.username = []')
             user-phone(
               :show-placeholder='true',
               :user='user',
@@ -162,9 +159,6 @@ export default {
     this.user = authenticationUserStructure()
     EventBus.$on('sign-in-error', this.signInError)
   },
-  mounted () {
-    this.autofocusFieldForCurrentStep()
-  },
   computed: {
     showNext () {
       return [
@@ -200,7 +194,6 @@ export default {
       } else {
         this.step--
       }
-      this.autofocusFieldForCurrentStep()
     },
     next () {
       if (this.step === this.steps.forgotUsernameOrPassword) {
@@ -224,23 +217,6 @@ export default {
       } else {
         this.step++
       }
-      this.autofocusFieldForCurrentStep()
-    },
-    autofocusFieldForCurrentStep () {
-      this.$nextTick(() => {
-        setTimeout(() => {
-          const autofocusField = this.$refs[`autofocusField${this.step}`]
-          if (autofocusField) {
-            let input = autofocusField.$refs.input
-            if (input) {
-              if (input && input.$refs) {
-                input = input.$refs.input
-              }
-            }
-            input.focus()
-          }
-        })
-      })
     },
     forgotUsernameOrPassword () {
       this.user = authenticationUserStructure()

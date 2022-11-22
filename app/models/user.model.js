@@ -1,4 +1,4 @@
- module.exports = (sequelize, Sequelize) =>
+module.exports = (sequelize, Sequelize) =>
   sequelize.define('app_user', {
     username: {
       type: Sequelize.STRING

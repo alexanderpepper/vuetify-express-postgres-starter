@@ -140,10 +140,8 @@ export default {
     errors: {}
   }),
   async created () {
-    try {
-      this.roles = await RoleService.all()
-    } catch (error) {
-      this.roles = []
+    if (!this.isAccount) {
+      await this.getRoles()
     }
     await this.initialize()
   },
@@ -182,6 +180,13 @@ export default {
     }
   },
   methods: {
+    async getRoles () {
+      try {
+        this.roles = await RoleService.all()
+      } catch (error) {
+        this.roles = []
+      }
+    },
     async initialize () {
       this.errors = {}
       if (this.isAccount) {

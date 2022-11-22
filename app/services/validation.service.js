@@ -1,7 +1,7 @@
 const db = require('../models')
 const moment = require('moment')
 const User = db.user
-const AuthService = require('../services/auth.service')
+const UserService = require('../services/user.service')
 const MINIMUM_AGE = 13
 
 exports.isValidPassword = password => {
@@ -133,7 +133,7 @@ exports.addSignInValidationErrors = (user, validationErrors) => {
 }
 
 exports.addChangePasswordValidationErrors = async (user, validationErrors) => {
-  module.exports.addSignUpPasswordValidationErrors(user, validationErrors)
+  exports.addSignUpPasswordValidationErrors(user, validationErrors)
 
   if (!user.oldPassword) {
     validationErrors.oldPassword = [
@@ -141,7 +141,7 @@ exports.addChangePasswordValidationErrors = async (user, validationErrors) => {
       'Old password is required.'
     ]
   } else {
-    const found = await AuthService.checkPassword({ id: user.id, password: user.oldPassword })
+    const found = await UserService.checkPassword({ id: user.id, password: user.oldPassword })
     if (!found) {
       validationErrors.oldPassword = [
         ...(validationErrors.oldPassword || []),
@@ -258,7 +258,7 @@ exports.addSendActivationLinkValidationErrors = (user, validationErrors) => {
 }
 
 exports.addSendPasswordResetLinkValidationErrors = (user, validationErrors) => {
-  module.exports.addSignUpSecurityQuestionValidationErrors(user, validationErrors)
+  exports.addSignUpSecurityQuestionValidationErrors(user, validationErrors)
   if (!user.username) {
     validationErrors.username = [
       ...(validationErrors.username || []),
@@ -299,6 +299,21 @@ exports.addSetPasswordValidationErrors = (user, validationErrors) => {
     validationErrors.passwordResetCode = [
       ...(validationErrors.passwordResetCode || []),
       'Password reset code is required.'
+    ]
+  }
+}
+
+exports.addSendSupportMessageValidationErrors = (data, validationErrors) => {
+  if (!data.email) {
+    validationErrors.email = [
+      ...(validationErrors.email || []),
+      'Email is required.'
+    ]
+  }
+  if (!data.body) {
+    validationErrors.body = [
+      ...(validationErrors.body || []),
+      'Message body is required.'
     ]
   }
 }

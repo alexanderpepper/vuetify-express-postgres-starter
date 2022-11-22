@@ -5,7 +5,6 @@
       required
       v-model='user.securityQuestion1'
       label='Question'
-      ref='autofocusField'
       :error-messages='errors.securityQuestion1')
     v-text-field(
       required
@@ -26,11 +25,9 @@
 </template>
 
 <script>
-import autofocusFieldMixin from '@/mixins/autofocusFieldMixin'
 
 export default {
   name: 'userSecurityQuestions',
-  mixins: [autofocusFieldMixin],
   props: {
     user: Object,
     errors: Object
