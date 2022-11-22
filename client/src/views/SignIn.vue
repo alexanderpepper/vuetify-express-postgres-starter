@@ -41,17 +41,19 @@
           v-card-text
             .body-1.mb-6.grey--text.text--darken-1 Please provide your birthday and phone number
             user-phone(
-              :show-placeholder='true'
-              :user='user'
-              :errors='errors'
-              @clear-errors='errors.phone = []'
-              @set-phone='phone => (user.phone = phone)')
+              :show-placeholder='true',
+              :user='user',
+              :errors='errors',
+              @clear-errors='errors.phone = []',
+              @set-phone='phone => (user.phone = phone)',
+              @keydown-enter='next')
             user-birthday(
-              :show-placeholder='true'
-              :user='user'
-              :errors='errors'
+              :show-placeholder='true',
+              :user='user',
+              :errors='errors',
               @set-birthday='birthday => (user.birthday = birthday)',
-              @clear-errors='errors.birthday = []')
+              @clear-errors='errors.birthday = []'
+              @keydown-enter='next')
             .text-center.mt-2
               router-link.subtitle-1(:to='{ name: "support" }') Contact support
         v-window-item(:value='steps.sendUsername')
@@ -71,19 +73,22 @@
             user-phone(
               :show-placeholder='true',
               :user='user',
-              @set-phone='phone => (user.phone = phone)')
+              @set-phone='phone => (user.phone = phone)',
+              @keydown-enter='next')
             user-birthday(
               :show-placeholder='true'
-              :user='user'
-              :errors='errors'
+              :user='user',
+              :errors='errors',
               @set-birthday='birthday => (user.birthday = birthday)',
-              @clear-errors='errors.birthday = []')
+              @clear-errors='errors.birthday = []',
+              @keydown-enter='next')
         v-window-item(:value='steps.securityQuestions')
           v-card-text
             user-security-answers(
-              :user='user'
-              :errors='errors'
-              @clear-errors='key => errors[key] = []')
+              :user='user',
+              :errors='errors',
+              @clear-errors='key => errors[key] = []',
+              @keydown-enter='next')
         v-window-item(:value='steps.sendPasswordResetLink')
           v-card-text
             send-password-reset-link(:user='user')

@@ -1,24 +1,27 @@
 <template lang="pug">
   .user-identifier
     v-text-field(
-      label='Name'
-      v-model='user.name'
-      required
-      autocomplete='newName'
-      :error-messages='errors.name')
+      required,
+      label='Name',
+      v-model='user.name',
+      autocomplete='newName',
+      :error-messages='errors.name',
+      @keydown.enter='$emit("keydown-enter")')
     v-text-field(
-      label='Username'
-      v-model='user.username'
-      required
-      autocomplete='newUsername'
-      :error-messages='errors.username')
+      required,
+      label='Username',
+      v-model='user.username',
+      autocomplete='newUsername',
+      :error-messages='errors.username',
+      @keydown.enter='$emit("keydown-enter")')
     v-text-field(
-      label='Email Address'
-      v-model='user.email'
-      type='email'
-      required
-      autocomplete='newEmail'
-      :error-messages='errors.email')
+      required,
+      label='Email Address',
+      v-model='user.email',
+      type='email',
+      autocomplete='newEmail',
+      :error-messages='errors.email',
+      @keydown.enter='$emit("keydown-enter")')
 </template>
 
 <script>

@@ -5,23 +5,27 @@
       required
       v-model='user.securityQuestion1'
       label='Question'
-      :error-messages='errors.securityQuestion1')
+      :error-messages='errors.securityQuestion1'
+      @keydown.enter='$emit("keydown-enter")')
     v-text-field(
       required
       label='Answer'
       v-model='user.securityAnswer1'
-      :error-messages='errors.securityAnswer1')
+      :error-messages='errors.securityAnswer1'
+      @keydown.enter='$emit("keydown-enter")')
     .subtitle-2.mt-4 Security Question 2
     v-text-field(
       required
       v-model='user.securityQuestion2'
       label='Question'
-      :error-messages='errors.securityQuestion2')
+      :error-messages='errors.securityQuestion2'
+      @keydown.enter='$emit("keydown-enter")')
     v-text-field(
       required
       v-model='user.securityAnswer2'
       label='Answer'
-      :error-messages='errors.securityAnswer2')
+      :error-messages='errors.securityAnswer2'
+      @keydown.enter='$emit("keydown-enter")')
 </template>
 
 <script>

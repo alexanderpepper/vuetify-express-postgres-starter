@@ -6,43 +6,49 @@
         v-window-item(:value='steps.credentials')
           v-card-text
             user-identifier(
-              :user='user'
-              :errors='errors'
-              @clear-errors='key => errors[key] = []')
+              :user='user',
+              :errors='errors',
+              @clear-errors='key => errors[key] = []',
+              @keydown-enter='next')
             user-birthday(
-              :user='user'
-              :errors='errors'
-              @set-birthday='birthday => (user.birthday = birthday)'
-              @clear-errors='errors.birthday = []')
+              :user='user',
+              :errors='errors',
+              @set-birthday='birthday => (user.birthday = birthday)',
+              @clear-errors='errors.birthday = []',
+              @keydown-enter='next')
             user-phone(
-              :user='user'
-              :errors='errors'
-              @set-phone='phone => (user.phone = phone)'
-              @clear-errors='errors.phone = []')
+              :user='user',
+              :errors='errors',
+              @set-phone='phone => (user.phone = phone)',
+              @clear-errors='errors.phone = []',
+              @keydown-enter='next')
         v-window-item(:value='steps.password')
           v-card-text
             user-password(
-              :user='user'
-              :errors='errors'
-              @clear-errors='key => errors[key] = []')
+              :user='user',
+              :errors='errors',
+              @clear-errors='key => errors[key] = []',
+              @keydown-enter='next')
         v-window-item(:value='steps.securityQuestions')
           v-card-text
             user-security-questions(
-              :user='user'
-              :errors='errors'
-              @clear-errors='key => errors[key] = []')
+              :user='user',
+              :errors='errors',
+              @clear-errors='key => errors[key] = []',
+              @keydown-enter='next')
         v-window-item(:value='steps.photo')
           v-card-text.text-center
             edit-user-photo(
-              :user='user'
-              :is-sign-up='true'
+              :user='user',
+              :is-sign-up='true',
               @set-photo='photo => (user.photo = photo)')
         v-window-item(:value='steps.address')
           v-card-text
             user-address(
-              :user='user'
-              :errors='errors'
-              @clear-errors='key => errors[key] = []')
+              :user='user',
+              :errors='errors',
+              @clear-errors='key => errors[key] = []'
+              @keydown-enter='next')
         v-window-item(:value='steps.activate')
           v-card-text
             send-activation-link(:user='user')

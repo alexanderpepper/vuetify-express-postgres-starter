@@ -7,14 +7,15 @@
       type='tel',
       :error-messages='errors.phone',
       :placeholder='showPlaceholder ? user.isInternationalPhone ? "+888 8888888888" : "(888) 888 - 8888" : ""',
-      @keyup.enter='$emit("next")'
-      ref='input')
+      ref='input',
+      @keydown.enter='$emit("keydown-enter")')
     v-select.phone-format-select(
       v-model='user.isInternationalPhone',
       item-value='isInternational',
       item-text='text',
       :items='phoneFormats',
-      :error='errors.phone && errors.phone.length > 0')
+      :error='errors.phone && errors.phone.length > 0',
+      @keydown.enter='$emit("keydown-enter")')
 </template>
 
 <script>

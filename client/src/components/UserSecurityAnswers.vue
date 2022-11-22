@@ -5,12 +5,14 @@
     v-text-field(
       v-model='user.securityAnswer1',
       label='Answer',
-      :error-messages='errors.securityAnswer1')
+      :error-messages='errors.securityAnswer1'
+      @keydown.enter='$emit("keydown-enter")')
     .subtitle-1.mt-4(v-text='user.securityQuestion2')
     v-text-field(
       v-model='user.securityAnswer2',
       label='Answer',
-      :error-messages='errors.securityAnswer2')
+      :error-messages='errors.securityAnswer2'
+      @keydown.enter='$emit("keydown-enter")')
 </template>
 
 <script>
