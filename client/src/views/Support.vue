@@ -1,17 +1,33 @@
 <template lang="pug">
   .suggest.pa-md-12.pa-sm-8.pa-xs-0
-    v-card.elevation-12(:class='{ "elevation-0": $vuetify.breakpoint.xsOnly }')
+    v-card(:class='{ "elevation-0": $vuetify.breakpoint.xsOnly }')
       v-card-title.headline.font-weight-light(v-text='success ? "Thanks!" : "How can we help?"')
       v-card-text
         .text-center(v-if='success')
           .subtitle-1.mb-4 We'll get back to you as soon as possible
           v-btn(router-link, :to='{ name: "landing" }') Go Back
         .mx-auto(v-else)
-          v-text-field(type='email', label='Email Address', v-model='message.email', required, autocomplete='newEmail')
-          v-textarea(v-model='message.body', outlined, counter='500', label='Enter your message here')
+          v-text-field(
+            outlined,
+            dense,
+            type='email',
+            label='Email Address',
+            v-model='message.email',
+            required,
+            autocomplete='supportEmail',
+            :error-messages='errors.email'
+            @input='errors.email = []')
+          v-textarea(
+            dense,
+            label='Enter your message here',
+            v-model='message.body',
+            outlined,
+            counter='1000',
+            :error-messages='errors.body'
+            @input='errors.body = []')
           .text-right
             v-btn.mr-2(text, onclick='window.history.back()') Cancel
-            v-btn(outlined, @click='submit', :disabled='!isSubmitEnabled') Submit
+            v-btn(outlined, @click='submit') Submit
 </template>
 
 <script>
@@ -25,13 +41,11 @@ export default {
     message: {
       email: null,
       body: null
-    }
+    },
+    errors: {}
   }),
   computed: {
-    ...mapGetters(['currentUser']),
-    isSubmitEnabled () {
-      return this.message.email && this.message.body
-    }
+    ...mapGetters(['currentUser'])
   },
   watch: {
     currentUser () {
@@ -48,8 +62,12 @@ export default {
       }
     },
     async submit () {
-      await SupportService.sendSupportMessage(this.message)
-      this.success = true
+      try {
+        await SupportService.sendSupportMessage(this.message)
+        this.success = true
+      } catch ({ validationErrors }) {
+        this.errors = validationErrors
+      }
     }
   }
 }

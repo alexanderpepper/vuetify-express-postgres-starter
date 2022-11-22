@@ -289,18 +289,7 @@ exports.addSetPasswordValidationErrors = (user, validationErrors) => {
       'Username is required.'
     ]
   }
-  if (!user.password) {
-    validationErrors.password = [
-      ...(validationErrors.password || []),
-      'Password is required.'
-    ]
-  }
-  if (!user.passwordResetCode) {
-    validationErrors.passwordResetCode = [
-      ...(validationErrors.passwordResetCode || []),
-      'Password reset code is required.'
-    ]
-  }
+  exports.addSignUpPasswordValidationErrors(user, validationErrors)
 }
 
 exports.addSendSupportMessageValidationErrors = (data, validationErrors) => {
@@ -308,6 +297,11 @@ exports.addSendSupportMessageValidationErrors = (data, validationErrors) => {
     validationErrors.email = [
       ...(validationErrors.email || []),
       'Email is required.'
+    ]
+  } else if (!this.isValidEmail(data.email)) {
+    validationErrors.email = [
+      ...(validationErrors.email || []),
+      'Invalid email.'
     ]
   }
   if (!data.body) {

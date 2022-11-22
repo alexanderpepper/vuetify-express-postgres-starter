@@ -9,6 +9,7 @@
       .mt-12(v-if='isShowingInitialView')
         .display-1 Landing Page
         .title(v-if='!currentUser.id') User is unauthenticated
+        router-link.subtitle-1(:to='{ name: "support" }') Contact support
       .mt-6(v-if='!currentUser.id')
         .mb-4.mx-auto(v-if='isShowingInitialView')
           v-btn.mr-3(large, outlined, @click='showSignIn') Sign In

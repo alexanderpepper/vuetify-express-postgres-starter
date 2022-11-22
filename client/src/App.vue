@@ -47,6 +47,9 @@ export default {
   }),
   computed: mapGetters(['currentUser', 'userInfoReceived']),
   async created () {
+    if (window.localStorage.dark === undefined) {
+      window.localStorage.dark = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'true' : 'false'
+    }
     this.$vuetify.theme.dark = window.localStorage.dark === 'true'
     try {
       await this.getCurrentUser()

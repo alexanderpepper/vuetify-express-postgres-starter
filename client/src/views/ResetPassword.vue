@@ -3,9 +3,20 @@
     v-card.elevation-12
       v-card-title.headline Reset Password
       v-card-text
-        input(type='text', name='username', style='opacity: 0; position: absolute; pointer-events: none;')
-        v-text-field(v-model='user.username', label='Username', autocomplete='off')
-        user-password(:user='user')
+        input(
+          type='text',
+          name='username',
+          style='opacity: 0; position: absolute; pointer-events: none;')
+        v-text-field(
+          v-model='user.username',
+          label='Username',
+          autocomplete='off',
+          :error-messages='errors.username'
+          @input='errors.username = []')
+        user-password(
+          :user='user'
+          :errors='errors'
+          @clear-errors='key => errors[key] = []')
         v-btn.mt-6(block, outlined, @click='resetPassword') Reset Password
 </template>
 
@@ -22,18 +33,23 @@ export default {
   props: ['passwordResetCode'],
   data: () => ({
     activationSuccess: null,
-    user: {}
+    user: {},
+    errors: {}
   }),
   methods: {
     ...mapMutations(['setToken']),
     ...mapActions(['getCurrentUser']),
     async resetPassword () {
-      this.user.passwordResetCode = this.passwordResetCode
-      const response = await UserService.resetPassword(this.user)
-      this.setToken(response)
-      await this.getCurrentUser()
-      EventBus.$emit('show-success-snackbar', 'Password Reset')
-      this.$router.push({ name: 'home' })
+      try {
+        this.user.passwordResetCode = this.passwordResetCode
+        const response = await UserService.resetPassword(this.user)
+        this.setToken(response)
+        await this.getCurrentUser()
+        EventBus.$emit('show-success-snackbar', 'Password Reset')
+        this.$router.push({ name: 'home' })
+      } catch ({ validationErrors }) {
+        this.errors = validationErrors
+      }
     }
   }
 }
