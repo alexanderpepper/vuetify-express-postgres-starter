@@ -22,6 +22,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(fileUpload())
 app.use(responders)
+app.use(express.static('./client/dist'))
 
 require('./app/routes/user.routes')(app)
 require('./app/routes/role.routes')(app)
