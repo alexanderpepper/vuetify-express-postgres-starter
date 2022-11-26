@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  node_backend:
+    container_name: node_backend
+    image: node:14.15.4-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PGUSER=postgres
+      - PGPASSWORD=postgres
+      - PGDATABASE=testdb
+      - PGHOST=db
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: postgres:14.1-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=testdb
+    volumes:
+      - ./data:/var/lib/postgresql/data
