@@ -1,17 +1,17 @@
 version: '3.8'
 
 services:
-  node_backend:
-    container_name: node_backend
+  api:
+    container_name: express-api
     image: node:14.15.4-alpine
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
     ports:
-      - 3000:3000
+      - "3000:3000"
     volumes:
-      - .:/app
-      - /app/node_modules
+      - .:/usr/src/app/api
+      - /usr/src/app/api/node_modules
     environment:
       - NODE_ENV=development
       - PGUSER=postgres
@@ -20,6 +20,16 @@ services:
       - PGHOST=db
     depends_on:
       - db
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    ports:
+      - "8080:8080"
+    container_name: vue-ui
+    volumes:
+      - ./client:/usr/src/app/ui
+      - /usr/src/app/ui/node_modules
   db:
     container_name: db
     image: postgres:14.1-alpine
