@@ -85,7 +85,10 @@
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0
-                edit-user-photo.mb-6.mx-auto.mw-edit-user-photo(:user='user' @set-photo='photo => (user.photo = photo)')
+                edit-user-photo.mb-6.mx-auto.mw-edit-user-photo(
+                  :user='user'
+                  :is-account="isAccount"
+                  @set-photo='photo => (user.photo = photo)')
           v-tab-item
             v-card(flat)
               v-card-text.pt-sm-0

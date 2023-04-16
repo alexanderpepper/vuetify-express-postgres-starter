@@ -1,14 +1,16 @@
 module.exports.formattedPhone = user => {
-  if (user.isInternationalPhone) {
-    return `+${user.phone}`
-  } else {
-    return `(${user.phone.substring(0, 3)}) ${user.phone.substring(3, 6)}-${user.phone.substring(6)}`
+  if (user.phone) {
+    if (user.isInternationalPhone) {
+      return `+${user.phone}`
+    } else {
+      return `(${user.phone.substring(0, 3)}) ${user.phone.substring(3, 6)}-${user.phone.substring(6)}`
+    }
   }
 }
 
 module.exports.obscuredPhone = user => {
   if (user.phone) {
-    const lastDigits = user.phone.substr(user.phone.length - 2)
+    const lastDigits = user.phone.substring(user.phone.length - 2)
     return user.isInternationalPhone ? `+•• •••••••••${lastDigits}` : `(•••) •••-••${lastDigits}`
   } else {
     return ''

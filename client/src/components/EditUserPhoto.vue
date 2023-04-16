@@ -61,7 +61,8 @@ export default {
   components: { UploadButton, Camera },
   props: {
     user: Object,
-    isSignUp: Boolean
+    isSignUp: Boolean,
+    isAccount: Boolean
   },
   data: () => ({
     photoData: null,
@@ -103,7 +104,9 @@ export default {
       this.$emit('set-photo', response.key)
       this.currentUser.photo = response.key
       if (!this.isSignUp) {
-        const response = await UserService.save(this.user)
+        const response = this.isAccount
+          ? await UserService.saveAccount(this.user)
+          : await UserService.save(this.user)
         EventBus.$emit('show-success-snackbar', response)
         this.reset()
       }

@@ -5,7 +5,7 @@
       v-model='maskedPhone',
       v-mask='user.isInternationalPhone ? "+#####################" : "(###) ### - ####"',
       type='tel',
-      :error-messages='errors.phone',
+      :error-messages='errors && errors.phone',
       :placeholder='showPlaceholder ? user.isInternationalPhone ? "+888 8888888888" : "(888) 888 - 8888" : ""',
       ref='input',
       @keydown.enter='$emit("keydown-enter")')
@@ -14,7 +14,7 @@
       item-value='isInternational',
       item-text='text',
       :items='phoneFormats',
-      :error='errors.phone && errors.phone.length > 0',
+      :error='errors && errors.phone && errors.phone.length > 0',
       @keydown.enter='$emit("keydown-enter")')
 </template>
 
