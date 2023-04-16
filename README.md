@@ -121,5 +121,11 @@ To monitor the server
 node_modules/pm2/bin/pm2 monit
 ```
 
+## Docker
+
+build the images with `docker-compose build —no-cache`
+
+`docker-compose up -d` for backend / postgres
+
 ## License
 MIT © 2018 [Alex Pepper](https://alexpepper.us)
