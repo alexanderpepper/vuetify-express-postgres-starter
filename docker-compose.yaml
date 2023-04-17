@@ -1,12 +1,10 @@
 version: '3.8'
-
 services:
   api:
     container_name: express-api
-    image: node:14.15.4-alpine
     build:
       context: .
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile-api-dev
     ports:
       - "3000:3000"
     volumes:
@@ -23,7 +21,7 @@ services:
   ui:
     build:
       context: .
-      dockerfile: Dockerfile-dev
+      dockerfile: Dockerfile-ui-dev
     ports:
       - "8080:8080"
     container_name: vue-ui
@@ -34,7 +32,7 @@ services:
     container_name: db
     image: postgres:14.1-alpine
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

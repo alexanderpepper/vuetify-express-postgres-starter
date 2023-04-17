@@ -1,11 +1,3 @@
-FROM node:14-alpine as api-build
-WORKDIR /usr/src/app/api
-COPY package*.json ./
-RUN npm install
-EXPOSE 3000
-COPY . .
-CMD ["npm", "run", "start"]
-
 FROM node:14-alpine as ui-build
 WORKDIR /usr/src/app/ui
 COPY client/package*.json ./
