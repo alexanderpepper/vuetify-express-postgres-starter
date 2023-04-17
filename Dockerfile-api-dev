@@ -1,7 +1,8 @@
-FROM node:14-alpine as api-build
+FROM node:18-alpine as api-build
 WORKDIR /usr/src/app/api
 COPY package*.json ./
 RUN npm install
 EXPOSE 3000
 COPY . .
+RUN npm install -g nodemon
 CMD ["npm", "run", "start"]

@@ -12,10 +12,7 @@ services:
       - /usr/src/app/api/node_modules
     environment:
       - NODE_ENV=development
-      - PGUSER=postgres
-      - PGPASSWORD=postgres
-      - PGDATABASE=testdb
-      - PGHOST=db
+      - DB_HOST=host.docker.internal
     depends_on:
       - db
   ui:

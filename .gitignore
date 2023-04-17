@@ -2,5 +2,5 @@
 node_modules
 .DS_Store
 client/node_modules
-config/
+config/xaws.config.js
 data

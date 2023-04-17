@@ -21,12 +21,12 @@ Use of ES6+ features in this project is encouraged.
 * NodeJS
 * PM2 (for production deployment)
 
-## Installation
+## Using Docker for Development
 
-Clone the repository
-```shell script
-git clone https://github.com/alexanderpepper/vuetify-express-postgresql-starter.git
-```
+* Build the images with `docker-compose build —no-cache`
+* Run `docker-compose up` to run the database, API, and UI in development mode.
+
+## Installation
 
 Install NPM packages
 ```shell script
@@ -43,28 +43,10 @@ npm install -g pm2
 
 ## Configuration
 
-### Add AWS Credentials
-
-* Update `server/aws-credentials.json` with the following content:
-
-```json
-{
-  "accessKeyId": "<access key ID or empty string>",
-  "secretAccessKey": "<secret access key or empty string>",
-  "supportEmail": "support@vuetify-express-postgresql-starter.com",
-  "noReplyEmail": "no-reply@vuetify-express-postgresql-starter.com"
-}
-```
-
-### Add Twilio credentials
-
-* Create a file `server/twilio-credentials.json` with the following contents:
-```json
-{
-  "accountSid": "<account SID or empty string>",
-  "authToken": "<auth token or empty string>"
-}
-```
+* JWT token configuration goes in `app/config/auth.config.js` 
+* Database configuration goes in `app/config/db.config.js` 
+* AWS configuration goes in `app/config/aws.config.js` 
+* Twilio configuration goes in `app/config/twilio.config.js`
 
 ## Development
 Running the server and client as separate processes gives the best development experience with hot reloading in the client app.
@@ -121,11 +103,5 @@ To monitor the server
 node_modules/pm2/bin/pm2 monit
 ```
 
-## Docker
-
-build the images with `docker-compose build —no-cache`
-
-`docker-compose up -d` for backend / postgres
-
 ## License
-MIT © 2018 [Alex Pepper](https://alexpepper.us)
+MIT © 2023 [Alex Pepper](https://alexpepper.us)

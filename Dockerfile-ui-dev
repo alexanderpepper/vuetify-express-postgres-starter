@@ -1,4 +1,4 @@
-FROM node:14-alpine as ui-build
+FROM node:18-alpine as ui-build
 WORKDIR /usr/src/app/ui
 COPY client/package*.json ./
 RUN npm install
