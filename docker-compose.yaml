@@ -1,10 +1,10 @@
 version: '3.8'
 services:
   api:
-    container_name: express-api
+    container_name: api
     build:
       context: .
-      dockerfile: Dockerfile-api-dev
+      dockerfile: app/Dockerfile-dev
     ports:
       - "3000:3000"
     volumes:
@@ -18,10 +18,10 @@ services:
   ui:
     build:
       context: .
-      dockerfile: Dockerfile-ui-dev
+      dockerfile: client/Dockerfile-dev
     ports:
       - "8080:8080"
-    container_name: vue-ui
+    container_name: ui
     volumes:
       - ./client:/usr/src/app/ui
       - /usr/src/app/ui/node_modules
