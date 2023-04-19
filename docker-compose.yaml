@@ -2,23 +2,28 @@ version: '3.8'
 services:
   api:
     container_name: api
+    command: npm run start:dev
     build:
+      target: dev
       context: .
-      dockerfile: app/Dockerfile-dev
+      dockerfile: app/Dockerfile
     ports:
       - "3000:3000"
+      - "9229:9229"
     volumes:
       - .:/usr/src/app/api
       - /usr/src/app/api/node_modules
     environment:
-      - NODE_ENV=development
-      - DB_HOST=host.docker.internal
+      DEBUG: nodejs-docker-express:*
+      NODE_ENV: development
+      DB_HOST: host.docker.internal
     depends_on:
       - db
   ui:
     build:
+      target: dev
       context: .
-      dockerfile: client/Dockerfile-dev
+      dockerfile: client/Dockerfile
     ports:
       - "8080:8080"
     container_name: ui
@@ -31,8 +36,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=testdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdb
     volumes:
       - ./data:/var/lib/postgresql/data
