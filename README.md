@@ -21,10 +21,9 @@ Use of ES6+ features in this project is encouraged.
 * NodeJS
 * PM2 (for production deployment)
 
-## Using Docker for Development
-
-* Build the images with `docker-compose build —no-cache`
-* Run `docker-compose up` to run the database, API, and UI in development mode.
+## Quickest Path to Up and Running
+* Run `make install` to install dependencies and build the docker container.
+* Run `make dev` to run the database, API, and UI in development mode.
 
 ## Installation
 
