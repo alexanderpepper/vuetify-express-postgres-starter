@@ -1,6 +1,6 @@
 <template lang="pug">
   v-app
-    v-app-bar.app-toolbar(app, fixed, clipped-left, dense, hide-on-scroll)
+    v-app-bar.app-toolbar(app, fixed, clipped-left, dense)
       v-toolbar-title.mr-4
         .headline.cursor-pointer(@click='$router.push({ name: currentUser.id ? "home": "landing" })')
           span.mr-3 🐊
